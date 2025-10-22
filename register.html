@@ -77,11 +77,34 @@
       return;
     }
 
-    // simulacia registracie (v realnom projekte by tu bol backend request)
-    localStorage.setItem("registeredUser", JSON.stringify({ name, email }));
 
-    // presmerovanie na success stranku
-    window.location.href = "success.html";
+    //komunikacia js s php
+   fetch("register.php", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ name, email, password })
+})
+.then(res => res.text()) // najprv text, aby sme videli presne, čo server vracia
+.then(text => {
+  console.log("Odpoveď servera:", text); // debug, môžeš sledovať v konzole
+  try {
+    const data = JSON.parse(text);
+    if (data.success) {
+      // presmerovanie pri úspechu
+      window.location.href = "success.html";
+    } else {
+      // pri chybe zobrazíme správu
+      alert(data.message || "Registrácia zlyhala");
+    }
+  } catch (e) {
+    alert("Server nevrátil platný JSON!");
+    console.error("Chyba parsovania JSON:", e);
+  }
+})
+.catch(err => {
+  alert("Chyba pri spojení so serverom: " + err);   
+  console.error(err);  // zapis do konzoly
+});
   }
 </script>
 
