@@ -1,0 +1,952 @@
+/* ===================================
+   GLOBAL SETTINGS
+   =================================== */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #F9F9F9;
+  color: #2C2C2C;
+  font-family: 'Outfit', sans-serif;
+}
+h1, h2, h3 {
+  letter-spacing: 0.5px;
+}
+
+
+a {
+  color: #2C2C2C;
+  text-decoration: none;
+}
+
+::selection {
+  background: #2C2C2C;
+  color: white;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #2C2C2C;
+  margin: 8px 0;
+}
+
+/* ===================================
+   HEADER  NAVIGATION 
+=================================== */
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+  transition: background-color 0.3s ease;
+}
+
+.navbar {
+  width: 1140px;
+  height: 80px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  height: 58px;
+  width: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+.nav-center {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-center li a {
+  color: #1E2A38;
+  font-weight: 500;
+  font-size: 18px;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.nav-center li a:hover {
+  background-color: rgba(8, 157, 250, 0.1);
+  color: #0471C2;
+}
+
+.login-btn {
+  background: linear-gradient(90deg, #089DFA, #0471C2);
+  color: white;
+  font-size: 16px;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(4, 113, 194, 0.25);
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(4, 113, 194, 0.35);
+}
+
+/*sticky s js*/
+.scrolled {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+}
+
+/* ===================================
+   HERO VIDEO SECTION
+   =================================== */
+
+.hero-video {
+  position: relative;   
+  /* ===================================
+  conme back later
+    =================================== */
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: brightness(75%);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(4,113,194,0.3), rgba(8,157,250,0.1));
+  z-index: 1;
+}
+
+.hero-text {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  max-width: 700px;
+  padding: 0 20px;
+}
+
+.hero-text h1 {
+  font-size: 64px;
+  line-height: 1.2;
+  margin-bottom: 24px;
+}
+
+.hero-text p {
+  font-size: 20px;
+  margin-bottom: 40px;
+}
+
+/* CTA button */
+.cta-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 18px;
+  padding: 14px 40px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+    letter-spacing: 0.8px;
+text-transform: uppercase;
+}
+
+
+.cta-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-3px);
+}
+
+/* ANIMACIE pri nacitavani  */
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1.2s ease forwards;
+}
+
+.fade-in-delay {
+  opacity: 0;
+  animation: fadeIn 1.2s ease 0.4s forwards;
+}
+
+.fade-in-delay2 {
+  opacity: 0;
+  animation: fadeIn 1.2s ease 0.8s forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ===================================
+   AKO TO FUNGUJE SECTION 
+   =================================== */
+
+.how-it-works {
+  padding: 140px 0;
+  background-color: #F8FAFD;
+  text-align: center;
+}
+
+.how-it-works h2 {
+  font-size: 48px;
+  font-weight: 700;
+  color: #1E2A38;
+  margin-bottom: 80px;
+  letter-spacing: 1px;
+  
+}
+
+.steps {
+
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 40px;
+  flex-wrap: nowrap; /*!!*/
+  max-width: 1140px;
+  margin: 0 auto;
+  overflow: visible; 
+}
+
+.step {
+  flex: 1 1 0;
+  max-width: 33%;           /*! tri presne vedla seba */
+  background: #fff;
+  border-radius: 24px;
+  padding: 60px 30px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.step:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 16px 40px rgba(4, 113, 194, 0.25);
+}
+
+
+.step img {
+  width: 200px;
+  height: auto;
+  margin-bottom: 32px;
+  border-radius: 16px;
+  transition: transform 0.3s ease;
+}
+
+.step:hover img {
+  transform: scale(1.04);
+}
+
+/* KROK text  */
+.step-number {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0471C2;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.step h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1E2A38;
+  margin-bottom: 14px;
+}
+
+.step p {
+  font-size: 17px;
+  color: #5C6B7A;
+  line-height: 1.6;
+  margin: 0 auto;
+  max-width: 280px;
+}
+
+/* !! Responsivita  */
+@media (max-width: 1000px) {
+  .steps {
+    flex-wrap: wrap;        /* od 1000px sa uz mozu lamat */
+  }
+  .step {
+    max-width: 45%;
+  }
+}
+
+@media (max-width: 700px) {
+  .step {
+    max-width: 90%;
+  }
+}
+
+
+/* ===================================
+   Call to action SECTION 
+   =================================== */
+
+.cta-section {
+  position: relative;
+  height: 380px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+}
+
+.cta-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.cta-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(80%);
+}
+
+/*  modry filter */
+.cta-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(rgba(37, 124, 191, 0.55), rgba(109, 170, 207, 0.55)),
+    linear-gradient(
+      to bottom,
+      #F9F9F9 0%,               /* hore mizne */
+      rgba(249, 249, 249, 0) 15%,
+      rgba(249, 249, 249, 0) 85%,
+      #F9F9F9 100%              /* dole mizne */
+    );
+  background-blend-mode: overlay;
+  pointer-events: none;
+}
+
+
+.cta-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 20px;
+}
+
+.cta-content h2 {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 22px;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* BUTTON */
+.cta-main-btn {
+  background: white;
+  color: #0471C2;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 14px 40px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.cta-main-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* ===================================
+   POPULAR LOCATIONS SECTION
+   =================================== */
+
+.popular-locations {
+  padding: 140px 20px;
+  background-color: #F9FAFC;
+  text-align: center;
+}
+
+.section-header {
+  max-width: 800px;
+  margin: 0 auto 80px auto;
+}
+
+.section-header h2 {
+  font-size: 44px;
+  font-weight: 700;
+  color: #1E2A38;
+  margin-bottom: 20px;
+}
+
+.section-header p {
+  font-size: 20px;
+  color: #5C6B7A;
+  line-height: 1.6;
+}
+
+/*  GRID  */
+.city-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+/*  CARD  */
+.city-card {
+  position: relative;
+  overflow: hidden;
+  width: 250px;
+  height: 320px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s ease;
+  cursor: default;
+}
+
+.city-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.city-card:hover img {
+  transform: scale(1.08);
+}
+
+.city-info {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 80%);
+  color: white;
+  text-align: left;
+}
+
+.city-info h3 {
+  font-size: 22px;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.city-info p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.9);
+}
+
+/* LINKABLE CITY -TT   */
+.active-city {
+  cursor: pointer;
+}
+
+.active-city:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 14px 30px rgba(4, 113, 194, 0.25);
+}
+
+.active-city::after {
+  content: "Zobraziť na mape";
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #0471C2;
+  padding: 6px 10px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.active-city:hover::after {
+  opacity: 1;
+}
+
+/*  RESPONSIVE */
+@media (max-width: 900px) {
+  .city-card {
+    width: 45%;
+    height: 280px;
+  }
+}
+
+@media (max-width: 600px) {
+  .city-card {
+    width: 90%;
+    height: 250px;
+  }
+}
+/* ===================================
+   FOOTER 
+      =================================== */
+
+footer {
+    background: linear-gradient(135deg, #4aa2de, #69a4d1);
+  color: #ffffff;
+  padding: 40px 0;
+  margin-top: 120px;
+  position: relative;
+  z-index: 2;
+}
+
+.footer-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.footer-logo {
+  height: 48px;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+
+.footer-left p {
+  font-size: 15px;
+  opacity: 0.9;
+  margin: 0;
+  font-weight: 400;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.social-icon {
+  width: 26px;
+  height: 26px;
+  opacity: 0.9;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.social-icon:hover {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+/*RESPONSIVE*/
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .footer-left {
+    flex-direction: column;
+  }
+}
+
+
+
+/* ===================================
+   KONTAKT 
+    =================================== */
+
+.contact-section {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #F8FAFD, #EAF3FB);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 20px;
+}
+
+.contact-container {
+  max-width: 1140px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.contact-info {
+  flex: 1;
+  min-width: 360px;
+}
+
+.contact-info h1 {
+  font-size: 42px;
+  color: #1E2A38;
+  margin-bottom: 20px;
+}
+
+.contact-info p {
+  font-size: 18px;
+  color: #5C6B7A;
+  margin-bottom: 40px;
+  line-height: 1.6;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.contact-form label {
+  font-size: 14px;
+  color: #1E2A38;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: 14px 16px;
+  border: 1px solid #c9d4e1;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: 'Outfit', sans-serif;
+  resize: none;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: #089DFA;
+  box-shadow: 0 0 6px rgba(8, 157, 250, 0.3);
+  outline: none;
+}
+
+.contact-form button {
+    color: tomato;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+/* MAPA */
+.contact-map {
+  flex: 1;
+  min-width: 420px;
+  height: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.contact-map iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .contact-container {
+    flex-direction: column;
+  }
+
+  .contact-map {
+    height: 400px;
+  }
+}
+
+/* ===================================
+   LOGIN A REGISTER 
+=================================== */
+
+body.login-page {
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+  background: linear-gradient(135deg, #089DFA, #0471C2);
+  min-height: 100vh;        /* namiesto height: 100vh */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;         /*  vertikalne skrolovanie */
+  overflow-x: hidden;
+  color: #1E2A38;
+  padding: 80px ;          
+}
+
+
+
+.login-container {
+  text-align: center;
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border-radius: 20px;
+  padding: 40px 32px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  animation: fadeIn 0.8s ease forwards;
+}
+
+/*  LOGO  */
+.logo-section {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.logo-section img {
+  height: 60px;
+  width: auto;
+}
+
+
+.login-card h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-top: 80px;
+  color: #0a407d;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #5C6B7A;
+  font-size: 16px;
+  margin-bottom: 28px;
+}
+
+/*  FORMULAR*/
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1E2A38;
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  border-color: #0471C2;
+  box-shadow: 0 0 0 3px rgba(8,157,250,0.2);
+}
+
+/* BUTTON  */
+.login-btn2 {
+  background: linear-gradient(90deg, #089DFA, #0471C2);
+  color: white;
+  font-size: 17px;
+  font-weight: 600;
+  padding: 12px 0;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 18px rgba(4, 113, 194, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.login-btn2:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(4, 113, 194, 0.4);
+}
+
+
+.footer-text {
+  margin-top: 24px;
+  font-size: 14px;
+  color: #5C6B7A;
+}
+
+.footer-text a {
+  color: #0471C2;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footer-text a:hover {
+  text-decoration: underline;
+}
+
+/*  ANIMACIA  */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 0.9s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===================================
+   SUCCESS PAGE     (po registracii)
+   =================================== */
+
+.success-container {
+  max-width: 420px;
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  padding: 60px 40px;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.1),
+
+}
+
+.success-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  animation: pop 0.6s ease;
+}
+
+.success-icon img {
+  width: 80px;
+  height: 80px;
+  display: block;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  80% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.success-container h2 {
+  font-size: 20px;
+  color: #0a407d;
+  margin-bottom: 10px;
+}
+
+.success-text {
+  color: #5C6B7A;
+  font-size: 16px;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+/*BUTTON */
+.success-btn {
+  display: inline-block;
+  padding: 10px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #095793;
+  background: #fff;
+  border: 1.5px solid #08426e;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.success-btn:hover {
+
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(53, 54, 53, 0.25);
+}
+
+
+/* MODRY GRADIENT prec */
+body.login-page.success-bg {
+  background: #F9F9F9 !important;
+    padding: 0px ;
+   
+}
+
+/*  ACCOUNT A LOGOUT */
+.account-link, .logout-link {
+  display: none; /*  skryte */
+  font-size: 16px;
+  color: #1E2A38;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.account-link:hover, .logout-link:hover {
+  background-color: rgba(8,157,250,0.1);
+  color: #0471C2;
+}

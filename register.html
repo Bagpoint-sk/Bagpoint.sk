@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BagPoint - Registrácia</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
+  </head>
+
+  <body class="login-page">
+    <div class="login-container fade-in">
+      <div class="logo-section">
+        <a href="index.html">
+          <img src="images/logo2.png" alt="logo" class="logo" />
+        </a>
+      </div>
+
+      <div class="login-card">
+        <h2>Registrácia</h2>
+        <p class="subtitle">Vytvor si účet.</p>
+
+        <form onsubmit="handleRegister(event)" class="login-form">
+
+          <div class="form-group">
+            <label for="name">meno</label>
+            <input type="text" id="name" placeholder="Zadaj celé meno" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="meno@email.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Heslo</label>
+            <input type="password" id="password" placeholder="Zadaj heslo" required />
+          </div>
+
+          <div class="form-group">
+            <label for="confirm">Potvrď heslo</label>
+            <input type="password" id="confirm" placeholder="Zopakuj heslo" required />
+          </div>
+
+          <button type="submit" class="login-btn2">Zaregistrovať sa</button>
+        </form>
+
+
+
+
+        
+
+        <p class="footer-text">Už máš účet? <a href="login.html">Prihlás sa</a></p>
+      </div>
+    </div>
+
+
+    <script>
+  function handleRegister(event) {
+    event.preventDefault(); // zabrani reloadu stranky
+
+    // ziskat hodnoty
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirm = document.getElementById('confirm').value;
+
+    // validacia
+    if (!name || !email || !password || !confirm) {
+      alert("Vyplň všetky polia.");
+      return;
+    }
+
+    if (password !== confirm) {
+      alert("Heslá sa nezhodujú!");
+      return;
+    }
+
+    // simulacia registracie (v realnom projekte by tu bol backend request)
+    localStorage.setItem("registeredUser", JSON.stringify({ name, email }));
+
+    // presmerovanie na success stranku
+    window.location.href = "success.html";
+  }
+</script>
+
+  </body>
+</html>
