@@ -45,12 +45,6 @@
 
           <button type="submit" class="login-btn2">Zaregistrovať sa</button>
         </form>
-
-
-
-
-        
-
         <p class="footer-text">Už máš účet? <a href="login.html">Prihlás sa</a></p>
       </div>
     </div>
@@ -79,10 +73,10 @@
 
 
     //komunikacia js s php
-   fetch("register.php", {
+   fetch("https://bagpoint.infinityfree.me/register.php", {
   method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ name, email, password })
+  headers: { "Content-Type": "application/x-www-form-urlencoded" }, // opravene skrz infinity.free - data zatial neposielame ako json ale ako klasicky form
+  body: new URLSearchParams({ name, email, password })
 })
 .then(res => res.text()) // najprv text, aby sme videli presne, čo server vracia
 .then(text => {
