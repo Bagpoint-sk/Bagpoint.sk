@@ -60,7 +60,12 @@
                 <textarea id="message" name="message" placeholder="Vaša správa..." required></textarea>
 
                 <button type="submit" class="cta-btn">Odoslať</button>
+                <p id="success-message" class="hidden">
+  <img src="images/success.svg" alt="úspech" class="success-check">
+  Správa bola úspešne odoslaná!
+</p>
               </form>
+              
             </div>
 
             <div class="contact-map">
@@ -91,5 +96,52 @@
       </footer>
 
     </div>
+
+     <script>
+  // simulácia -stav prihlasenia
+  const isLoggedIn = localStorage.getItem('loggedIn');
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const loginBtn = document.querySelector('.login-btn');
+    const accountLink = document.querySelector('.account-link');
+    const logoutLink = document.querySelector('.logout-link');
+    const contactForm = document.querySelector('.contact-form');
+    const successMsg = document.getElementById('success-message');
+
+    if (isLoggedIn === 'true') {
+      if (loginBtn) loginBtn.style.display = 'none';
+      if (accountLink) accountLink.style.display = 'inline-block';
+      if (logoutLink) logoutLink.style.display = 'inline-block';
+    } else {
+      if (loginBtn) loginBtn.style.display = 'inline-block';
+      if (accountLink) accountLink.style.display = 'none';
+      if (logoutLink) logoutLink.style.display = 'none';
+    }
+
+    if (logoutLink) {
+      logoutLink.addEventListener('click', () => {
+        localStorage.removeItem('loggedIn');
+        window.location.href = 'index.html';
+      });
+    }
+
+    // 📨 Odoslanie kontakt formulára (bez reloadu)
+    if (contactForm) {
+      contactForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // zabráni reloadu
+        contactForm.reset(); // vyčistí formulár
+        successMsg.classList.remove('hidden'); // zobrazí správu
+        successMsg.classList.add('show'); // animácia fade-in
+
+        // automaticky schovať po 5 sekundách
+        setTimeout(() => {
+          successMsg.classList.remove('show');
+          successMsg.classList.add('hidden');
+        }, 5000);
+      });
+    }
+  });
+</script>
+
   </body>
 </html>

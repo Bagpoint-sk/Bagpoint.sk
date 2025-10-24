@@ -1,69 +1,183 @@
 <!DOCTYPE html>
 <html lang="sk">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mapa - BagPoint</title>
-    <link rel="stylesheet" href="style.css" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mapa - BagPoint</title>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-    <link rel="manifest" href="/site.webmanifest">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- ŠTÝLY -->
+  <link rel="stylesheet" href="/Bagpoint.sk/style.css" />
 
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/Bagpoint.sk/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/Bagpoint.sk/images/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/Bagpoint.sk/images/apple-touch-icon.png">
+  <link rel="manifest" href="/Bagpoint.sk/site.webmanifest">
 
-  </head>
+  <!-- Font + Leaflet -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
 
-  <body>
-    <div class="page-container" id="content-js">
+<body>
+  <div class="page-container" id="content-js">
 
-      <!-- HEADER -->
-   <header>
-  <nav class="navbar">
-    <div class="nav-left">
-      <a href="index.html"><img class="logo" src="images/logo2.png" alt="logo"></a>
-    </div>
+    <!-- HEADER -->
+    <header>
+      <nav class="navbar">
+        <div class="nav-left">
+          <a href="/Bagpoint.sk/index.html">
+            <img class="logo" src="/Bagpoint.sk/images/logo2.png" alt="logo">
+          </a>
+        </div>
 
-    <ul class="nav-center">
-     <li><a href="index.html#how">Ako to funguje</a></li>
+        <ul class="nav-center">
+          <li><a href="/Bagpoint.sk/index.html#how">Ako to funguje</a></li>
+          <li><a href="/Bagpoint.sk/index.html">Domov</a></li>
+          <li><a href="/Bagpoint.sk/kontakt.html">Kontakt</a></li>
+          <li><a href="/Bagpoint.sk/project/index.html">O projekte</a></li>
+        </ul>
 
-<li><a href="index.html">Domov</a></li>
-<li><a href="kontakt.html">Kontakt</a></li>
-<li><a href="project/index.html">O projekte</a></li> <!-- TOTO POZRIET  -->
+        <div class="nav-right">
+          <a href="/Bagpoint.sk/login.html" class="login-btn">Login</a>
+          <a href="/Bagpoint.sk/account.html" class="account-link">Môj účet</a>
+          <a href="#" class="logout-link">Odhlásiť sa</a>
+        </div>
+      </nav>
+    </header>
 
-    </ul>
+    <!-- MAPA -->
+    <main class="map-page">
+      <section class="map-section">
+        <div id="map" class="leaflet-map">
+          <div class="map-legend">
+            <h4>BagPoint miesta v Trnave</h4>
+            <p>Klikni na bod pre rezerváciu boxu</p>
+          </div>
+        </div>
+      </section>
 
-    <div class="nav-right">
-  <a href="login.html" class="login-btn">Login</a>
-  <a href="account.html" class="account-link">Môj účet</a>
-  <a href="#" class="logout-link">Odhlásiť sa</a>
-</div>
+      <!-- MODÁL -->
+      <div id="reservation-modal" class="modal">
+        <div class="modal-content">
+          <span class="close-btn" onclick="closeModal()">&times;</span>
+          <h3 id="location-name">BagPoint</h3>
 
-  </nav>
-</header>
+          <p>Vyber veľkosť boxu:</p>
+          <select id="box-size">
+            <option>Malý (S)</option>
+            <option>Stredný (M)</option>
+            <option>Veľký (L)</option>
+          </select>
 
+          <p>Dĺžka úschovy:</p>
+          <select id="duration">
+            <option>2 hodiny</option>
+            <option>6 hodín</option>
+            <option>Celý deň</option>
+          </select>
 
-    
-      </main>
-
-   <!-- FOOTER -->
-      <footer>
-  <div class="footer-container">
-    <div class="footer-left">
-      <img src="images/logo2.png" alt="logo" class="footer-logo">
-      <p>© 2025 BagPoint. Všetky práva vyhradené.</p>
-    </div>
-
-    <div class="footer-right">
-      <a href="#"><img src="images/instagram.svg" alt="instagram" class="social-icon"></a>
-      <a href="#"><img src="images/facebook.svg" alt="facebook" class="social-icon"></a>
-      <a href="#"><img src="images/twitter.svg" alt="twitter" class="social-icon"></a>
-    </div>
+          <button class="reserve-btn" onclick="startReservation()">Rezervovať</button>
+        </div>
+      </div>
+    </main>
   </div>
-</footer>
 
-    </div>
-  </body>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    const map = L.map('map').setView([48.3774, 17.5872], 14); // Trnava center
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
+
+    const locations = [
+      { name: 'Trnava Centrum', coords: [48.3774, 17.5872] },
+      { name: 'City Arena', coords: [48.3725, 17.5931] },
+      { name: 'Stanica Trnava', coords: [48.3792, 17.6034] }
+    ];
+
+    // Custom BagPoint marker 
+    const bagpointIcon = L.icon({
+      iconUrl: 'data:image/svg+xml,' + encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 512 512">
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#089DFA"/>
+              <stop offset="100%" stop-color="#0471C2"/>
+            </linearGradient>
+          </defs>
+          <circle cx="256" cy="256" r="200" fill="url(#grad)" stroke="white" stroke-width="20"/>
+          <path d="M256 160c-40 0-72 32-72 72v32h-32v88h208v-88h-32v-32c0-40-32-72-72-72zm0 24c26 0 48 22 48 48v32h-96v-32c0-26 22-48 48-48z" fill="white"/>
+        </svg>
+      `),
+      iconSize: [46, 46],
+      iconAnchor: [23, 45],
+      popupAnchor: [0, -40]
+    });
+
+    locations.forEach(loc => {
+      const marker = L.marker(loc.coords, { icon: bagpointIcon }).addTo(map);
+      marker.bindPopup(`
+        <div class="popup-content">
+          <b>${loc.name}</b><br>
+          <button class="popup-btn" onclick="openReservation('${loc.name}')">Rezervovať</button>
+        </div>
+      `);
+    });
+
+    function openReservation(locationName) {
+      document.getElementById('location-name').textContent = locationName;
+      document.getElementById('reservation-modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('reservation-modal').style.display = 'none';
+    }
+
+    function startReservation() {
+      const size = document.getElementById('box-size').value;
+      const duration = document.getElementById('duration').value;
+      const location = document.getElementById('location-name').textContent;
+
+      localStorage.setItem('reservation', JSON.stringify({
+        location,
+        size,
+        duration,
+        startTime: Date.now()
+      }));
+
+      window.location.href = '/Bagpoint.sk/account.html';
+    }
+
+    const isLoggedIn = localStorage.getItem('loggedIn');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const loginBtn = document.querySelector('.login-btn');
+      const accountLink = document.querySelector('.account-link');
+      const logoutLink = document.querySelector('.logout-link');
+
+      if (isLoggedIn === 'true') {
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (accountLink) accountLink.style.display = 'inline-block';
+        if (logoutLink) logoutLink.style.display = 'inline-block';
+      } else {
+        if (loginBtn) loginBtn.style.display = 'inline-block';
+        if (accountLink) accountLink.style.display = 'none';
+        if (logoutLink) logoutLink.style.display = 'none';
+      }
+
+      if (logoutLink) {
+        logoutLink.addEventListener('click', () => {
+          localStorage.removeItem('loggedIn');
+          window.location.href = '/Bagpoint.sk/index.html';
+        });
+      }
+    });
+  </script>
+</body>
 </html>
