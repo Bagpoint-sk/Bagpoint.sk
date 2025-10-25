@@ -77,6 +77,7 @@
             "http://localhost/Bagpoint.sk/login.php",
             {
               method: "POST",
+              credentials: "include",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ email, password }),
             }
@@ -104,7 +105,7 @@
             localStorage.setItem("userEmail", data.user.email);
 
             // presmerovanie na profil
-            window.location.href = "account.html";
+            window.location.href = "index.html";
           } else {
             alert(data.message || "Nesprávny email alebo heslo!");
           }

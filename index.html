@@ -178,14 +178,14 @@
     <!-- JS -->
     <script>
   // simulácia -stav prihlasenia
-  const isLoggedIn = localStorage.getItem('loggedIn');
+  // const isLoggedIn = localStorage.getItem('loggedIn');
 
   window.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.querySelector('.login-btn');
     const accountLink = document.querySelector('.account-link');
     const logoutLink = document.querySelector('.logout-link');
 
-    if (isLoggedIn === 'true') {
+    if (localStorage.getItem("loggedIn") === 'true') {
       // pouzivatel je prihlaseny
       if (loginBtn) loginBtn.style.display = 'none';
       if (accountLink) accountLink.style.display = 'inline-block';
