@@ -9,23 +9,38 @@
 <h4 align="left">Vedenie</h4>
 <ul>
   <li>Kristína Járebová</li>
+  <ul>
+  <li></li>
+</ul>
 </ul>
 
 <h4 align="left">Dizajn + front-end</h4>
 <ul>
   <li>Tamara Némethová</li>
+  <ul>
+  <li></li>
+</ul>
 </ul>
 <h4 align="left">Back-end + databáza</h4>
 <ul>
   <li>Jozef Janotík</li>
+  <ul>
+    <li>prepojenie frontendu s backendom, tvorba a implementácia API, spracovanie dát a spolupráca na vývoji funkcionalít aplikácie</li>
+  </ul>
   <li>Igor Oborný</li>
+   <ul>
+    <li>Návrh databázy, správa hostingu a infraštruktúry, tvorba a implementácia API, správa GitHub repozitára, spolupráca na vývoji funkcionalít aplikácie</li>
+  </ul>
 </ul>
 <h4 align="left">Testovanie + dokumentácia</h4>
 <ul>
   <li>Ján Földeši</li>
+  <ul>
+  <li></li>
+</ul>
 </ul>
 <hr>
-<h3 align="left">Technológie, ktoré používame:</h3>
+<h3 align="left">Technológie, ktoré používame</h3>
 <h4 align="left">Design</h4>
 <p align="left">
   <a href="https://www.figma.com/" target="_blank" rel="noreferrer">
@@ -69,7 +84,7 @@
   </a>
 </p>
 <hr>
-<h3 align="left">Spoj sa s nami:</h3>
+<h3 align="left">Spoj sa s nami</h3>
 <p align="left"><a href="https://bagpoint.sk" target="_blank" rel="noreferrer">bagpoint.sk</a><br /></p>
 <p align="left"><a href="mailto:info@bagpoint.sk">info@bagpoint.sk</a></p>
 
