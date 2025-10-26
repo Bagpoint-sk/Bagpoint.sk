@@ -27,6 +27,7 @@
   <ul>
     <li>prepojenie frontendu s backendom, tvorba a implementácia API, spracovanie dát a spolupráca na vývoji funkcionalít aplikácie</li>
   </ul>
+  <br>
   <li>Igor Oborný</li>
    <ul>
     <li>Návrh databázy, správa hostingu a infraštruktúry, tvorba a implementácia API, správa GitHub repozitára, spolupráca na vývoji funkcionalít aplikácie</li>
