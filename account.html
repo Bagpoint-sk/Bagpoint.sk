@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Môj účet - BagPoint</title>
-    <link rel="stylesheet" href="/Bagpoint.sk/style.css" />
+    <link rel="stylesheet" href="style.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap"
       rel="stylesheet"
@@ -73,6 +73,8 @@
               <button class="account-btn">Zmeniť heslo</button>
               <button class="account-btn delete">Zmazať účet</button>
             </div>
+              </div>
+            </div>
           </section>
         </div>
       </main>
@@ -87,14 +89,14 @@
           });
           const data = await res.json();
 
-          if(data.loggedIn) {
+          if (data.loggedIn) {
             const emaill = document.getElementById("user-email");
-            if(emaill) emaill.textContent = data.user.email;
+            if (emaill) emaill.textContent = data.user.email;
           } else {
             window.location.href = "login.html";
             return;
           }
-        } catch(error) {
+        } catch (error) {
           console.error("Chyba pri načítaní používateľa:", error);
         }
 
@@ -105,7 +107,7 @@
             e.preventDefault();
 
             try {
-              // poziadavka na logout 
+              // poziadavka na logout
               const res = await fetch("logout.php", {
                 method: "POST",
                 credentials: "include", // posielanie session cookie
@@ -127,19 +129,70 @@
     </script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-      const tabLinks = document.querySelectorAll(".tab-link");
-      const tabContents = document.querySelectorAll(".tab-content");
+        const tabLinks = document.querySelectorAll(".tab-link");
+        const tabContents = document.querySelectorAll(".tab-content");
 
-      tabLinks.forEach((link) => {
-        link.addEventListener("click", () => {
-          tabLinks.forEach((l) => l.classList.remove("active"));
-          tabContents.forEach((c) => c.classList.remove("active"));
+        tabLinks.forEach((link) => {
+          link.addEventListener("click", () => {
+            tabLinks.forEach((l) => l.classList.remove("active"));
+            tabContents.forEach((c) => c.classList.remove("active"));
 
-          link.classList.add("active");
-          document.getElementById(link.dataset.target).classList.add("active");
+            link.classList.add("active");
+            document
+              .getElementById(link.dataset.target)
+              .classList.add("active");
+          });
         });
       });
-      })
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const showBtn = document.getElementById("show-change-password");
+        const form = document.getElementById("change-password-form");
+
+        if (!showBtn || !form) {
+          console.error("Error!");
+          return;
+        }
+        showBtn.addEventListener("click", () => {
+          form.style.display = form.style.display === "none" ? "block" : "none";
+        });
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const oldPassword = document
+            .getElementById("old-password")
+            .value.trim();
+          const newPassword = document
+            .getElementById("new-password")
+            .value.trim();
+
+          if (!oldPassword || !newPassword) {
+            alert("Vyplň všetky polia.");
+            return;
+          }
+
+          try {
+            const res = await fetch("changePassword.php", {
+              method: "POST",
+              credentials: "include",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ oldPassword, newPassword }),
+            });
+
+            const data = await res.json();
+            alert(data.message);
+
+            if (data.success) {
+              form.reset();
+              form.style.display = "none";
+            }
+          } catch (err) {
+            console.error("Chyba pri zmene hesla:", err);
+            alert("Nastala chyba pri komunikácii so serverom.");
+          }
+        });
+      });
     </script>
   </body>
 </html>
