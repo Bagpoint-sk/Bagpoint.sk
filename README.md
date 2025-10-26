@@ -1,4 +1,4 @@
-<img src="images/logo2.png" alt="logo" width="200">
+<img src="images/logo2.png" alt="logo" width="450">
 <h4 align="left">
   BagPoint.sk je moderné riešenie pre tých, ktorí nechcú ťahať batožinu všade so sebou.
   Naše samoobslužné boxy ti umožnia uložiť veci na pár hodín či dní – rýchlo, bezpečne a online.
