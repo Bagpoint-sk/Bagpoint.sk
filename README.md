@@ -30,7 +30,7 @@
   <br>
   <li>Igor Oborný</li>
    <ul>
-    <li>Návrh databázy, správa hostingu a infraštruktúry, tvorba a implementácia API, správa GitHub repozitára, spolupráca na vývoji funkcionalít aplikácie</li>
+    <li>návrh databázy, správa hostingu a infraštruktúry, tvorba a implementácia API, správa GitHub repozitára, spolupráca na vývoji funkcionalít aplikácie</li>
   </ul>
 </ul>
 <h4 align="left">Testovanie + dokumentácia</h4>
