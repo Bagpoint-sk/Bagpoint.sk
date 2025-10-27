@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="sk">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mapa - BagPoint</title>
 
   <!-- ŠTÝLY -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles/style.css" />
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="/Bagpoint.sk/images/favicon-32x32.png">
@@ -27,7 +28,7 @@
       <nav class="navbar">
         <div class="nav-left">
           <a href="/Bagpoint.sk/index.html">
-            <img class="logo" src="/Bagpoint.sk/images/logo2.png" alt="logo">
+            <img class="logo" src="/Bagpoint.sk/frontend/images/logo2.png" alt="logo">
           </a>
         </div>
 
@@ -39,8 +40,8 @@
         </ul>
 
         <div class="nav-right">
-          <a href="/Bagpoint.sk/login.html" class="login-btn">Login</a>
-          <a href="/Bagpoint.sk/account.html" class="account-link">Môj účet</a>
+          <a href="/Bagpoint.sk/frontend/login.html" class="login-btn">Login</a>
+          <a href="/Bagpoint.sk/frontend/account.html" class="account-link">Môj účet</a>
           <a href="#" class="logout-link">Odhlásiť sa</a>
         </div>
       </nav>
@@ -151,7 +152,7 @@
         startTime: Date.now()
       }));
 
-      window.location.href = '/Bagpoint.sk/account.html';
+      window.location.href = '/Bagpoint.sk/frontend/account.html';
     }
 
     const isLoggedIn = localStorage.getItem('loggedIn');
@@ -174,10 +175,12 @@
       if (logoutLink) {
         logoutLink.addEventListener('click', () => {
           localStorage.removeItem('loggedIn');
-          window.location.href = '/Bagpoint.sk/index.html';
+          window.location.href = 'index.html';
         });
       }
     });
   </script>
+  <script src="scripts/main.js"></script>
 </body>
+
 </html>

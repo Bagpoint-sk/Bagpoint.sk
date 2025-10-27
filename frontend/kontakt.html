@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="sk">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kontakt - BagPoint</title>
+  <link rel="stylesheet" href="styles/style.css" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="page-container">
+
+    <!-- HEADER -->
+    <header>
+      <nav class="navbar">
+        <div class="nav-left">
+          <a href="index.html">
+            <img class="logo" src="images/logo2.png" alt="logo">
+          </a>
+        </div>
+
+        <ul class="nav-center">
+
+          <li><a href="index.html#how" class="nav-how">Ako to funguje</a></li>
+          <li><a href="mapa.html" class="nav-map">Mapa</a></li>
+          <li><a href="index.html" class="nav-home">Domov</a></li>
+          <li><a href="oprojekte.html" class="nav-project">O projekte</a></li>
+        </ul>
+
+        <div class="nav-right">
+          <a href="login.html" class="login-btn">Login</a>
+          <a href="account.html" class="account-link">Môj účet</a>
+          <a href="#" class="logout-link">Odhlásiť sa</a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- MAIN -->
+    <main>
+      <section class="contact-section">
+        <div class="contact-container">
+          <div class="contact-info">
+            <h1>Kontaktuj nás</h1>
+            <p>Máte otázky, návrhy alebo chcete spolupracovať? Napíšte nám a ozveme sa čo najskôr.</p>
+
+            <form class="contact-form">
+              <label for="name">Meno</label>
+              <input type="text" id="name" name="name" placeholder="Vaše meno" required>
+
+              <label for="email">E-mail</label>
+              <input type="email" id="email" name="email" placeholder="mebo@email.com" required>
+
+              <label for="message">Správa</label>
+              <textarea id="message" name="message" placeholder="Vaša správa..." required></textarea>
+
+              <button type="submit" class="cta-btn">Odoslať</button>
+              <p id="success-message" class="hidden">
+                <img src="images/success.svg" alt="úspech" class="success-check">
+                Správa bola úspešne odoslaná!
+              </p>
+            </form>
+
+          </div>
+
+          <div class="contact-map">
+            <iframe src="https://www.google.com/maps?q=Trnava,+Slovakia&output=embed" allowfullscreen loading="lazy">
+            </iframe>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-container">
+        <div class="footer-left">
+          <img src="images/logo2.png" alt="logo" class="footer-logo">
+          <p>© 2025 BagPoint. Všetky práva vyhradené.</p>
+        </div>
+
+        <div class="footer-right">
+          <a href="#"><img src="images/instagram.svg" alt="instagram" class="social-icon"></a>
+          <a href="#"><img src="images/facebook.svg" alt="facebook" class="social-icon"></a>
+          <a href="#"><img src="images/twitter.svg" alt="twitter" class="social-icon"></a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // simulácia -stav prihlasenia
+    const isLoggedIn = localStorage.getItem('loggedIn');
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const loginBtn = document.querySelector('.login-btn');
+      const accountLink = document.querySelector('.account-link');
+      const logoutLink = document.querySelector('.logout-link');
+      const contactForm = document.querySelector('.contact-form');
+      const successMsg = document.getElementById('success-message');
+
+      if (isLoggedIn === 'true') {
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (accountLink) accountLink.style.display = 'inline-block';
+        if (logoutLink) logoutLink.style.display = 'inline-block';
+      } else {
+        if (loginBtn) loginBtn.style.display = 'inline-block';
+        if (accountLink) accountLink.style.display = 'none';
+        if (logoutLink) logoutLink.style.display = 'none';
+      }
+
+      if (logoutLink) {
+        logoutLink.addEventListener('click', () => {
+          localStorage.removeItem('loggedIn');
+          window.location.href = 'index.html';
+        });
+      }
+
+      // 📨 Odoslanie kontakt formulára (bez reloadu)
+      if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+          e.preventDefault(); // zabráni reloadu
+          contactForm.reset(); // vyčistí formulár
+          successMsg.classList.remove('hidden'); // zobrazí správu
+          successMsg.classList.add('show'); // animácia fade-in
+
+          // automaticky schovať po 5 sekundách
+          setTimeout(() => {
+            successMsg.classList.remove('show');
+            successMsg.classList.add('hidden');
+          }, 5000);
+        });
+      }
+    });
+  </script>
+  <script src="scripts/main.js"></script>
+</body>
+
+</html>

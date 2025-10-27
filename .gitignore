@@ -1,0 +1,12 @@
+# XAMPP a systémové veci
+.DS_Store
+Thumbs.db
+
+# IDE a editory
+.vscode/
+.idea/
+
+# Dočasné alebo záložné súbory
+*.log
+*.tmp
+*.bak
