@@ -1,4 +1,4 @@
-<img src="images/logo2.png" alt="logo" width="450">
+<img src="frontend/images/logo2.png" alt="logo" width="450">
 <h4 align="left">
   BagPoint.sk je moderné riešenie pre tých, ktorí nechcú ťahať batožinu všade so sebou.
   Naše samoobslužné boxy ti umožnia uložiť veci na pár hodín či dní – rýchlo, bezpečne a online.
@@ -6,22 +6,24 @@
 </h3>
 <hr>
 <h3 align="left">Členovia tímu</h3>
-<h4 align="left">Vedenie</h4>
+<h4 align="left">💡 Vedenie</h4>
 <ul>
   <li>Kristína Járebová</li>
   <ul>
-  <li></li>
+  <li>vedúci tímu, komunikácia s vedením, rozdelenie úloh, tvorba dokumentácie,
+kontrola
+</li>
 </ul>
 </ul>
 
-<h4 align="left">Dizajn + front-end</h4>
+<h4 align="left">🎨 Dizajn / front-end</h4>
 <ul>
   <li>Tamara Némethová</li>
   <ul>
-  <li></li>
+  <li>frontend, grafika, dizajn a vývoj webovej aplikácie</li>
 </ul>
 </ul>
-<h4 align="left">Back-end + databáza</h4>
+<h4 align="left">🛠️ Backend</h4>
 <ul>
   <li>Jozef Janotík</li>
   <ul>
@@ -33,11 +35,11 @@
     <li>návrh databázy, správa hostingu a infraštruktúry, tvorba a implementácia API, správa GitHub repozitára, spolupráca na vývoji funkcionalít aplikácie</li>
   </ul>
 </ul>
-<h4 align="left">Testovanie + dokumentácia</h4>
+<h4 align="left">💻 Testovanie</h4>
 <ul>
   <li>Ján Földeši</li>
   <ul>
-  <li></li>
+  <li>backend, testovanie aplikácie</li>
 </ul>
 </ul>
 <hr>
@@ -86,6 +88,6 @@
 </p>
 <hr>
 <h3 align="left">Spoj sa s nami</h3>
-<p align="left"><a href="https://bagpoint.sk" target="_blank" rel="noreferrer">bagpoint.sk</a><br /></p>
-<p align="left"><a href="mailto:info@bagpoint.sk">info@bagpoint.sk</a></p>
+<p align="left">🌐 <a href="https://bagpoint.sk" target="_blank" rel="noreferrer">bagpoint.sk</a><br /></p>
+<p align="left">📩 <a href="mailto:info@bagpoint.sk">info@bagpoint.sk</a></p>
 
