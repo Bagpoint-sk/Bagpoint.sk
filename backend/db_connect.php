@@ -3,7 +3,7 @@ $host = getenv("DB_HOST");
 $dbname = getenv("DB_NAME");
 $port = getenv("DB_PORT");
 $user = getenv("DB_USER");
-$password = getenv("DB_PASS"); // 👈 Render používa DB_PASS, nie DB_PASSWORD
+$password = getenv("DB_PASS");
 
 $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
 
