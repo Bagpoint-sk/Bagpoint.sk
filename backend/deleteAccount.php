@@ -1,9 +1,9 @@
 <?php
 session_set_cookie_params([
-  'path' => '/',
-  'httponly' => true,
-  'samesite' => 'None',
-  'secure' => false 
+    'path' => '/',
+    'httponly' => true,
+    'samesite' => 'None',
+    'secure' => false
 ]); // nadstavenie cookie parametrov - univerzalne
 session_start();
 header("Content-Type: application/json; charset=UTF-8");
@@ -24,40 +24,39 @@ if (!$password) {
 }
 
 // 3. Pripojenie k db
-$conn = new mysqli("localhost", "root", "", "bagpoint.sk");
-if ($conn->connect_error) {
-    echo json_encode(["success" => false, "message" => "Chyba pripojenia!"]);
-    exit;
-}
+require_once 'db_connect.php';
 
 $email = $_SESSION['user_email'];
 
-// 4. Overenie hesla usra
-$statement = $conn->prepare("SELECT password FROM users WHERE email=?");
-$statement->bind_param("s", $email);
-$statement->execute();
-$result = $statement->get_result();
+try {
+    // 4. Overenie hesla usera
+    $stmt = $conn->prepare("SELECT password FROM users WHERE email = :email");
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($user = $result->fetch_assoc()) {
-    // kontrola hesla
-    if (!password_verify($password, $user['password'])) {
-        echo json_encode(["success" => false, "message" => "Zadané heslo je nesprávne!"]);
-        exit;
+    if ($user) {
+        // kontrola hesla
+        if (!password_verify($password, $user['password'])) {
+            echo json_encode(["success" => false, "message" => "Zadané heslo je nesprávne!"]);
+            exit;
+        }
+
+        // 5. Vymazanie usera
+        $delete = $conn->prepare("DELETE FROM users WHERE email = :email");
+        $delete->bindParam(':email', $email, PDO::PARAM_STR);
+        $delete->execute();
+
+        // 6. Zrusenie session
+        session_unset();
+        session_destroy();
+
+        echo json_encode(["success" => true, "message" => "Účet bol úspešne vymazaný."]);
+    } else {
+        echo json_encode(["success" => false, "message" => "Používateľ neexistuje."]);
     }
-
-    // 5. Vymazanie usera
-    $delete = $conn->prepare("DELETE FROM users WHERE email=?");
-    $delete->bind_param("s", $email);
-    $delete->execute();
-
-    // 6. Zrusenie session
-    session_unset();
-    session_destroy();
-
-    echo json_encode(["success" => true, "message" => "Účet bol úspešne vymazaný."]);
-} else {
-    echo json_encode(["success" => false, "message" => "Používateľ neexistuje."]);
+} catch (PDOException $e) {
+    echo json_encode(["success" => false, "message" => "Chyba databázy: " . $e->getMessage()]);
 }
 
-$conn->close();
 ?>

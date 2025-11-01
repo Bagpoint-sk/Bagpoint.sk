@@ -1,11 +1,7 @@
 <?php
 header('Content-Type: application/json');
 
-$conn = new mysqli("localhost", "root", "", "bagpoint.sk");
-if ($conn->connect_error) {
-    echo json_encode(['success' => false, 'message' => "Chyba pripojenia!"]);
-    exit;
-}
+require_once 'db_connect.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 $email = trim($data['email'] ?? '');
@@ -18,24 +14,34 @@ if (empty($email) || empty($password)) {
 
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-$checkMail = $conn->prepare("SELECT user_id FROM users WHERE email=?");
-$checkMail->bind_param("s", $email);
-$checkMail->execute();
-$result = $checkMail->get_result();
+try {
 
-$update = $conn->prepare("UPDATE users SET password=? WHERE email=?");
-$update->bind_param("ss", $password_hash, $email);
+    $checkMail = $conn->prepare("SELECT user_id FROM users WHERE email= :email");
+    $checkMail->bindParam(':email', $email, PDO::PARAM_STR);
+    $checkMail->execute();
 
-if ($update->execute()) {
-    $deleteOld = $conn->prepare("DELETE from reset_codes WHERE email=?");
-    $deleteOld->bind_param("s", $email);
-    $deleteOld->execute();
+    $user = $checkMail->fetch(PDO::FETCH_ASSOC);
+    if (!$user) {
+        echo json_encode(['success' => false, 'message' => "Používateľ s týmto emailom neexistuje."]);
+        exit;
+    }
 
-    echo json_encode(['success' => true, 'message' => "Heslo bolo úspešne zmenené!"]);
-} else {
-    echo json_encode(['success' => false, 'message' => "Chyba pri ukladaní hesla!"]);
+    $update = $conn->prepare("UPDATE users SET password = :password WHERE email = :email");
+    $update->bindParam(':password', $password_hash, PDO::PARAM_STR);
+    $update->bindParam(':email', $email, PDO::PARAM_STR);
+
+    if ($update->execute()) {
+        // zmazanie kodov
+        $deleteOld = $conn->prepare("DELETE FROM reset_codes WHERE email = :email");
+        $deleteOld->bindParam(':email', $email, PDO::PARAM_STR);
+        $deleteOld->execute();
+
+        echo json_encode(['success' => true, 'message' => "Heslo bolo úspešne zmenené!"]);
+    } else {
+        echo json_encode(['success' => false, 'message' => "Chyba pri ukladaní hesla!"]);
+    }
+} catch (PDOException $e) {
+    echo json_encode(['success' => false, 'message' => "Chyba databázy: " . $e->getMessage()]);
 }
-
-$conn->close();
 
 ?>

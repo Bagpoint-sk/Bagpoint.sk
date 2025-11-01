@@ -3,11 +3,7 @@ session_start();
 header("Content-Type: application/json; charset=UTF-8");
 
 // pripojen k databaze
-$conn = new mysqli("localhost", "root", "", "bagpoint.sk");
-if ($conn->connect_error) {
-    echo json_encode(["success" => false, "message" => "Chyba pripojenia: " . $conn->connect_error]);
-    exit;
-}
+require_once 'db_connect.php';
 
 // nacitanie json z dotazu
 $input = json_decode(file_get_contents("php://input"), true);
@@ -15,12 +11,13 @@ $email = $input['email'] ?? '';
 $password = $input['password'] ?? '';
 
 // overenie
-$stmt = $conn->prepare("SELECT user_id, name, email, password FROM users WHERE email=?");
-$stmt->bind_param("s", $email);
+$stmt = $conn->prepare("SELECT user_id, name, email, password FROM users WHERE email= :email");
+$stmt->bindParam(':email', $email, PDO::PARAM_STR);
 $stmt->execute();
-$result = $stmt->get_result();
 
-if ($user = $result->fetch_assoc()) {
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if ($user) {
   if (password_verify($password, $user['password'])) {
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['user_name'] = $user['name'];
