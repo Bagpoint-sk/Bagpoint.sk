@@ -68,7 +68,7 @@
       if (!email || !password) return alert("Vyplň všetky polia!");
 
       try {
-        const response = await fetch("../backend/login.php", {
+        const response = await fetch("/backend/login.php", {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
@@ -108,7 +108,7 @@
       const email = document.getElementById('resetEmail').value.trim();
       if (!email) return alert('Zadajte email.');
 
-      const res = await fetch('http://localhost/Bagpoint.sk/backend/forgetPassword.php', {
+      const res = await fetch('/backend/Fpass.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -127,7 +127,7 @@
         document.getElementById('verifyCodeBtn').addEventListener('click', async () => {
           const code = document.getElementById('verifyCodeInput').value.trim();
           if (!code) return alert('Zadajte kód.');
-          const resp = await fetch('http://localhost/Bagpoint.sk/backend/verifyCode.php', {
+          const resp = await fetch('/backend/verifyCode.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, code })
@@ -147,7 +147,7 @@
               const p2 = document.getElementById('newPass2').value;
               if (p1 !== p2) return alert('Heslá sa nezhodujú.');
 
-              const finalResp = await fetch('http://localhost/Bagpoint.sk/backend/reset_password.php', {
+              const finalResp = await fetch('/backend/resetP.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password: p1 })
