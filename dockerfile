@@ -1,7 +1,7 @@
 FROM php:8.4-apache
 
 # 1. Nainštaluj PHP rozšírenia
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN docker-php-ext-install pdo pdo_pgsql
 
 # 2. Skopíruj celý projekt
 COPY . /var/www/html/
