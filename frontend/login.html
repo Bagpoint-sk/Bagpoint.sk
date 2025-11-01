@@ -1,97 +1,175 @@
 <!DOCTYPE html>
 <html lang="sk">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prihlásenie - BagPoint</title>
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
-  </head>
 
-  <body class="login-page">
-    <div class="login-container fade-in">
-      <div class="logo-section">
-        <a href="index.html">
-          <img src="images/logo2.png" alt="logo" class="logo" />
-        </a>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BagPoint - Login</title>
+  <link rel="stylesheet" href="styles/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
+</head>
 
-      <div class="login-card">
-        <h2>Prihlásenie</h2>
-        <p class="subtitle">Vitaj späť!</p>
-
-        <form id="login-form" class="login-form">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="meno@email.com" required />
-          </div>
-
-          <div class="form-group">
-            <label for="password">Heslo</label>
-            <input type="password" id="password" placeholder="Zadaj heslo" required />
-          </div>
-
-          <button type="submit" class="login-btn2">Prihlásiť sa</button>
-        </form>
-
-        <p class="footer-text">
-          Ešte nemáš účet? <a href="register.html">Zaregistruj sa</a>
-        </p>
-
-        <p id="login-message" class="status-message"></p>
-      </div>
+<body class="login-page">
+  <div class="login-container">
+    <!-- LOGO -->
+    <div class="logo-section">
+      <a href="index.html">
+        <img src="images/logo2.png" alt="logo" class="logo" />
+      </a>
     </div>
 
-    <script>
-      document.getElementById("login-form").addEventListener("submit", async (event) => {
-        event.preventDefault();
+    <!-- LOGIN CARD -->
+    <div class="login-card fade-in">
+      <h2>Prihlásenie</h2>
+      <p class="subtitle">Vitaj späť</p>
 
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
-        const messageEl = document.getElementById("login-message");
+      <form onsubmit="handleLogin(event)" class="login-form">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="meno@email.com" required />
+        </div>
 
-        if (!email || !password) {
-          messageEl.textContent = "Vyplň všetky polia.";
-          messageEl.style.color = "red";
-          return;
+        <div class="form-group">
+          <label for="password">Heslo</label>
+          <input type="password" id="password" placeholder="Zadaj heslo" required />
+        </div>
+
+        <div class="forgot-link">
+          <a id="forgotPassword">Zabudnuté heslo?</a>
+        </div>
+
+        <button class="login-btn2" type="submit">Prihlásiť sa</button>
+      </form>
+
+      <p class="footer-text">
+        Nemáš účet? <a href="register.html">Zaregistruj sa</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modalContent">
+      <span class="close-btn" id="closeModal">&times;</span>
+      <h3>Obnova hesla</h3>
+      <p>Zadajte svoj email pre zaslanie kódu</p>
+      <input type="email" id="resetEmail" placeholder="Zadajte email" />
+      <button id="sendResetBtn">Odoslať kód</button>
+    </div>
+  </div>
+
+  <script>
+    // LOGIN (z tvojej pôvodnej časti)
+    async function handleLogin(event) {
+      event.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      if (!email || !password) return alert("Vyplň všetky polia!");
+
+      try {
+        const response = await fetch("../backend/login.php", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const text = await response.text();
+        let data;
+        try { data = JSON.parse(text); } catch (e) {
+          alert("Server nevrátil platný JSON!"); console.error(text); return;
         }
 
-        try {
-          
-          const response = await fetch("/backend/login.php", {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-          });
-
-          const text = await response.text();
-          console.log("Odpoveď servera:", text);
-
-          let data;
-          try {
-            data = JSON.parse(text);
-          } catch (e) {
-            messageEl.textContent = "Chybná odpoveď servera.";
-            messageEl.style.color = "red";
-            return;
-          }
-
-          if (data.success) {
-            //  uložíme používateľa a presmerujeme bez alertov
-            localStorage.setItem("user", JSON.stringify(data.user));
-            window.location.href = "account.html";
-          } else {
-            messageEl.textContent = data.message || "Nesprávny email alebo heslo.";
-            messageEl.style.color = "red";
-          }
-        } catch (err) {
-          console.error("Chyba spojenia:", err);
-          messageEl.textContent = "Chyba spojenia so serverom.";
-          messageEl.style.color = "red";
+        if (data.success) {
+          localStorage.setItem("loggedIn", "true");
+          localStorage.setItem("userName", data.user.name);
+          localStorage.setItem("userEmail", data.user.email);
+          window.location.href = "index.html";
+        } else {
+          alert(data.message || "Nesprávny email alebo heslo!");
         }
+      } catch (error) {
+        console.error(error);
+        alert("Chyba spojenia so serverom.");
+      }
+    }
+
+    //  Zabudnuté heslo – Frontend logika
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modalContent');
+    const forgotPassword = document.getElementById('forgotPassword');
+    const closeModal = document.getElementById('closeModal');
+
+    forgotPassword.addEventListener('click', () => { modal.style.display = 'flex'; });
+    closeModal.addEventListener('click', () => { modal.style.display = 'none'; });
+
+    document.getElementById('sendResetBtn').addEventListener('click', async () => {
+      const email = document.getElementById('resetEmail').value.trim();
+      if (!email) return alert('Zadajte email.');
+
+      const res = await fetch('http://localhost/Bagpoint.sk/backend/forgetPassword.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
       });
-    </script>
-  </body>
+      const data = await res.json();
+
+      if (data.success) {
+        modalContent.innerHTML = `
+          <h3>Overenie kódu</h3>
+          <p>Kód bol odoslaný na váš email!</p>
+          <p><strong>(kód: ${data.code})</strong></p>
+          <input type="text" id="verifyCodeInput" placeholder="Zadajte kód">
+          <button id="verifyCodeBtn">Overiť</button>
+        `;
+
+        document.getElementById('verifyCodeBtn').addEventListener('click', async () => {
+          const code = document.getElementById('verifyCodeInput').value.trim();
+          if (!code) return alert('Zadajte kód.');
+          const resp = await fetch('http://localhost/Bagpoint.sk/backend/verifyCode.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, code })
+          });
+          const result = await resp.json();
+
+          if (result.success) {
+            modalContent.innerHTML = `
+              <h3>Nové heslo</h3>
+              <input type="password" id="newPass" placeholder="Nové heslo">
+              <input type="password" id="newPass2" placeholder="Zopakujte heslo">
+              <button id="saveNewPassBtn">Uložiť heslo</button>
+            `;
+
+            document.getElementById('saveNewPassBtn').addEventListener('click', async () => {
+              const p1 = document.getElementById('newPass').value;
+              const p2 = document.getElementById('newPass2').value;
+              if (p1 !== p2) return alert('Heslá sa nezhodujú.');
+
+              const finalResp = await fetch('http://localhost/Bagpoint.sk/backend/reset_password.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password: p1 })
+              });
+              const finalData = await finalResp.json();
+
+              if (finalData.success) {
+                alert('Heslo bolo úspešne zmenené!');
+                modal.style.display = 'none';
+              } else {
+                alert(finalData.message || 'Chyba pri zmene hesla.');
+              }
+            });
+          } else {
+            alert(result.message || 'Nesprávny kód.');
+          }
+        });
+      } else {
+        alert(data.message || 'Email sa nenašiel.');
+      }
+    });
+  </script>
+</body>
+
 </html>
