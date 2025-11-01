@@ -68,7 +68,7 @@
       if (!email || !password) return alert("Vyplň všetky polia!");
 
       try {
-        const response = await fetch("/backend/login.php", {
+        const response = await fetch("backend/login.php", {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
