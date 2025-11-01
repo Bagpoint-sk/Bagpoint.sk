@@ -3,7 +3,7 @@ session_set_cookie_params([
     'path' => '/',
     'httponly' => true,
     'samesite' => 'None',
-    'secure' => false
+    'secure' => true
 ]); // nadstavenie cookie parametrov - univerzalne
 session_start();
 header("Content-Type: application/json; charset=UTF-8");
