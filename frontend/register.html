@@ -1,113 +1,113 @@
 <!DOCTYPE html>
 <html lang="sk">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registrácia - BagPoint</title>
-    <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
-  </head>
 
-  <body class="login-page">
-    <div class="login-container fade-in">
-      <div class="logo-section">
-        <a href="index.html">
-          <img src="images/logo2.png" alt="logo" class="logo" />
-        </a>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BagPoint - Registrácia</title>
+  <link rel="stylesheet" href="styles/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
+</head>
 
-      <div class="login-card">
-        <h2>Registrácia</h2>
-        <p class="subtitle">Vytvor si účet</p>
-
-        <form id="register-form" class="login-form">
-          <div class="form-group">
-            <label for="name">Meno</label>
-            <input type="text" id="name" placeholder="Zadaj celé meno" required />
-          </div>
-
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" placeholder="meno@email.com" required />
-          </div>
-
-          <div class="form-group">
-            <label for="password">Heslo</label>
-            <input type="password" id="password" placeholder="Zadaj heslo" required minlength="6" />
-          </div>
-
-          <div class="form-group">
-            <label for="confirm">Potvrď heslo</label>
-            <input type="password" id="confirm" placeholder="Zopakuj heslo" required />
-          </div>
-
-          <button type="submit" class="login-btn2">Zaregistrovať sa</button>
-        </form>
-
-        <p class="footer-text">
-          Už máš účet? <a href="login.html">Prihlás sa</a>
-        </p>
-
-        <p id="register-message" class="status-message"></p>
-      </div>
+<body class="login-page">
+  <div class="login-container fade-in">
+    <div class="logo-section">
+      <a href="index.html">
+        <img src="images/logo2.png" alt="logo" class="logo" />
+      </a>
     </div>
 
-    <script>
-      document.getElementById("register-form").addEventListener("submit", async (event) => {
-        event.preventDefault();
+    <div class="login-card">
+      <h2>Registrácia</h2>
+      <p class="subtitle">Vytvor si účet.</p>
 
-        const name = document.getElementById("name").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
-        const confirm = document.getElementById("confirm").value;
-        const messageEl = document.getElementById("register-message");
+      <form onsubmit="handleRegister(event)" class="login-form">
 
-        
-        if (!name || !email || !password || !confirm) {
-          messageEl.textContent = "Vyplň všetky polia.";
-          messageEl.style.color = "red";
-          return;
-        }
+        <div class="form-group">
+          <label for="name">meno</label>
+          <input type="text" id="name" placeholder="Zadaj celé meno" required />
+        </div>
 
-        if (password !== confirm) {
-          messageEl.textContent = "Heslá sa nezhodujú.";
-          messageEl.style.color = "red";
-          return;
-        }
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="meno@email.com" required />
+        </div>
 
-        try {
-          const response = await fetch("/backend/register.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name, email, password })
-          });
+        <div class="form-group">
+          <label for="password">Heslo</label>
+          <input type="password" id="password" placeholder="Zadaj heslo" required />
+        </div>
 
-          const text = await response.text();
-          console.log("Odpoveď servera:", text);
+        <div class="form-group">
+          <label for="confirm">Potvrď heslo</label>
+          <input type="password" id="confirm" placeholder="Zopakuj heslo" required />
+        </div>
 
-          let data;
+        <button type="submit" class="login-btn2">Zaregistrovať sa</button>
+      </form>
+
+
+
+
+
+
+      <p class="footer-text">Už máš účet? <a href="login.html">Prihlás sa</a></p>
+    </div>
+  </div>
+
+
+  <script>
+    function handleRegister(event) {
+      event.preventDefault(); // zabrani reloadu stranky
+
+      // ziskat hodnoty
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm = document.getElementById('confirm').value;
+
+      // validacia
+      if (!name || !email || !password || !confirm) {
+        alert("Vyplň všetky polia.");
+        return;
+      }
+
+      if (password !== confirm) {
+        alert("Heslá sa nezhodujú!");
+        return;
+      }
+
+
+      //komunikacia js s php
+      fetch("../backend/register.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password })
+      })
+        .then(res => res.text()) // najprv text, aby sme videli presne, čo server vracia
+        .then(text => {
+          console.log("Odpoveď servera:", text); // debug, môžeš sledovať v konzole
           try {
-            data = JSON.parse(text);
+            const data = JSON.parse(text);
+            if (data.success) {
+              // presmerovanie pri úspechu
+              window.location.href = "success.html";
+            } else {
+              // pri chybe zobrazíme správu
+              alert(data.message || "Registrácia zlyhala");
+            }
           } catch (e) {
-            messageEl.textContent = "Chybná odpoveď servera.";
-            messageEl.style.color = "red";
-            return;
+            alert("Server nevrátil platný JSON!");
+            console.error("Chyba parsovania JSON:", e);
           }
+        })
+        .catch(err => {
+          alert("Chyba pri spojení so serverom: " + err);
+          console.error(err);  // zapis do konzoly
+        });
+    }
+  </script>
+</body>
 
-          if (data.success) {
-           
-            window.location.href = "success.html";
-          } else {
-            messageEl.textContent = data.message || "Registrácia zlyhala.";
-            messageEl.style.color = "red";
-          }
-        } catch (error) {
-          console.error("Chyba:", error);
-          messageEl.textContent = "Chyba pri spojení so serverom.";
-          messageEl.style.color = "red";
-        }
-      });
-    </script>
-  </body>
 </html>
