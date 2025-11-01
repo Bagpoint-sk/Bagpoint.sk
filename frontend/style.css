@@ -1402,8 +1402,7 @@ body.login-page.success-bg {
   to { opacity: 1; transform: translateY(0); }
 }
 
-
-/* --- MODÁLY --------------------------------------------------------------------- igor--- */
+/* --- MODÁLY --- */
     .modal {
       display: none;
       position: fixed;
