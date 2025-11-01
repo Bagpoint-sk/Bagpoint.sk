@@ -1,214 +1,193 @@
 <!DOCTYPE html>
 <html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BagPoint</title>
+    <link rel="stylesheet" href="style.css" />
+   <script>
+  
+  if (!sessionStorage.getItem('redirectedOnce')) {
+    sessionStorage.setItem('redirectedOnce', 'true');
+    window.location.href = "project/index.html";
+  }
+</script>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32"
+      href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16"
+      href="images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180"
+      href="images/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <!-- font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap"
+      rel="stylesheet">
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BagPoint</title>
-  <link rel="stylesheet" href="styles/style.css" />
+  <body>
+    <div class="page-container" id="content-js">
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
-  <!-- font -->
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-</head>
-
-<body>
-  <div class="page-container" id="content-js">
-    <!-- HEADER -->
-    <header>
-      <nav class="navbar">
-        <div class="nav-left">
-          <a href="index.html">
-            <img class="logo" src="images/logo2.png" alt="logo" />
-          </a>
-        </div>
-
-        <ul class="nav-center">
-          <li><a href="#how">Ako to funguje</a></li>
-          <li><a href="mapa.html">Mapa</a></li>
-          <li><a href="kontakt.html">Kontakt</a></li>
-          <li><a href="oprojekte.html">O projekte</a></li>
-        </ul>
-
-        <div class="nav-right">
-          <a href="login.html" class="login-btn">Login</a>
-          <a href="account.html" class="account-link">Môj účet</a>
-          <a href="#" class="logout-link">Odhlásiť sa</a>
-        </div>
-      </nav>
-    </header>
-
-    <!-- HERO SECTION -->
-    <!-- cta -CALL TO ACTION -->
-    <main>
-      <section class="hero-video" id="home">
-        <video class="bg-video" autoplay muted loop playsinline>
-          <source src="images/box.mp4" type="video/mp4" />
-        </video>
-
-        <div class="overlay"></div>
-
-        <div class="hero-text">
-          <h1 class="fade-in">Kam s batožinou?</h1>
-          <p class="fade-in-delay">
-            BagPoint ti pomôže nájsť bezpečné úložné boxy po celom meste.
-          </p>
-          <a href="mapa.html" class="cta-btn fade-in-delay2">Nájsť najbližšie miesto</a>
-        </div>
-      </section>
-
-      <!-- HOW IT WORKS -->
-      <section class="how-it-works" id="how">
-        <h2>Ako to funguje</h2>
-
-        <div class="steps">
-          <div class="step fade-in">
-            <img src="images/step1.png" alt="Rezervuj si miesto" />
-            <span class="step-number">KROK 1</span>
-            <h3>Rezervuj si miesto</h3>
-            <p>
-              Vyber si úložisko v našej aplikácii alebo priamo na mape. Stačí
-              pár klikov a máš rezervované.
-            </p>
+      <!-- HEADER -->
+      <header>
+        <nav class="navbar">
+          <div class="nav-left">
+            <a href="index.html">
+              <img class="logo" src="images/logo2.png" alt="logo">
+            </a>
           </div>
 
-          <div class="step fade-in-delay">
-            <img src="images/step2.png" alt="Ulož batožinu" />
-            <span class="step-number">KROK 2</span>
-            <h3>Ulož batožinu</h3>
-            <p>
-              Bezpečne odovzdaj svoju batožinu v označenom BagPoint mieste a
-              získaj digitálne potvrdenie.
-            </p>
+          <ul class="nav-center">
+            <li><a href="#how">Ako to funguje</a></li>
+            <li><a href="mapa.html">Mapa</a></li>
+            <li><a href="kontakt.html">Kontakt</a></li>
+            <li><a href="project/index.html">O projekte</a></li>
+          </ul>
+
+          <div class="nav-right">
+            <a href="login.html" class="login-btn">Login</a>
+            <a href="account.html" class="account-link">Môj účet</a>
+            <a href="#" class="logout-link">Odhlásiť sa</a>
           </div>
 
-          <div class="step fade-in-delay2">
-            <img src="images/step3.png" alt="Uži si deň" />
-            <span class="step-number">KROK 3</span>
-            <h3>Uži si deň</h3>
-            <p>
-              Bezstarostne objavuj mesto – tvoja batožina je v bezpečí a čaká
-              na teba, kedykoľvek sa vrátiš.
-            </p>
+        </nav>
+      </header>
+
+      <!-- HERO SECTION -->
+      <!-- cta -CALL TO ACTION -->
+      <main>
+        <section class="hero-video" id="home">
+          <video class="bg-video" autoplay muted loop playsinline>
+            <source src="images/box.mp4" type="video/mp4" />
+          </video>
+
+          <div class="overlay"></div>
+
+          <div class="hero-text">
+            <h1 class="fade-in">Kam s batožinou?</h1>
+            <p class="fade-in-delay">
+              BagPoint ti pomôže nájsť bezpečné úložné boxy po celom meste.</p>
+            <a href="mapa.html" class="cta-btn fade-in-delay2">Nájsť najbližšie
+              miesto</a>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="cta-section">
-        <div class="cta-bg">
-          <img src="images/i.jpg" alt="Ulož batožinu" class="cta-image" />
-          <div class="cta-overlay"></div>
-        </div>
+        <!-- HOW IT WORKS -->
+        <section class="how-it-works" id="how">
+          <h2>Ako to funguje</h2>
 
-        <div class="cta-content">
-          <h2>Rezervuj si miesto už dnes</h2>
-          <a href="mapa.html" class="cta-main-btn">Zarezervovať</a>
-        </div>
-      </section>
-
-      <!-- POPULAR LOCATIONS -->
-      <section class="popular-locations" id="locations">
-        <div class="section-header">
-          <h2>Obľúbené destinácie</h2>
-          <p>
-            Objav, kde môžeš cestovať naľahko, nechaj batožinu v bezpečí a
-            vychutnaj si mesto bez ťarchy.
-          </p>
-        </div>
-
-        <div class="city-grid">
-          <!-- TRNAVA -->
-          <a href="mapa.html" class="city-card active-city">
-            <img src="images/trnava.jpg" alt="TRNAVA" />
-            <div class="city-info">
-              <h3>Trnava</h3>
-              <p>Historické srdce Slovenska</p>
+          <div class="steps">
+            <div class="step fade-in">
+              <img src="images/step1.png" alt="Rezervuj si miesto">
+              <span class="step-number">KROK 1</span>
+              <h3>Rezervuj si miesto</h3>
+              <p>Vyber si úložisko v našej aplikácii alebo priamo na mape. Stačí
+                pár klikov a máš rezervované.</p>
             </div>
-          </a>
 
-          <!-- BRATISLAVA -->
-          <div class="city-card">
-            <img src="images/bratislava.jpg" alt="BRATISLAVA" />
-            <div class="city-info">
-              <h3>Bratislava</h3>
-              <p>Na brehu Dunaja</p>
+            <div class="step fade-in-delay">
+              <img src="images/step2.png" alt="Ulož batožinu">
+              <span class="step-number">KROK 2</span>
+              <h3>Ulož batožinu</h3>
+              <p>Bezpečne odovzdaj svoju batožinu v označenom BagPoint mieste a
+                získaj digitálne potvrdenie.</p>
+            </div>
+
+            <div class="step fade-in-delay2">
+              <img src="images/step3.png" alt="Uži si deň">
+              <span class="step-number">KROK 3</span>
+              <h3>Uži si deň</h3>
+              <p>Bezstarostne objavuj mesto – tvoja batožina je v bezpečí a čaká
+                na teba, kedykoľvek sa vrátiš.</p>
             </div>
           </div>
+        </section>
 
-          <!-- PRAHA -->
-          <div class="city-card">
-            <img src="images/praha.jpg" alt="PRAHA" />
-            <div class="city-info">
-              <h3>Praha</h3>
-              <p>Zlaté mesto s dušou histórie</p>
-            </div>
+        <section class="cta-section">
+          <div class="cta-bg">
+            <img src="images/i.jpg" alt="Ulož batožinu" class="cta-image">
+            <div class="cta-overlay"></div>
           </div>
 
-          <!-- VIEDEN -->
-          <div class="city-card">
-            <img src="images/vieden.jpg" alt="VIEDEN" />
-            <div class="city-info">
-              <h3>Viedeň</h3>
-              <p>Umenie, kultúra, elegancia</p>
+          <div class="cta-content">
+            <h2>Rezervuj si svoj box hneď teraz</h2>
+            <a href="mapa.html" class="cta-main-btn">Zarezervovať</a>
+          </div>
+        </section>
+
+        <!-- POPULAR LOCATIONS -->
+        <section class="popular-locations" id="locations">
+          <div class="section-header">
+            <h2>Obľúbené destinácie</h2>
+            <p> Cestuj, objavuj, užívaj si – batožinu nechaj na nás. Pozri sa, v ktorých mestách nás nájdeš. </p>
+          </div>
+
+          <div class="city-grid">
+            <!-- TRNAVA -->
+            <a href="mapa.html" class="city-card active-city">
+              <img src="images/trnava.jpg" alt="TRNAVA">
+              <div class="city-info">
+                <h3>Trnava</h3>
+                <p>Historické srdce Slovenska</p>
+              </div>
+            </a>
+
+            <!-- BRATISLAVA -->
+            <div class="city-card">
+              <img src="images/bratislava.jpg" alt="BRATISLAVA">
+              <div class="city-info">
+                <h3>Bratislava</h3>
+                <p>Na brehu Dunaja</p>
+              </div>
+            </div>
+
+            <!-- PRAHA -->
+            <div class="city-card">
+              <img src="images/praha.jpg" alt="PRAHA">
+              <div class="city-info">
+                <h3>Praha</h3>
+                <p>Tisíce veží, jedinečná atmosféra.</p>
+              </div>
+            </div>
+
+            <!-- VIEDEN -->
+            <div class="city-card">
+              <img src="images/vieden.jpg" alt="VIEDEN">
+              <div class="city-info">
+                <h3>Viedeň</h3>
+                <p>Umenie, kultúra, elegancia</p>
+              </div>
             </div>
           </div>
+        </section>
+      </main>
+
+      <!-- FOOTER -->
+      <footer>
+        <div class="footer-container">
+          <div class="footer-left">
+            <img src="images/logo2.png" alt="logo" class="footer-logo">
+            <p>© 2025 BagPoint. Všetky práva vyhradené.</p>
+          </div>
+
+          <div class="footer-right">
+            <a href="#"><img src="images/instagram.svg" alt="instagram"
+                class="social-icon"></a>
+            <a href="#"><img src="images/facebook.svg" alt="facebook"
+                class="social-icon"></a>
+            <a href="#"><img src="images/twitter.svg" alt="twitter"
+                class="social-icon"></a>
+          </div>
         </div>
-      </section>
-    </main>
+      </footer>
 
-    <!-- FOOTER -->
-    <footer>
-      <div class="footer-container">
-        <div class="footer-left">
-          <img src="images/logo2.png" alt="logo" class="footer-logo" />
-          <p>© 2025 BagPoint. Všetky práva vyhradené.</p>
-        </div>
+    </div>
 
-        <div class="footer-right">
-          <a href="#"><img src="images/instagram.svg" alt="instagram" class="social-icon" /></a>
-          <a href="#"><img src="images/facebook.svg" alt="facebook" class="social-icon" /></a>
-          <a href="#"><img src="images/twitter.svg" alt="twitter" class="social-icon" /></a>
-        </div>
-      </div>
-    </footer>
-  </div>
+  <script src="auth.js"></script>
+<script src="main.js"></script>
 
-  <!-- JS -->
-  <script>
-    // simulácia -stav prihlasenia
-    // const isLoggedIn = localStorage.getItem('loggedIn');
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const loginBtn = document.querySelector(".login-btn");
-      const accountLink = document.querySelector(".account-link");
-      const logoutLink = document.querySelector(".logout-link");
-
-      if (localStorage.getItem("loggedIn") === "true") {
-        // pouzivatel je prihlaseny
-        if (loginBtn) loginBtn.style.display = "none";
-        if (accountLink) accountLink.style.display = "inline-block";
-        if (logoutLink) logoutLink.style.display = "inline-block";
-      } else {
-        // pouzivatei nie je prihlaseny
-        if (loginBtn) loginBtn.style.display = "inline-block";
-        if (accountLink) accountLink.style.display = "none";
-        if (logoutLink) logoutLink.style.display = "none";
-      }
-
-      // pdhlasenie
-      if (logoutLink) {
-        logoutLink.addEventListener("click", () => {
-          localStorage.removeItem("loggedIn");
-          window.location.href = "index.html";
-        });
-      }
-    });
-  </script>
-  <script src="scripts/main.js"></script>
-</body>
+  </body>
 
 </html>
