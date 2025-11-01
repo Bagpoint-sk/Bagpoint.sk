@@ -1,8 +1,14 @@
 <?php
+session_set_cookie_params([
+  'path' => '/',
+  'httponly' => true,
+  'samesite' => 'None',
+  'secure' => false // na localhoste false, na HTTPS hostingu true
+]);
 session_start();
 header("Content-Type: application/json; charset=UTF-8");
 // 1. musime skontrolovat, ci je user prihlaseny
-if(!isset($_SESSION['email'])) {
+if(!isset($_SESSION['user_email'])) {
     echo json_encode(['success' => false, "message" => "Nie si prihlásený!"]);
     exit;
 }
@@ -22,7 +28,7 @@ if($conn -> connect_error) {
     exit;
 }
 // 5. vytiahneme ulozeny email v session a ulozime ho do premennej aby sme s nim mohli dalej pracovat
-$email = $_SESSION['email'];
+$email = $_SESSION['user_email'];
 // 6. nacitanie stareho hesla
 $statement =  $conn->prepare("SELECT password FROM users WHERE email=?"); // ? placeholder, nahradi sa
 $statement-> bind_param("s", $email); // nahradime placeholder vytiahnutym emailom "s" == string (bind_param = musime definovat typ = menej chyb)
@@ -41,9 +47,12 @@ $update->bind_param("ss", $hnPassword, $email); // nemusi byt ale lepsie ked je,
 $update->execute(); // spustenie noveho dotazu = ulozi nove heslo do password
 
 echo json_encode(["success" => true, "message" => "Heslo bolo úspešne zmenené!"]);
+session_unset();
+session_destroy();
 } else {
     echo json_encode(["success" => false, "message" => "Používateľ neexistuje."]);
 }
+
 
 $conn->close();
 ?>

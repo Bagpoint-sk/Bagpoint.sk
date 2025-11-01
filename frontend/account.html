@@ -28,17 +28,14 @@
       </nav>
     </header>
 
+    <!-- OBSAH -->
     <main class="account-page">
       <div class="account-container fade-in">
         <aside class="account-sidebar">
           <h2>Menu</h2>
           <ul>
-            <li class="tab-link active" data-target="account-section">
-              Môj účet
-            </li>
-            <li class="tab-link" data-target="settings-section">
-              Nastavenia
-            </li>
+            <li class="tab-link active" data-target="account-section">Môj účet</li>
+            <li class="tab-link" data-target="settings-section">Nastavenia</li>
           </ul>
         </aside>
 
@@ -46,9 +43,7 @@
           <div class="account-header">
             <div class="account-text">
               <h1>Môj účet</h1>
-              <p class="user-email">
-                Používateľ: <strong id="user-email">meno@email.com</strong>
-              </p>
+              <p class="user-email">Používateľ: <strong id="user-email">meno@email.com</strong></p>
             </div>
             <img src="/Bagpoint.sk/frontend/images/profile.png" alt="Profilový obrázok" class="profile-pic" />
           </div>
@@ -62,158 +57,140 @@
 
           <div id="settings-section" class="tab-content">
             <h2>Nastavenia účtu</h2>
-            <button class="account-btn">Zmeniť heslo</button>
-            <button class="account-btn delete">Zmazať účet</button>
+            <button id="show-change-password" class="account-btn">Zmeniť heslo</button>
+            <button id="show-delete-account" class="account-btn delete">Zmazať účet</button>
           </div>
+        </section>
       </div>
-  </div>
-  </section>
-  </div>
-  </main>
+    </main>
   </div>
 
+  <!-- MODAL: ZMENA HESLA -->
+  <div id="change-modal" class="modal">
+    <div class="modal-content">
+      <h3>Zmena hesla</h3>
+      <form id="change-password-form">
+        <input type="password" id="old-password" placeholder="Staré heslo" required>
+        <input type="password" id="new-password" placeholder="Nové heslo" required minlength="6">
+        <div class="modal-buttons">
+          <button type="submit" class="account-btn">Uložiť zmenu</button>
+          <button type="button" id="cancel-change">Zrušiť</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ZMAZANIE ÚČTU -->
+  <div id="delete-modal" class="modal">
+    <div class="modal-content">
+      <h3>Potvrď zmazanie účtu</h3>
+      <form id="delete-account-form">
+        <input type="password" id="delete-password" placeholder="Zadaj svoje heslo" required>
+        <div class="modal-buttons">
+          <button type="submit" class="delete">Zmazať účet</button>
+          <button type="button" id="cancel-delete">Zrušiť</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 🔧 Skript -->
   <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      try {
-        const res = await fetch("../backend/getUser.php", {
-          method: "GET",
+    document.addEventListener("DOMContentLoaded", () => {
+      // Načítanie používateľa
+      fetch("/Bagpoint.sk/backend/getUser.php", {
+        method: "GET",
+        credentials: "include",
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.loggedIn) {
+            document.getElementById("user-email").textContent = data.user.email;
+          } else {
+            window.location.href = "login.html";
+          }
+        });
+
+      // Odhlásenie
+      document.querySelector(".logout-link").addEventListener("click", async (e) => {
+        e.preventDefault();
+        const res = await fetch("/Bagpoint.sk/backend/logout.php", {
+          method: "POST",
           credentials: "include",
         });
         const data = await res.json();
+        if (data.success) window.location.href = "index.html";
+      });
 
-        if (data.loggedIn) {
-          const emaill = document.getElementById("user-email");
-          if (emaill) emaill.textContent = data.user.email;
-        } else {
-          window.location.href = "login.html";
-          return;
-        }
-      } catch (error) {
-        console.error("Chyba pri načítaní používateľa:", error);
-      }
-
-      const logout = document.querySelector(".logout-link");
-
-      if (logout) {
-        logout.addEventListener("click", async (e) => {
-          e.preventDefault();
-
-          try {
-            // poziadavka na logout
-            const res = await fetch("../backend/logout.php", {
-              method: "POST",
-              credentials: "include", // posielanie session cookie
-            });
-            const data = await res.json();
-
-            if (data.success) {
-              // presmerovanie na hl site
-              window.location.href = "index.html";
-            } else {
-              alert("Odhlásenie zlyhalo");
-            }
-          } catch (err) {
-            console.error("Chyba pri odhlásení:", err);
-          }
-        });
-      }
-    });
-  </script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const tabLinks = document.querySelectorAll(".tab-link");
-      const tabContents = document.querySelectorAll(".tab-content");
-
-      tabLinks.forEach((link) => {
+      // Prepínanie tabov
+      document.querySelectorAll(".tab-link").forEach(link => {
         link.addEventListener("click", () => {
-          tabLinks.forEach((l) => l.classList.remove("active"));
-          tabContents.forEach((c) => c.classList.remove("active"));
-
+          document.querySelectorAll(".tab-link").forEach(l => l.classList.remove("active"));
+          document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
           link.classList.add("active");
-          document
-            .getElementById(link.dataset.target)
-            .classList.add("active");
+          document.getElementById(link.dataset.target).classList.add("active");
         });
       });
-    });
-  </script>
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const showBtn = document.getElementById("show-change-password");
-      const form = document.getElementById("change-password-form");
 
-      if (!showBtn || !form) {
-        console.error("Error!");
-        return;
-      }
-      showBtn.addEventListener("click", () => {
-        form.style.display = form.style.display === "none" ? "block" : "none";
-      });
-      form.addEventListener("submit", async (e) => {
+      // --- MODALY ---
+      const changeModal = document.getElementById("change-modal");
+      const deleteModal = document.getElementById("delete-modal");
+
+      const showChange = document.getElementById("show-change-password");
+      const showDelete = document.getElementById("show-delete-account");
+
+      const cancelChange = document.getElementById("cancel-change");
+      const cancelDelete = document.getElementById("cancel-delete");
+
+      const changeForm = document.getElementById("change-password-form");
+      const deleteForm = document.getElementById("delete-account-form");
+
+      // Otvorenie modálov
+      showChange.addEventListener("click", () => (changeModal.style.display = "flex"));
+      showDelete.addEventListener("click", () => (deleteModal.style.display = "flex"));
+
+      // Zavretie modálov
+      cancelChange.addEventListener("click", () => (changeModal.style.display = "none"));
+      cancelDelete.addEventListener("click", () => (deleteModal.style.display = "none"));
+
+      // Zmena hesla
+      changeForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-
-        const oldPassword = document
-          .getElementById("old-password")
-          .value.trim();
-        const newPassword = document
-          .getElementById("new-password")
-          .value.trim();
-
-        if (!oldPassword || !newPassword) {
-          alert("Vyplň všetky polia.");
-          return;
+        const oldPassword = document.getElementById("old-password").value.trim();
+        const newPassword = document.getElementById("new-password").value.trim();
+        const res = await fetch("/Bagpoint.sk/backend/changePassword.php", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ oldPassword, newPassword }),
+        });
+        const data = await res.json();
+        alert(data.message);
+        if (data.success) {
+          changeModal.style.display = "none";
+          setTimeout(() => window.location.href = "login.html", 1000);
         }
+      });
 
-        try {
-          const res = await fetch("../backend/changePassword.php", {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ oldPassword, newPassword }),
-          });
-
-          const data = await res.json();
-          alert(data.message);
-
-          if (data.success) {
-            form.reset();
-            form.style.display = "none";
-          }
-        } catch (err) {
-          console.error("Chyba pri zmene hesla:", err);
-          alert("Nastala chyba pri komunikácii so serverom.");
+      // Zmazanie účtu
+      deleteForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const password = document.getElementById("delete-password").value.trim();
+        const res = await fetch("/Bagpoint.sk/backend/deleteAccount.php", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password }),
+        });
+        const data = await res.json();
+        alert(data.message);
+        if (data.success) {
+          deleteModal.style.display = "none";
+          setTimeout(() => window.location.href = "index.html", 1000);
         }
       });
     });
   </script>
-  <script src="scripts/main.js"></script>
 </body>
 
 </html>
-
-<!--
-<script>
-      
-      const logout = document.querySelector('.logout-link');
-      logout.addEventListener('click', () => {
-        localStorage.removeItem('loggedIn');
-        window.location.href = 'index.html';
-      });
-    </script>
-    <script>
-  const tabLinks = document.querySelectorAll('.tab-link');
-  const tabContents = document.querySelectorAll('.tab-content');
-
-  tabLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      
-      tabLinks.forEach(l => l.classList.remove('active'));
-      tabContents.forEach(c => c.classList.remove('active'));
-
-      
-      link.classList.add('active');
-      document.getElementById(link.dataset.target).classList.add('active');
-    });
-  });
-</script>
--->

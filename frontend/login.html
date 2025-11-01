@@ -34,6 +34,11 @@
           <label for="password">Heslo</label>
           <input type="password" id="password" placeholder="Zadaj heslo" required />
         </div>
+
+        <div class="forgot-link">
+          <a id="forgotPassword">Zabudnuté heslo?</a>
+        </div>
+
         <button class="login-btn2" type="submit">Prihlásiť sa</button>
       </form>
 
@@ -43,51 +48,43 @@
     </div>
   </div>
 
+  <!-- MODAL -->
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modalContent">
+      <span class="close-btn" id="closeModal">&times;</span>
+      <h3>Obnova hesla</h3>
+      <p>Zadajte svoj email pre zaslanie kódu</p>
+      <input type="email" id="resetEmail" placeholder="Zadajte email" />
+      <button id="sendResetBtn">Odoslať kód</button>
+    </div>
+  </div>
+
   <script>
+    // LOGIN (z tvojej pôvodnej časti)
     async function handleLogin(event) {
       event.preventDefault();
-
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value;
-
-      if (!email || !password) {
-        alert("Vyplň všetky polia!");
-        return;
-      }
+      if (!email || !password) return alert("Vyplň všetky polia!");
 
       try {
-        const response = await fetch(
-          "../backend/login.php",
-          {
-            method: "POST",
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }),
-          }
-        );
+        const response = await fetch("../backend/login.php", {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
 
         const text = await response.text();
-        console.log("Odpoveď servera:", text);
-
-        // pokus o parsovanie JSON
         let data;
-        try {
-          data = JSON.parse(text);
-        } catch (e) {
-          alert("Server nevrátil platný JSON!");
-          console.error(text);
-          return;
+        try { data = JSON.parse(text); } catch (e) {
+          alert("Server nevrátil platný JSON!"); console.error(text); return;
         }
 
         if (data.success) {
-          alert("Prihlásenie úspešné!");
-
-          // ulozenie prihlasenia
           localStorage.setItem("loggedIn", "true");
           localStorage.setItem("userName", data.user.name);
           localStorage.setItem("userEmail", data.user.email);
-
-          // presmerovanie na profil
           window.location.href = "index.html";
         } else {
           alert(data.message || "Nesprávny email alebo heslo!");
@@ -97,6 +94,81 @@
         alert("Chyba spojenia so serverom.");
       }
     }
+
+    // 🔹 Zabudnuté heslo – Frontend logika
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modalContent');
+    const forgotPassword = document.getElementById('forgotPassword');
+    const closeModal = document.getElementById('closeModal');
+
+    forgotPassword.addEventListener('click', () => { modal.style.display = 'flex'; });
+    closeModal.addEventListener('click', () => { modal.style.display = 'none'; });
+
+    document.getElementById('sendResetBtn').addEventListener('click', async () => {
+      const email = document.getElementById('resetEmail').value.trim();
+      if (!email) return alert('Zadajte email.');
+
+      const res = await fetch('http://localhost/Bagpoint.sk/backend/forgetPassword.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        modalContent.innerHTML = `
+          <h3>Overenie kódu</h3>
+          <p>Kód bol odoslaný na váš email!</p>
+          <p><strong>(kód: ${data.code})</strong></p>
+          <input type="text" id="verifyCodeInput" placeholder="Zadajte kód">
+          <button id="verifyCodeBtn">Overiť</button>
+        `;
+
+        document.getElementById('verifyCodeBtn').addEventListener('click', async () => {
+          const code = document.getElementById('verifyCodeInput').value.trim();
+          if (!code) return alert('Zadajte kód.');
+          const resp = await fetch('http://localhost/Bagpoint.sk/backend/verifyCode.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, code })
+          });
+          const result = await resp.json();
+
+          if (result.success) {
+            modalContent.innerHTML = `
+              <h3>Nové heslo</h3>
+              <input type="password" id="newPass" placeholder="Nové heslo">
+              <input type="password" id="newPass2" placeholder="Zopakujte heslo">
+              <button id="saveNewPassBtn">Uložiť heslo</button>
+            `;
+
+            document.getElementById('saveNewPassBtn').addEventListener('click', async () => {
+              const p1 = document.getElementById('newPass').value;
+              const p2 = document.getElementById('newPass2').value;
+              if (p1 !== p2) return alert('Heslá sa nezhodujú.');
+
+              const finalResp = await fetch('http://localhost/Bagpoint.sk/backend/reset_password.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password: p1 })
+              });
+              const finalData = await finalResp.json();
+
+              if (finalData.success) {
+                alert('Heslo bolo úspešne zmenené!');
+                modal.style.display = 'none';
+              } else {
+                alert(finalData.message || 'Chyba pri zmene hesla.');
+              }
+            });
+          } else {
+            alert(result.message || 'Nesprávny kód.');
+          }
+        });
+      } else {
+        alert(data.message || 'Email sa nenašiel.');
+      }
+    });
   </script>
 </body>
 
