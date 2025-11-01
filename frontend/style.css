@@ -1017,10 +1017,6 @@ body.login-page.success-bg {
   background-color: rgba(8,157,250,0.1);
   color: #0471C2;
 }
-/*  zobrazí sa ?????????????????????????????????????????????????????????????????????????????????????? igor  */
-.logout-link {
-  display: inline-block !important; 
-}
 
 /* ===================================
    NEW
@@ -1406,6 +1402,85 @@ body.login-page.success-bg {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+
+/* --- MODÁLY --------------------------------------------------------------------- igor--- */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      animation: slideUp 0.3s ease;
+    }
+
+    .modal-content h3 {
+      margin-bottom: 15px;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .modal-buttons button {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    #cancel-delete, #cancel-change {
+      background: #ccc;
+    }
+
+    .delete {
+      background: #e63946;
+      color: white;
+    }
+
+    .account-btn {
+      background: #0077ff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    @keyframes slideUp {
+      from {transform: translateY(20px); opacity: 0;}
+      to {transform: translateY(0); opacity: 1;}
+    }
 
 
 /*O projekte som odpojila css pre kiku */
