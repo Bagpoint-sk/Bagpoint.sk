@@ -7,20 +7,27 @@
     <link rel="stylesheet" href="style.css" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32"
+      href="images/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16"
+      href="images/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180"
+      href="images/apple-touch-icon.png" />
     <link rel="manifest" href="/images/site.webmanifest" />
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+      rel="stylesheet" />
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Voliteľne: svetlý modrý dizajn -->
+    <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/airbnb.css">
 
     <!-- Leaflet CSS -->
     <link
       rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   </head>
 
   <body>
@@ -29,9 +36,8 @@
       <header>
         <nav class="navbar">
           <div class="nav-left">
-            <a href="index.html"
-              ><img class="logo" src="images/logo2.png" alt="logo"
-            /></a>
+            <a href="index.html"><img class="logo" src="images/logo2.png"
+                alt="logo" /></a>
           </div>
 
           <ul class="nav-center">
@@ -54,143 +60,498 @@
         <section class="map-section">
           <div id="map" class="leaflet-map">
             <div class="map-legend">
-              <h4>BagPoint miesta v Trnave</h4>
-              <p>Klikni na bod pre rezerváciu boxu</p>
+              <h4>BagPoint – Trnava</h4>
+              <p>Vyber miesto a režim uloženia</p>
+              <hr>
+              <h5>Cenník</h5>
+
+              <p><strong>Rezervovať teraz</strong></p>
+              <ul class="price-list">
+                <li><span>Malý (S)</span><span>1 € / hod</span></li>
+                <li><span>Stredný (M)</span><span>1,50 € / hod</span></li>
+                <li><span>Veľký (L)</span><span>2 € / hod</span></li>
+              </ul>
+
+              <p><strong>Rezervácia vopred</strong></p>
+              <ul class="price-list">
+                <li><span>Malý (S)</span><span>5 € / deň</span></li>
+                <li><span>Stredný (M)</span><span>6 € / deň</span></li>
+                <li><span>Veľký (L)</span><span>7 € / deň</span></li>
+              </ul>
             </div>
+
           </div>
         </section>
 
- 
         <div id="reservation-modal" class="modal">
-          <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <h3 id="location-name">BagPoint</h3>
+          <div class="modal-card">
+            <button class="close-btn" onclick="closeModal()">✕</button>
+            <h3 id="location-name">BagPoint – Trnava</h3>
 
-            <p>Vyber veľkosť boxu:</p>
-            <select id="box-size">
-              <option>Malý (S)</option>
-              <option>Stredný (M)</option>
-              <option>Veľký (L)</option>
-            </select>
+            <div class="mode-tabs">
+              <button class="mode-tab active" id="tab-walkin"
+                onclick="showTab('walkin')">Rezervovať teraz</button>
+              <button class="mode-tab" id="tab-advance"
+                onclick="showTab('advance')">Rezervácia vopred</button>
+            </div>
 
-            <p>Dĺžka úschovy:</p>
-            <select id="duration">
-              <option>2 hodiny</option>
-              <option>6 hodín</option>
-              <option>Celý deň</option>
-            </select>
+            <!-- WALK-IN -->
+            <div id="walkin-section" class="tab-section">
+              <p class="price-info">Cena od <strong>1 € / hod</strong> (podľa
+                veľkosti boxu)</p>
 
-            <button class="reserve-btn" onclick="startReservation()">Rezervovať</button>
+              <div class="luggage-header">
+                <label class="input-label">
+                  Veľkosť boxu <span class="required">*</span>
+                </label>
+                <button type="button" class="add-luggage-btn"
+                  onclick="addWalkinLuggage()">
+                  Pridať batožinu
+                </button>
+              </div>
+
+              <div id="walkin-luggage-group" class="luggage-group">
+                <div class="luggage-row">
+                  <select id="walkin-size"
+                    class="input-select walkin-size-select">
+                    <option>Malý (S)</option>
+                    <option>Stredný (M)</option>
+                    <option>Veľký (L)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="checkbox-row">
+                <div class="checkbox-item">
+                  <label>
+                    <input type="checkbox" id="walkin-terms">
+                    <span>Súhlasím s <a href="obchodne-podmienky.html"
+                        target="_blank">obchodnými podmienkami</a> <span
+                        class="required">*</span></span>
+                  </label>
+                </div>
+                <div class="checkbox-item">
+                  <label>
+                    <input type="checkbox" id="longer-than-24h">
+                    <span>Uloženie nad 24 hodín</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="info-box">
+                Ak plánuješ uložiť batožinu dlhšie ako 24 hodín, daj nám vedieť
+                <a href="kontakt.html" target="_blank">cez formulár</a> alebo
+                zaškrtni políčko vyššie.
+              </div>
+
+              <button
+                id="walkin-reserve-btn"
+                class="reserve-btn"
+                onclick="startWalkin()"
+                disabled>
+                Uložiť teraz
+              </button>
+            </div>
+
+            <!-- REZERVÁCIA VOPRED -->
+            <div id="advance-section" class="tab-section hidden">
+              <p class="price-info">Cena od <strong>5 € / deň</strong> (podľa
+                veľkosti boxu)</p>
+
+              <div class="luggage-header">
+                <label class="input-label">
+                  Veľkosť boxu <span class="required">*</span>
+                </label>
+                <button type="button" class="add-luggage-btn"
+                  onclick="addAdvanceLuggage()">
+                  Pridať batožinu
+                </button>
+              </div>
+
+              <div id="advance-luggage-group" class="luggage-group">
+                <div class="luggage-row">
+                  <select id="advance-size"
+                    class="input-select advance-size-select">
+                    <option>Malý (S)</option>
+                    <option>Stredný (M)</option>
+                    <option>Veľký (L)</option>
+                  </select>
+                </div>
+              </div>
+
+              <p>Vyber dĺžku rezervácie:</p>
+              <div class="radio-toggle">
+                <label><input type="radio" name="advance-type" value="oneday"
+                    checked> 1 deň</label>
+                <label><input type="radio" name="advance-type" value="multiday">
+                  Viac dní</label>
+              </div>
+
+              <div class="calendar-container">
+                <p id="calendar-label">Vyberte si deň:</p>
+                <div id="flatpickr-calendar"></div>
+              </div>
+
+              <div class="checkbox-row">
+                <div class="checkbox-item">
+                  <label>
+                    <input type="checkbox" id="advance-terms">
+                    <span>Súhlasím s <a href="obchodne-podmienky.html"
+                        target="_blank">obchodnými podmienkami</a> <span
+                        class="required">*</span></span>
+                  </label>
+                </div>
+                <div class="checkbox-item">
+                </div>
+              </div>
+
+              <button
+                id="advance-reserve-btn"
+                class="reserve-btn"
+                onclick="startAdvance()"
+                disabled>
+                Rezervovať
+              </button>
+            </div>
           </div>
         </div>
+
       </main>
     </div>
 
     <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Flatpickr JS -->
 
-   
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="auth.js"></script>
 
     <script>
-      const map = L.map("map").setView([48.3774, 17.5872], 14); // Trnava center
+  // --- MAPA ---
+  const map = L.map("map").setView([48.3774, 17.5872], 14);
 
-      
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-        attribution: "&copy; OpenStreetMap &copy; CARTO",
-        subdomains: "abcd",
-        maxZoom: 19,
-      }).addTo(map);
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    attribution: "&copy; OpenStreetMap &copy; CARTO",
+    subdomains: "abcd",
+    maxZoom: 19,
+  }).addTo(map);
 
-      // Lokality
-      const locations = [
-        { name: "Trnava Centrum", coords: [48.3774, 17.5872] },
-        { name: "City Arena", coords: [48.3725, 17.5931] },
-        { name: "Stanica Trnava", coords: [48.3792, 17.6034] },
-      ];
+  // lokality s ID -> vhodné pre DB
+  const locations = [
+    { id: "TT_CENTRUM", name: "Trnava Centrum", coords: [48.3774, 17.5872] },
+    { id: "TT_ARENA",   name: "City Arena",      coords: [48.3725, 17.5931] },
+    { id: "TT_STATION", name: "Stanica Trnava",  coords: [48.3792, 17.6034] },
+  ];
 
-      // Custom BagPoint marker
-      const bagpointIcon = L.icon({
-        iconUrl:
-          "data:image/svg+xml," +
-          encodeURIComponent(`
-          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 512 512">
-            <defs>
-              <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#089DFA"/>
-                <stop offset="100%" stop-color="#0471C2"/>
-              </linearGradient>
-            </defs>
-            <circle cx="256" cy="256" r="200" fill="url(#grad)" stroke="white" stroke-width="20"/>
-            <path d="M256 160c-40 0-72 32-72 72v32h-32v88h208v-88h-32v-32c0-40-32-72-72-72zm0 24c26 0 48 22 48 48v32h-96v-32c0-26 22-48 48-48z" fill="white"/>
-          </svg>
-        `),
-        iconSize: [46, 46],
-        iconAnchor: [23, 45],
-        popupAnchor: [0, -40],
+  let currentLocationId = null;
+
+  const bagpointIcon = L.icon({
+    iconUrl:
+      "data:image/svg+xml," +
+      encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 512 512">
+        <defs>
+          <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#089DFA"/>
+            <stop offset="100%" stop-color="#0471C2"/>
+          </linearGradient>
+        </defs>
+        <circle cx="256" cy="256" r="200" fill="url(#grad)" stroke="white" stroke-width="20"/>
+        <path d="M256 160c-40 0-72 32-72 72v32h-32v88h208v-88h-32v-32c0-40-32-72-72-72zm0 24c26 0 48 22 48 48v32h-96v-32c0-26 22-48 48-48z" fill="white"/>
+      </svg>
+    `),
+    iconSize: [46, 46],
+    iconAnchor: [23, 45],
+    popupAnchor: [0, -40],
+  });
+
+  // --- MARKERY ---
+  locations.forEach((loc) => {
+    const marker = L.marker(loc.coords, { icon: bagpointIcon }).addTo(map);
+    marker.bindPopup(`
+      <div class="popup-content">
+        <b>${loc.name}</b><br>
+        <button class="popup-btn" onclick="openReservation('${loc.id}')">Rezervovať</button>
+      </div>
+    `);
+  });
+
+  // --- MODAL OPEN/CLOSE ---
+  function openReservation(locationId) {
+    const loc = locations.find(l => l.id === locationId);
+    if (!loc) return;
+
+    currentLocationId = locationId;
+    document.getElementById("location-name").textContent = loc.name;
+    document.getElementById("reservation-modal").style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("reservation-modal").style.display = "none";
+  }
+
+  // --- TABS (Rezervovať teraz / vopred) ---
+  function showTab(tabName) {
+    const walkin = document.getElementById("walkin-section");
+    const advance = document.getElementById("advance-section");
+    const tabWalkin = document.getElementById("tab-walkin");
+    const tabAdvance = document.getElementById("tab-advance");
+
+    if (tabName === "walkin") {
+      walkin.classList.remove("hidden");
+      advance.classList.add("hidden");
+      tabWalkin.classList.add("active");
+      tabAdvance.classList.remove("active");
+    } else {
+      walkin.classList.add("hidden");
+      advance.classList.remove("hidden");
+      tabWalkin.classList.remove("active");
+      tabAdvance.classList.add("active");
+    }
+  }
+
+  // --- ODSTRÁNIŤ RIADOK S BATOŽINOU ---
+  function removeLuggageRow(button) {
+    const row = button.closest(".luggage-row");
+    const group = row?.parentElement;
+    if (!group) return;
+    group.removeChild(row);
+  }
+
+  // --- PRIDAŤ BATOŽINU (walk-in) ---
+  function addWalkinLuggage() {
+    const group = document.getElementById("walkin-luggage-group");
+    if (group.children.length >= 3) {
+      alert("Maximálne 3 batožiny na jednu objednávku.");
+      return;
+    }
+
+    const row = document.createElement("div");
+    row.className = "luggage-row";
+    row.innerHTML = `
+      <select class="input-select walkin-size-select">
+        <option>Malý (S)</option>
+        <option>Stredný (M)</option>
+        <option>Veľký (L)</option>
+      </select>
+      <button type="button" class="remove-luggage-btn" onclick="removeLuggageRow(this)">×</button>
+    `;
+    group.appendChild(row);
+  }
+
+  // --- PRIDAŤ BATOŽINU (rezervácia vopred) ---
+  function addAdvanceLuggage() {
+    const group = document.getElementById("advance-luggage-group");
+    if (group.children.length >= 3) {
+      alert("Maximálne 3 batožiny na jednu rezerváciu.");
+      return;
+    }
+
+    const row = document.createElement("div");
+    row.className = "luggage-row";
+    row.innerHTML = `
+      <select class="input-select advance-size-select">
+        <option>Malý (S)</option>
+        <option>Stredný (M)</option>
+        <option>Veľký (L)</option>
+      </select>
+      <button type="button" class="remove-luggage-btn" onclick="removeLuggageRow(this)">×</button>
+    `;
+    group.appendChild(row);
+  }
+
+  // --- WALK-IN (API) ---
+  async function startWalkin() {
+    const userData = localStorage.getItem("user");
+    if (!userData) {
+      alert("Pre uloženie sa musíš prihlásiť.");
+      window.location.href = "login.html";
+      return;
+    }
+
+    if (!document.getElementById("walkin-terms").checked) {
+      alert("Musíš súhlasiť s obchodnými podmienkami.");
+      return;
+    }
+
+    if (!currentLocationId) {
+      alert("Chýba informácia o lokalite. Skús rezerváciu znova z mapy.");
+      return;
+    }
+
+    const sizeSelects = document.querySelectorAll(".walkin-size-select");
+    const sizes = Array.from(sizeSelects).map(s => s.value);
+
+    if (!sizes.length) {
+      alert("Vyber aspoň jednu batožinu.");
+      return;
+    }
+
+    const user = JSON.parse(userData);
+
+    try {
+      const response = await fetch("/backend/mapa.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "walkin",
+          userEmail: user.email,
+          locationId: currentLocationId,
+          sizes: sizes
+          // čas si rieši backend (NOW + buffer)
+        })
       });
 
-      // Markery
-      locations.forEach((loc) => {
-        const marker = L.marker(loc.coords, { icon: bagpointIcon }).addTo(map);
-        marker.bindPopup(`
-          <div class="popup-content">
-            <b>${loc.name}</b><br>
-            <button class="popup-btn" onclick="openReservation('${loc.name}')">Rezervovať</button>
-          </div>
-        `);
+      const data = await response.json();
+
+      if (data.success) {
+        const loc = locations.find(l => l.id === currentLocationId);
+        const locationName = loc ? loc.name : "vybraná lokalita";
+        const lockerText = data.lockerId ? `Skrinka č. ${data.lockerId} ` : "Skrinka ";
+        alert(
+          `${lockerText}aktivovaná v ${locationName}.\n` +
+          `Batožiny: ${sizes.join(", ")}.`
+        );
+        closeModal();
+      } else {
+        alert("Chyba pri ukladaní rezervácie: " + (data.message || "Neznáma chyba."));
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server momentálne neodpovedá. Skús neskôr.");
+    }
+  }
+
+  // --- REZERVÁCIA VOPRED (API) ---
+  async function startAdvance() {
+    const userData = localStorage.getItem("user");
+    if (!userData) {
+      alert("Pre rezerváciu sa musíš prihlásiť.");
+      window.location.href = "login.html";
+      return;
+    }
+
+    if (!document.getElementById("advance-terms").checked) {
+      alert("Musíš súhlasiť s obchodnými podmienkami.");
+      return;
+    }
+
+    if (!currentLocationId) {
+      alert("Chýba informácia o lokalite. Skús rezerváciu znova z mapy.");
+      return;
+    }
+
+    const type = document.querySelector('input[name="advance-type"]:checked').value;
+    let dateFrom, dateTo;
+
+    if (!calendar || !calendar.selectedDates || calendar.selectedDates.length === 0) {
+      alert("Vyber dátumy rezervácie.");
+      return;
+    }
+
+    if (type === "oneday") {
+      dateFrom = calendar.selectedDates[0];
+      dateTo = dateFrom;
+    } else {
+      if (calendar.selectedDates.length < 2) {
+        alert("Vyber začiatok aj koniec obdobia.");
+        return;
+      }
+      [dateFrom, dateTo] = calendar.selectedDates;
+    }
+
+    const sizeSelects = document.querySelectorAll(".advance-size-select");
+    const sizes = Array.from(sizeSelects).map(s => s.value);
+    if (!sizes.length) {
+      alert("Vyber aspoň jednu batožinu.");
+      return;
+    }
+
+    const user = JSON.parse(userData);
+
+    try {
+      const response = await fetch("/backend/mapa.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "advance",
+          userEmail: user.email,
+          locationId: currentLocationId,
+          sizes: sizes,
+          dateFrom: dateFrom.toISOString().split("T")[0], // YYYY-MM-DD
+          dateTo: dateTo.toISOString().split("T")[0]
+        })
       });
 
-     
-      function openReservation(locationName) {
-        document.getElementById("location-name").textContent = locationName;
-        document.getElementById("reservation-modal").style.display = "flex";
+      const data = await response.json();
+
+      if (data.success) {
+        const loc = locations.find(l => l.id === currentLocationId);
+        const locationName = loc ? loc.name : "vybraná lokalita";
+
+        alert(
+          `Rezervácia pre ${locationName} od ${dateFrom.toLocaleDateString()} ` +
+          `do ${dateTo.toLocaleDateString()} bola vytvorená.\n` +
+          `Batožiny: ${sizes.join(", ")}.`
+        );
+        closeModal();
+      } else {
+        alert("Chyba pri vytváraní rezervácie: " + (data.message || "Neznáma chyba."));
       }
+    } catch (err) {
+      console.error(err);
+      alert("Server momentálne neodpovedá. Skús neskôr.");
+    }
+  }
 
-      function closeModal() {
-        document.getElementById("reservation-modal").style.display = "none";
+  // --- FLATPICKR ---
+  let calendar;
+  function setupCalendar(mode = "single") {
+    if (calendar) calendar.destroy();
+    calendar = flatpickr("#flatpickr-calendar", {
+      inline: true,
+      mode: mode,
+      minDate: "today",
+      dateFormat: "Y-m-d",
+      onChange: function(selectedDates) {
+        console.log("Vybraté dni:", selectedDates);
       }
+    });
+  }
+  setupCalendar("single");
 
-      
-      async function startReservation() {
-        const size = document.getElementById("box-size").value;
-        const duration = document.getElementById("duration").value;
-        const location = document.getElementById("location-name").textContent;
-        const userData = localStorage.getItem("user");
-
-        if (!userData) {
-          alert("Pre rezerváciu sa musíš prihlásiť.");
-          window.location.href = "login.html";
-          return;
-        }
-
-        const user = JSON.parse(userData);
-
-        // Simulacia / buduci backend call
-        try {
-          const res = await fetch("../backend/createReservation.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              user_id: user.user_id,
-              location,
-              size,
-              duration,
-            }),
-          });
-
-          const data = await res.json();
-          if (data.success) {
-            alert("Rezervácia bola úspešná!");
-            closeModal();
-          } else {
-            alert(data.message || "Nepodarilo sa vytvoriť rezerváciu.");
-          }
-        } catch (err) {
-          console.error("Chyba:", err);
-          alert("Chyba pri spojení so serverom.");
-        }
+  // --- PREPÍNANIE 1 deň / viac dní ---
+  document.addEventListener("change", (e) => {
+    if (e.target.name === "advance-type") {
+      const label = document.getElementById("calendar-label");
+      if (e.target.value === "multiday") {
+        setupCalendar("range");
+        label.textContent = "Vyberte si obdobie:";
+      } else {
+        setupCalendar("single");
+        label.textContent = "Vyberte si deň:";
       }
-    </script>
+    }
+  });
+    // --- ENABLE / DISABLE tlačidiel podľa súhlasu s podmienkami ---
+  const walkinTerms = document.getElementById("walkin-terms");
+  const advanceTerms = document.getElementById("advance-terms");
+  const walkinBtn = document.getElementById("walkin-reserve-btn");
+  const advanceBtn = document.getElementById("advance-reserve-btn");
+
+  if (walkinTerms && walkinBtn) {
+    walkinTerms.addEventListener("change", () => {
+      walkinBtn.disabled = !walkinTerms.checked;
+    });
+  }
+
+  if (advanceTerms && advanceBtn) {
+    advanceTerms.addEventListener("change", () => {
+      advanceBtn.disabled = !advanceTerms.checked;
+    });
+  }
+
+</script>
+
   </body>
 </html>
