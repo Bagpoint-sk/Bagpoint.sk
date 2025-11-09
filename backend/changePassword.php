@@ -48,8 +48,6 @@ try {
         $update->execute(); // spustenie noveho dotazu = ulozi nove heslo do password
 
         echo json_encode(["success" => true, "message" => "Heslo bolo úspešne zmenené!"]);
-        session_unset();
-        session_destroy();
     } else {
         echo json_encode(["success" => false, "message" => "Používateľ neexistuje."]);
     }
