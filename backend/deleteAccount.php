@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_email'])) {
 
 // 2. nacitanie hesla
 $input = json_decode(file_get_contents("php://input"), true);
-$password = $input['password'] ?? '';
+$password = $input['userPassword'] ?? '';
 
 if (!$password) {
     echo json_encode(["success" => false, "message" => "Vyplň pole s heslom!"]);
