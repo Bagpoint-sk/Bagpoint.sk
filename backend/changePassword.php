@@ -1,11 +1,6 @@
 <?php
-session_set_cookie_params([
-    'path' => '/',
-    'httponly' => true,
-    'samesite' => 'None',
-    'secure' => false // na localhoste false, na HTTPS hostingu true
-]);
-session_start();
+require_once __DIR__ . '/sessionConfig.php';
+
 header("Content-Type: application/json; charset=UTF-8");
 
 // 1. musime skontrolovat, ci je user prihlaseny

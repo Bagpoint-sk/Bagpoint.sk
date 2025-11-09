@@ -1,11 +1,5 @@
 <?php
-session_set_cookie_params([
-    'path' => '/',
-    'httponly' => true,
-    'samesite' => 'None',
-    'secure' => true
-]); // nadstavenie cookie parametrov - univerzalne
-session_start();
+require_once __DIR__ . '/sessionConfig.php';
 header("Content-Type: application/json; charset=UTF-8");
 
 // 1. Overenie loginu

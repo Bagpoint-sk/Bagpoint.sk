@@ -1,5 +1,6 @@
 <?php
-session_start();
+require_once __DIR__ . '/sessionConfig.php';
+
 header("Content-Type: application/json; charset=UTF-8");
 
 // pripojen k databaze
