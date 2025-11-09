@@ -501,7 +501,7 @@ text-transform: uppercase;
 }
 
 .active-city::after {
-  content: "Zobraziť na mape";
+  content: "ZobraziÅ¥ na mape";
   position: absolute;
   bottom: 16px;
   right: 16px;
@@ -856,75 +856,6 @@ input:focus {
   }
 }
 
-
-/* MODAL (Forgot password) ------------------------------------------------------- pridal Igor */
-    .modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .modal-content {
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      width: 350px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-      text-align: center;
-      animation: fadeIn 0.3s ease;
-    }
-    .modal-content h3 {
-      margin-bottom: 15px;
-      font-family: 'Outfit', sans-serif;
-    }
-    .modal-content input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    .modal-content button {
-      width: 100%;
-      padding: 10px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .modal-content button:hover {
-      background: #0056b3;
-    }
-    .close-btn {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 22px;
-      color: #333;
-      cursor: pointer;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0; transform: scale(0.95);}
-      to {opacity: 1; transform: scale(1);}
-    }
-    .forgot-link {
-      text-align: right;
-      margin-top: 10px;
-    }
-    .forgot-link a {
-      color: #007bff;
-      text-decoration: none;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .forgot-link a:hover {
-      text-decoration: underline;
-    }
-
 /* ===================================
    SUCCESS PAGE     (po registracii)
    =================================== */
@@ -1241,7 +1172,7 @@ body.login-page.success-bg {
 
 
 
-/*O projekte som odpojila css pre kiku */
+/*O projekte som odpojila css pre kiku neskor napojit*/
 
 
 /* ===================================
@@ -1680,7 +1611,7 @@ body.login-page.success-bg {
   outline: none;
 }
 
-/*  TABS (Rezervovať teraz / Rezervácia vopred)  */
+/*  TABS (RezervovaÅ¥ teraz / RezervÃ¡cia vopred)  */
 .mode-tabs {
   display: flex;
   justify-content: center;
@@ -1816,226 +1747,331 @@ body.login-page.success-bg {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ===================================
-  ????
+   KIKA - SEKCIA
+   ===================================
+*/
 
-    .modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  justify-content: center;
-  align-items: center;
-  z-index: 9999; 
+/*  ZÃPISNICA  */
+.notebook-style {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 17px;
+  line-height: 27px;
+  color: #222;
 }
 
-.modal-content {
-  background: #fff;
-  padding: 25px;
-  border-radius: 12px;
-  max-width: 400px;
-  width: 90%;
-  text-align: center;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-  animation: slideUp 0.3s ease;
-  position: relative;
-  z-index: 10000; 
+.notebook-style h2 {
+  font-family: 'Outfit', sans-serif;
+  margin-bottom: 25px;
+  font-size: 24px;
+  color: #111;
 }
 
-.modal-content input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-
-.modal-buttons {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.modal-buttons button {
-  flex: 1;
-  padding: 10px;
+.notebook-title {
   font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.account-btn {
-  background: #0077ff;
-  color: #fff;
-}
-
-#cancel-change {
-  background: #ccc;
-  color: #000;
-}
-
-.delete {
-  background: #e63946;
-  color: white;
-}
-
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.mode-btn {
-  display: block;
-  width: 100%;
-  background: linear-gradient(90deg, #089DFA, #0471C2);
-  color: white;
-  border: none;
-  padding: 12px 0;
   margin-bottom: 10px;
-  border-radius: 10px;
-  font-weight: 600;
+  font-size: 17px;
+}
+
+.notebook-intro {
+  color: #555;
+  font-family: 'Outfit', sans-serif;
+  margin-bottom: 30px;
+}
+
+/*   PAPIER  */
+.notebook-page {
+  background: repeating-linear-gradient(
+      to bottom,
+      #fdfcf6,
+      #fdfcf9 26px,
+      #d8e8fa 27px
+    ),
+    linear-gradient(to right, transparent 0%, #cfd6e1 99%, transparent 100%);
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 100% auto;
+  padding: 42px 50px 50px 80px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+
+/*  TEXTOVA CAST  */
+.notebook-page ul {
+  margin: 0 0 25px 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.notebook-page li {
+  margin-bottom: 0;
+  line-height: 27px;
+  font-size: 16px;
+  color: #2a2a2a;
+  position: relative;
+}
+
+.notebook-page li::before {
+  content: "â€¢";
+  position: absolute;
+  left: -25px;
+  color: #0471C2;
+  font-weight: bold;
+}
+
+.notebook-date {
+  font-weight: 700;
+  color: #0471C2;
+  margin-top: 45px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+}
+
+.visual-preview {
+  width: 50%;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* SPIRALA NA VRCHU  */
+.spiral-binding {
+  position: absolute;
+  top: -2%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/*  CASOVA OS V ZAPISNICI (vnutri zapisnika)  */
+.notebook-page {
+  position: relative;
+}
+
+/* zvisla ciara */
+.notebook-page::before {
+  content: "";
+  position: absolute;
+  top: 60px;
+  left: 48px;
+  width: 2px;
+  height: calc(100% - 80px);
+  background: linear-gradient(to bottom, #a8c9f8 0%, #0471C2 100%);
+  border-radius: 2px;
+  opacity: 0.35;
+  z-index: 0;
+}
+
+/* kruzky  */
+.notebook-date {
+  position: relative;
+  padding-left: 25px;
+}
+
+.notebook-date::before {
+  content: "";
+  position: absolute;
+  left: -36px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(to bottom, #a8c9f8 0%, #0471C2 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(4, 113, 194, 0.3);
+}
+ /* ===================================
+   TÃMOVÃ FOTKA 
+=================================== */
+
+.team-photo {
+  margin-top: 20px;
+  text-align: center;
+  padding: 30px 30px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+  cursor: zoom-in; /* naznaÄÃ­, Å¾e sa dÃ¡ otvoriÅ¥ */
+  background: #ffffff;
+}
+
+.team-photo img {
+  width: 100%;
+  max-width: 800px;
+  border-radius: 16px;
+  object-fit: cover;
+  opacity: 0.9;
+}
+
+/* ===================================
+   TÃMOVÃ FOTKA MODAL
+=================================== */
+
+.team-photo-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: rgba(15, 23, 42, 0.55);         
+  backdrop-filter: blur(22px);                 
+  -webkit-backdrop-filter: blur(22px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  transition: opacity 0.25s ease;
+}
+
+.team-photo-modal.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.team-photo-modal-frame {
+  position: relative;
+  max-width: min(900px, 90vw);   
+  border-radius: 26px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 30px 90px rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(26px) saturate(150%);
+  -webkit-backdrop-filter: blur(26px) saturate(150%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;             
+}
+
+.team-photo-modal-frame img {
+  width: 100%;                  
+  height: auto;                 
+  max-height: 70vh;             
+  object-fit: contain;          
+  border-radius: 18px;
+  display: block;
+}
+
+
+.team-photo-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.2);
+  color: #111827;
+  font-size: 1.4rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.32);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.18s ease;
 }
 
-.mode-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(4,113,194,0.3);
-}
-
-.notice {
-  font-size: 13px;
-  color: #5C6B7A;
-  margin-top: 8px;
+.team-photo-modal-close:hover {
+  background: linear-gradient(135deg, #089DFA, #0471C2);
+  color: #ffffff;
+  box-shadow: 0 22px 55px rgba(4, 113, 194, 0.5);
+  transform: translateY(-1px);
 }
 
 
+/* ===================================
+   KIKA - SEKCIA KONIEC
+   ===================================
+*/
 
 
 
 /* ===================================
-   ACCOUNT - PASSWORD FORM & FEEDBACK
-=================================== 
+   IGOR - SEKCIA
+   ===================================
+ */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      width: 350px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+    .modal-content h3 {
+      margin-bottom: 15px;
+      font-family: 'Outfit', sans-serif;
+    }
+    .modal-content input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .modal-content button {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .modal-content button:hover {
+      background: #0056b3;
+    }
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 22px;
+      color: #333;
+      cursor: pointer;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.95);}
+      to {opacity: 1; transform: scale(1);}
+    }
+    .forgot-link {
+      text-align: right;
+      margin-top: 10px;
+    }
+    .forgot-link a {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .forgot-link a:hover {
+      text-decoration: underline;
+    }
 
-#change-password-form {
-  display: none;
-  margin-top: 25px;
-  background: #F8FAFD;
-  padding: 25px 30px;
-  border-radius: 14px;
-  border: 1px solid #E0E6ED;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.04);
-  max-width: 450px;
-}
-
-#change-password-form label {
-  display: block;
-  margin-bottom: 6px;
-  color: #1E2A38;
-  font-weight: 500;
-}
-
-#change-password-form input {
-  width: 100%;
-  padding: 10px 12px;
-  margin-bottom: 16px;
-  border: 1px solid #CCD5E0;
-  border-radius: 8px;
-  font-size: 15px;
-  outline: none;
-  transition: all 0.2s ease;
-  background: white;
-}
-
-#change-password-form input:focus {
-  border-color: #0471C2;
-  box-shadow: 0 0 0 2px rgba(4, 113, 194, 0.15);
-}
-
-#change-password-form .account-btn {
-  margin-top: 10px;
-}
-
-.status-message {
-  margin-top: 18px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  color: #0471C2;
-  font-weight: 600;
-}
 
 
-
-
-
-
-
-
-
-
-
-
-  
-=================================== */
+/* ===================================
+   IGOR - SEKCIA KONIEC
+   ===================================
+*/
 
 /* PODMIENKY */
 .terms-container {

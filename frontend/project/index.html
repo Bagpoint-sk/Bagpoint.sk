@@ -186,11 +186,17 @@
 
                 <!--  tímova fotka !!! -->
                 <div class="team-photo">
-                  <img src="images/team-soon.jpg" alt="Tím BagPoint" />
-                  <p>Spoločná tímová fotografia už čoskoro 📸</p>
+                  <img src="images/IMG_8615.jpg" alt="Tím BagPoint" />
                 </div>
               </div>
             </div>
+            <div class="team-photo-modal" id="team-photo-modal">
+  <div class="team-photo-modal-frame">
+    <button class="team-photo-modal-close" type="button">&times;</button>
+    <img src="images/IMG_8615.jpg" alt="Tím BagPoint – náhľad">
+  </div>
+</div>
+
 
             <!-- PLAN PROJEKTU  -->
             <div id="plan-section" class="tab-content">
@@ -388,7 +394,7 @@
               </section>
             </div>
 
-            <!--  ZAPISNICA  -->
+          <!--  ZAPISNICA  -->
             <div id="notes-section" class="tab-content">
               <section class="project-notes notebook-style">
                 <h2>Zápisnica projektu</h2>
@@ -442,7 +448,38 @@
                   </p>
 
                   <!-- 3. týždeň -->
-                  <div class="notebook-date">26. 10. – 20. 12.</div>
+                  <div class="notebook-date">26. 10. – 1. 11.</div>
+                  <div class="notebook-title">Implementácia registrácie a prihlásenia</div>
+                  <ul>
+                    <li>Implementácia login funkcie (frontend + backend)</li>
+                    <li>Implementácia registrácie nových používateľov</li>
+                    <li>Funkcia „Zabudnuté heslo“ – posielanie reset linku</li>
+                    <li>Zmena hesla pre existujúce účty</li>
+                    <li>Testovanie a odosielanie dát cez fetch API</li>
+                    <li>Začiatok prípravy formulára pre rezervácie</li>
+                  </ul>
+                  <p class="notebook-members">
+                    <strong>Členovia:</strong> Tamara (frontend), Jozef
+                    (backend), Igor (backend)
+                  </p>
+
+                  <!-- 4. týždeň -->
+                   <div class="notebook-date">2. 11. – 8. 11.</div>
+                  <div class="notebook-title">Začiatok implementácie systému rezervácií a API pre správu účtov</div>
+                  <ul>
+                    <li>Testovanie API pre login, zmenu hesla, reset hesla</li>
+                    <li>Implementácia základného formulára pre rezerváciu boxov</li>
+                    <li>Backend logika pre uchovanie rezervácií</li>
+                    <li>Testovanie spojenia s databázou a validácia dát</li>
+                    <li>Kontrola UX formulárov a vizuálu pre pohodlné používanie</li>
+                    <li>Dokumentácia a zápis aktuálneho stavu projektu</li>
+                  </ul>
+                  <p class="notebook-members">
+                    <strong>Členovia:</strong> Tamara (frontend), Jozef (backend), Igor (backend), Kristína (dokumentácia)
+                  </p>            
+
+                  <!-- dalsie tyzdne -->
+                  <div class="notebook-date">9. 11. – 20. 12.</div>
                   <div class="notebook-title">Pokračovanie vývoja</div>
                   <ul>
                   </ul>
@@ -496,6 +533,45 @@
       behavior: "smooth"
     });
   }
+  document.addEventListener('DOMContentLoaded', function () {
+    const teamImg   = document.querySelector('.team-photo img');
+    const modal     = document.getElementById('team-photo-modal');
+    const closeBtn  = modal ? modal.querySelector('.team-photo-modal-close') : null;
+
+    function openTeamModal() {
+      if (!modal) return;
+      modal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeTeamModal() {
+      if (!modal) return;
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    if (teamImg) {
+      teamImg.addEventListener('click', openTeamModal);
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeTeamModal);
+    }
+
+    if (modal) {
+      modal.addEventListener('click', function (e) {
+        if (e.target === modal) {
+          closeTeamModal();
+        }
+      });
+    }
+
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeTeamModal();
+      }
+    });
+  });
 </script>
 
   </body>
