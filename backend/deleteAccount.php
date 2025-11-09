@@ -30,6 +30,9 @@ try {
     $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    error_log("🧩 DEBUG DELETE - Email zo session: " . $email);
+    error_log("🧩 DEBUG DELETE - Heslo z formulára: " . $password);
+    error_log("🧩 DEBUG DELETE - Hash z DB: " . ($user['password'] ?? 'N/A'));
 
     if ($user) {
         // kontrola hesla
