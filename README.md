@@ -1,4 +1,4 @@
-<img src="images/logo2.png" alt="logo" width="450">
+<img src="frontend/images/logo2.png" alt="logo" width="450">
 <h4 align="left">
   BagPoint.sk je moderné riešenie pre tých, ktorí nechcú ťahať batožinu všade so sebou.
   Naše samoobslužné boxy ti umožnia uložiť veci na pár hodín či dní – rýchlo, bezpečne a online.
@@ -10,7 +10,7 @@
 <ul>
   <li>Kristína Járebová</li>
   <ul>
-  <li></li>
+  <li>vedúci tímu, komunikácia s vedením, rozdelenie úloh, tvorba dokumentácie, kontrola</li>
 </ul>
 </ul>
 
@@ -18,7 +18,7 @@
 <ul>
   <li>Tamara Némethová</li>
   <ul>
-  <li></li>
+  <li>návrh vizuálnej identity a používateľského rozhrania UI/UX, rozloženie stránok a štruktúry navigácie, tvorba front-end</li>
 </ul>
 </ul>
 <h4 align="left">Back-end + databáza</h4>
@@ -37,55 +37,42 @@
 <ul>
   <li>Ján Földeši</li>
   <ul>
-  <li></li>
+  <li>technická podpora pri tvorbe back-end, testovanie funkcionalít</li>
 </ul>
 </ul>
 <hr>
 <h3 align="left">Technológie, ktoré používame</h3>
 <h4 align="left">Design</h4>
 <p align="left">
-  <a href="https://www.figma.com/" target="_blank" rel="noreferrer">
-    <img src="https://www.vectorlogo.zone/logos/figma/figma-icon.svg" alt="figma" width="40" height="40">
-  </a>
-  <a href="https://www.adobe.com/products/illustrator.html" target="_blank" rel="noreferrer">
-    <img src="https://www.vectorlogo.zone/logos/adobe_illustrator/adobe_illustrator-icon.svg" alt="illustrator" width="40" height="40">
-  </a>
-  <a href="https://www.photoshop.com/en" target="_blank" rel="noreferrer">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/photoshop/photoshop-line.svg" alt="photoshop" width="40" height="40">
-  </a>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" height="40" alt="figma logo"/>
+  <img width="12"/>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/photoshop/photoshop-plain.svg" height="40" alt="photoshop logo"/>
+  <img width="12"/>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/illustrator/illustrator-plain.svg" height="40" alt="illustrator logo"/>
 </p>
 <h4 align="left">Frontend</h4>
 <p align="left">
-  <a href="https://www.w3.org/html/" target="_blank" rel="noreferrer">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40">
-  </a>
-  <a href="https://www.w3schools.com/css/" target="_blank" rel="noreferrer">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original-wordmark.svg" alt="css3" width="40" height="40">
-  </a>
-  <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" alt="javascript" width="40" height="40">
-  </a>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" height="40" alt="html5 logo"/>
+  <img width="12"/>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" height="40" alt="css logo"/>
+  <img width="12"/>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" height="40" alt="javascript logo"/>
 </p>
 <h4 align="left">Backend</h4>
 <p align="left">
-  <a href="https://www.php.net" target="_blank" rel="noreferrer">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/php/php-original.svg" alt="php" width="40" height="40"/>
-  </a>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" height="40" alt="php logo"/>
 </p>
 <h4 align="left">Database</h4>
 <p align="left">
-  <a href="https://www.mysql.com/" target="_blank" rel="noreferrer">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mysql/mysql-original-wordmark.svg" alt="mysql" width="40" height="40"/>
-  </a>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" height="40" alt="postgresql logo"/>
 </p>
 <h4 align="left">Tools &amp; Workflow</h4>
 <p align="left">
-  <a href="https://git-scm.com/" target="_blank" rel="noreferrer">
-    <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/>
-  </a>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" height="40" alt="git logo"/>
+  <img width="12"/>
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" height="40" alt="github logo"/>
 </p>
 <hr>
 <h3 align="left">Spoj sa s nami</h3>
-<p align="left"><a href="https://bagpoint.sk" target="_blank" rel="noreferrer">bagpoint.sk</a><br /></p>
-<p align="left"><a href="mailto:info@bagpoint.sk">info@bagpoint.sk</a></p>
+<p align="left">🌐 <a href="https://bagpoint-sk.onrender.com/kontakt.html">bagpoint-sk.onrender.com</a></p>
 
