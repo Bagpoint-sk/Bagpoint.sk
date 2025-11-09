@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/sessionConfig.php';
+error_log("🧩 DELETE SESSION: " . print_r($_SESSION, true));
+error_log("🧩 DELETE COOKIE: " . print_r($_COOKIE, true));
 header("Content-Type: application/json; charset=UTF-8");
 
 // 1. Overenie loginu
