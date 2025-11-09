@@ -1275,6 +1275,7 @@ body.login-page.success-bg {
   text-align: center;
   box-shadow: 0 10px 40px rgba(0,0,0,0.2);
   animation: slideUp 0.3s ease;
+  margin-bottom: 10px; /* medzera medzi buttonmi */
 }
 
 @keyframes slideUp {
@@ -2031,14 +2032,19 @@ body.login-page.success-bg {
     .modal-content button {
       width: 100%;
       padding: 10px;
-      background: #007bff;
-      color: white;
+      background: linear-gradient(90deg, #089DFA, #0471C2);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
       border: none;
-      border-radius: 6px;
+      border-radius: 10px;
       cursor: pointer;
+      margin-bottom: 10px;
+      transition: all 0.3s ease;
     }
     .modal-content button:hover {
-      background: #0056b3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(4, 113, 194, 0.3);
     }
     .close-btn {
       position: absolute;
