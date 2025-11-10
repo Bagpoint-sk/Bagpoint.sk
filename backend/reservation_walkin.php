@@ -40,7 +40,7 @@ function respond($data) {
 debug("DEBUG: Skript sa spustil");
 
 // --- Pripojenie k DB ---
-require_once 'db_connect';
+require_once 'db_connect.php';
 if (!isset($conn) || !$conn) {
     $msg = "Databázové pripojenie nie je inicializované";
     debug($msg);
