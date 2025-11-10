@@ -470,7 +470,7 @@
     const user = JSON.parse(userData);
 
     try {
-      const response = await fetch("/backend/reservation_daily.php", {
+      const response = await fetch("backend/reservation_daily.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
