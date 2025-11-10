@@ -390,7 +390,7 @@
     const user = JSON.parse(userData);
 
     try {
-      const response = await fetch("/backend/mapa.php", {
+      const response = await fetch("backend/reservation_walkin.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -470,11 +470,11 @@
     const user = JSON.parse(userData);
 
     try {
-      const response = await fetch("/backend/mapa.php", {
+      const response = await fetch("/backend/reservation_daily.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type: "advance",
+          type: "daily",
           userEmail: user.email,
           locationId: currentLocationId,
           sizes: sizes,
