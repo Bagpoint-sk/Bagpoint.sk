@@ -14,7 +14,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (loginBtn) loginBtn.style.display = "none";
     if (accountLink) {
       accountLink.style.display = "inline-block";
-      accountLink.textContent =  "Môj účet";
+      accountLink.textContent = "Môj účet";
     }
     if (logoutLink) logoutLink.style.display = "inline-block";
   } else {
@@ -26,12 +26,21 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // 🔹 Odhlásenie
   if (logoutLink) {
-    logoutLink.addEventListener("click", async () => {
+    logoutLink.addEventListener("click", async (e) => {
+      e.preventDefault();
       try {
-        const res = await fetch("../backend/logout.php");
+        const res = await fetch("../backend/logout.php", {
+          method: "POST",
+          credentials: "include",
+        });
         const data = await res.json();
+
         if (data.success) {
           localStorage.removeItem("user");
+          if (loginBtn) loginBtn.style.display = "inline-block";
+          if (accountLink) accountLink.style.display = "none";
+          if (logoutLink) logoutLink.style.display = "none";
+
           window.location.href = "index.html";
         }
       } catch (err) {
