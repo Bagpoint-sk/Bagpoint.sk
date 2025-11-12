@@ -12,9 +12,9 @@ if (!isset($_SESSION['user_email'])) {
 
 // 2. nacitanie hesla
 $input = json_decode(file_get_contents("php://input"), true);
-$password = $input['userPassword'] ?? '';
+$oldPassword = $input['userPassword'] ?? '';
 
-if (!$password) {
+if (!$oldPassword) {
     echo json_encode(["success" => false, "message" => "Vyplň pole s heslom!"]);
     exit;
 }
@@ -31,12 +31,12 @@ try {
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     error_log("🧩 DEBUG DELETE - Email zo session: " . $email);
-    error_log("🧩 DEBUG DELETE - Heslo z formulára: " . $password);
+    error_log("🧩 DEBUG DELETE - Heslo z formulára: " . $oldPassword);
     error_log("🧩 DEBUG DELETE - Hash z DB: " . ($user['password'] ?? 'N/A'));
 
-    if ($user) {
+     if ($user) {
         // kontrola hesla
-        if (!password_verify($password, $user['password'])) {
+        if (!password_verify($oldPassword, $user['password'])) {
             echo json_encode(["success" => false, "message" => "Zadané heslo je nesprávne!"]);
             exit;
         }
