@@ -715,22 +715,27 @@ header {
 
 /*  ZÁPISNICA  */
 .notebook-style {
- /* font-family: 'Shadows Into Light', sans-serif;*/
- font-family: 'Handlee', cursive;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 17px;
+  line-height: 27px;
+  color: #222;
 }
 
 .notebook-style h2 {
   font-family: 'Outfit', sans-serif;
   margin-bottom: 25px;
+  font-size: 24px;
+  color: #111;
 }
 
 .notebook-title {
   font-weight: 600;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
+  font-size: 17px;
 }
 
 .notebook-intro {
-  color: #666;
+  color: #555;
   font-family: 'Outfit', sans-serif;
   margin-bottom: 30px;
 }
@@ -743,11 +748,11 @@ header {
       #fdfcf9 26px,
       #d8e8fa 27px
     ),
-    linear-gradient(to right, transparent 0%, #cfd6e1 99%, transparent 100%); /* skontrolovta  */
+    linear-gradient(to right, transparent 0%, #cfd6e1 99%, transparent 100%);
   background-repeat: no-repeat;
-  background-position: right;
-  background-size: 100% 100%;
-  padding: 40px 50px 50px 80px; /* skontrolovta  */
+  background-position: right top;
+  background-size: 100% auto;
+  padding: 42px 50px 50px 80px;
   border-radius: 12px;
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
   position: relative;
@@ -762,17 +767,17 @@ header {
 }
 
 .notebook-page li {
-  margin-bottom: 7px;
+  margin-bottom: 0;
+  line-height: 27px;
+  font-size: 16px;
   color: #2a2a2a;
-  line-height: 1.4;
-  font-size: 15px;
   position: relative;
 }
 
 .notebook-page li::before {
   content: "•";
   position: absolute;
-  left: -30px;
+  left: -25px;
   color: #0471C2;
   font-weight: bold;
 }
@@ -780,9 +785,9 @@ header {
 .notebook-date {
   font-weight: 700;
   color: #0471C2;
-  margin-top: 55px;
-  margin-bottom: 20px;
-  font-size: 14px;
+  margin-top: 45px;
+  margin-bottom: 10px;
+  font-size: 15px;
   letter-spacing: 0.3px;
 }
 
@@ -800,10 +805,9 @@ header {
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  object-fit: contain;
   opacity: 0.85;
-  z-index: 2;
   pointer-events: none;
+  z-index: 2;
 }
 
 /*  CASOVA OS V ZAPISNICI (vnutri zapisnika)  */
@@ -816,7 +820,7 @@ header {
   content: "";
   position: absolute;
   top: 60px;
-  left: 48px; 
+  left: 48px;
   width: 2px;
   height: calc(100% - 80px);
   background: linear-gradient(to bottom, #a8c9f8 0%, #0471C2 100%);
@@ -828,18 +832,17 @@ header {
 /* kruzky  */
 .notebook-date {
   position: relative;
-  padding-left: 25px; 
+  padding-left: 25px;
 }
 
 .notebook-date::before {
   content: "";
   position: absolute;
-  left: -36px;  /*  podla zarovnania ciary */
+  left: -36px;
   top: 6px;
   width: 10px;
   height: 10px;
   background: linear-gradient(to bottom, #a8c9f8 0%, #0471C2 100%);
   border-radius: 50%;
-  z-index: 1;
   box-shadow: 0 0 4px rgba(4, 113, 194, 0.3);
 }
