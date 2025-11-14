@@ -1,0 +1,848 @@
+/* ===================================
+   GLOBAL SETTINGS
+   =================================== */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #F9F9F9;
+  color: #2C2C2C;
+  font-family: 'Outfit', sans-serif;
+}
+h1, h2, h3 {
+  letter-spacing: 0.5px;
+}
+
+
+a {
+  color: #2C2C2C;
+  text-decoration: none;
+}
+
+::selection {
+  background: #2C2C2C;
+  color: white;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #2C2C2C;
+  margin: 8px 0;
+}
+
+/* ===================================
+   HEADER  NAVIGATION 
+=================================== */
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+  transition: background-color 0.3s ease;
+}
+
+.navbar {
+  width: 1140px;
+  height: 80px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  height: 58px;
+  width: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+.nav-center {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-center li a {
+  color: #1E2A38;
+  font-weight: 500;
+  font-size: 18px;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.nav-center li a:hover {
+  background-color: rgba(8, 157, 250, 0.1);
+  color: #0471C2;
+}
+
+.login-btn {
+  background: linear-gradient(90deg, #089DFA, #0471C2);
+  color: white;
+  font-size: 16px;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(4, 113, 194, 0.25);
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(4, 113, 194, 0.35);
+}
+
+/*sticky s js*/
+.scrolled {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+}
+
+
+
+/* ===================================
+   O PROJEKTE 
+=================================== */
+
+
+/* === STICKY ŠÍPKA HORE === */
+.scroll-top-btn {
+  position: fixed;
+  bottom: 35px;               /* vzdialenosť od spodku obrazovky */
+  left: 280px;                /* vzdialenosť od praveho okraja ? % */
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.scroll-top-btn svg {
+  width: 34px;
+  height: 34px;
+  stroke: #65a5fe;            
+  transition: stroke 0.3s ease, transform 0.2s ease;
+}
+
+.scroll-top-btn:hover svg {
+  stroke: #0471C2;           
+  transform: translateY(-4px);
+}
+
+.scroll-top-btn:hover {
+  opacity: 1;
+}
+
+.project-page {
+  background: linear-gradient(135deg, #F8FAFD, #EAF3FB);
+  min-height: 100vh;
+  padding: 100px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.project-container {
+  display: flex;
+  background: white;
+  border-radius: 22px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 1200px;
+  overflow: hidden;
+}
+
+/* Sidebar */
+.project-sidebar {
+  width: 260px;
+  background: #F4F8FB;
+  border-right: 1px solid #E0E6ED;
+  padding: 40px 30px;
+}
+
+.project-sidebar h2 {
+  font-size: 18px;
+  color: #0471C2;
+  margin-bottom: 25px;
+}
+
+.project-sidebar li {
+  list-style: none;
+  font-size: 16px;
+  color: #1E2A38;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.project-sidebar li:hover {
+  background: rgba(4, 113, 194, 0.1);
+  color: #0471C2;
+}
+
+.project-sidebar li.active {
+  background: linear-gradient(90deg, #089DFA, #0471C2);
+  color: white;
+}
+
+
+.project-content {
+  flex: 1;
+  padding: 60px;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+}
+
+.member {
+  background: #F8FAFD;
+  padding: 20px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.member:hover {
+  transform: translateY(-4px);
+}
+
+.member img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+.member h3 {
+  color: #1E2A38;
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.member .role {
+  color: #0471C2;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.member .focus {
+  color: #333;
+  font-size: 14px;
+  margin: 5px 0 10px;
+}
+
+.member .about {
+  font-size: 14px;
+  color: #5C6B7A;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.member a {
+  color: #0471C2;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Docs */
+.docs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+.doc-card {
+  background: #F8FAFD;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+.doc-card h3 {
+  margin-bottom: 10px;
+  color: #0471C2;
+}
+
+.doc-card iframe {
+  width: 100%;
+  height: 380px;
+  border: none;
+  border-radius: 10px;
+}
+
+/* ===================================
+   TÍMOVÁ FOTKA 
+=================================== */
+
+.team-photo {
+  margin-top: 20px;
+  text-align: center;
+  padding: 30px 30px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+  cursor: zoom-in; /* naznačí, že sa dá otvoriť */
+  background: #ffffff;
+}
+
+.team-photo img {
+  width: 100%;
+  max-width: 800px;
+  border-radius: 16px;
+  object-fit: cover;
+  opacity: 0.9;
+}
+
+/* ===================================
+   TÍMOVÁ FOTKA MODAL
+=================================== */
+
+.team-photo-modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: rgba(15, 23, 42, 0.55);         
+  backdrop-filter: blur(22px);                 
+  -webkit-backdrop-filter: blur(22px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1000;
+  transition: opacity 0.25s ease;
+}
+
+.team-photo-modal.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.team-photo-modal-frame {
+  position: relative;
+  max-width: min(900px, 90vw);   
+  border-radius: 26px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 30px 90px rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(26px) saturate(150%);
+  -webkit-backdrop-filter: blur(26px) saturate(150%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;             
+}
+
+.team-photo-modal-frame img {
+  width: 100%;                  
+  height: auto;                 
+  max-height: 70vh;             
+  object-fit: contain;          
+  border-radius: 18px;
+  display: block;
+}
+
+
+.team-photo-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.2);
+  color: #111827;
+  font-size: 1.4rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.32);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.18s ease;
+}
+
+.team-photo-modal-close:hover {
+  background: linear-gradient(135deg, #089DFA, #0471C2);
+  color: #ffffff;
+  box-shadow: 0 22px 55px rgba(4, 113, 194, 0.5);
+  transform: translateY(-1px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===================================
+   GALERIA HLAV 
+=================================== */
+
+.team-gallery {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  margin: 30px 0 60px;
+  flex-wrap: wrap;
+}
+
+.team-gallery img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+ 
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: all 0.4s ease;
+  filter: grayscale(100%) brightness(0.9);
+  opacity: 0.85;
+}
+
+.team-gallery img:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 16px rgba(4, 113, 194, 0.3);
+  filter: grayscale(0%) brightness(1);
+  opacity: 1;
+}
+
+.team-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0 60px;
+  position: relative;
+}
+
+.team-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #cfd6e1, transparent);
+  z-index: 0;
+}
+
+.team-divider span {
+  background: #f9f9f9; 
+  padding: 0 14px;
+  color: #0471C2;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  z-index: 1;
+}
+
+.team-divider .arrow {
+  color: #0471C2;
+  font-size: 22px;
+  margin-top: 6px;
+  animation: bounce 1.5s infinite ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+
+
+/*  PROJECT SECTIONS */
+.project-schedule, .project-notes, .project-visuals {
+  background: #F9FAFC;
+  border-radius: 18px;
+  box-shadow: 0 4px 25px rgba(0,0,0,0.05);
+}
+/*  Nadpisy sekcii */
+.project-schedule h2,
+.project-notes h2,
+.project-visuals h2,
+.project-docs h2 {
+  margin-top: 35px; 
+}
+
+.project-schedule p,
+.project-notes p,
+.project-visuals p {
+  color: #5C6B7A;
+  margin-bottom: 24px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.tab-content {
+  display: none;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.tab-content.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+
+}
+
+/*  PLÁN PROJEKTU  */
+.project-plan {
+  margin-top: 30px;
+  background: white;
+  border-radius: 22px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+  padding: 60px 70px;
+  position: relative;
+  overflow: hidden;
+}
+
+
+.project-plan::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(8,157,250,0.07), rgba(4,113,194,0.05));
+  z-index: 0;
+}
+
+.project-plan h2 {
+  color: #0471C2;
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.project-plan h3 {
+  color: #1E2A38;
+  font-size: 20px;
+  margin: 30px 0 12px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 1;
+}
+
+.project-plan h3::before {
+  content: "📘";
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+.project-plan p {
+  color: #4b5a67;
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 16px;
+  z-index: 1;
+  position: relative;
+}
+
+
+.plan-list {
+  margin: 10px 0 25px 30px;
+  padding-left: 0;
+  z-index: 1;
+  position: relative;
+}
+
+.plan-list li {
+  color: #2c3e50;
+  font-size: 15px;
+  margin-bottom: 10px;
+  list-style: none;
+  position: relative;
+  padding-left: 28px;
+}
+
+
+.plan-list li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  top: 1px;
+  color: #089DFA;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+
+.plan-list li:hover {
+  transform: translateX(3px);
+  transition: transform 0.2s ease;
+  color: #0471C2;
+}
+
+
+.project-plan h3:not(:first-of-type) {
+  border-top: 1px solid #e3edf5;
+  padding-top: 24px;
+  margin-top: 36px;
+}
+
+
+
+/*  KONTROLNE BODY (MILESTONES)  */
+.schedule-wrapper {
+  overflow-x: auto;
+  margin-top: 20px;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+}
+
+
+.schedule {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  font-family: 'Outfit', sans-serif;
+}
+
+
+.schedule thead {
+  background: linear-gradient(90deg, #EAF3FB, #F8FAFD);
+}
+
+.schedule th {
+  text-align: left;
+  padding: 18px 20px;
+  font-size: 15px;
+  color: #08426e;
+  font-weight: 600;
+  border-bottom: 1px solid #d7e4ef;
+}
+
+
+.schedule .schedule-logo {
+  width: 32px;
+  height: 32px;
+  opacity: 0.8;
+  vertical-align: middle;
+}
+
+
+.schedule td {
+  padding: 16px 20px;
+  font-size: 15px;
+  color: #3a4b5f;
+  border-bottom: 1px solid #e6eff8;
+  vertical-align: top;
+  transition: background 0.25s ease;
+}
+
+.schedule tr:hover td {
+  background: #f3f9ff;
+}
+
+
+.week-num {
+  text-align: center;
+  font-weight: 700;
+  color: #0471C2;
+  background: #EAF3FB;
+  width: 40px;
+}
+
+.schedule tbody tr:last-child td {
+  border-bottom: none;
+}
+
+
+.schedule th:nth-child(3),
+.schedule td:nth-child(3) {
+  width: 510px;
+}
+
+/* RESPONSIVITA */
+@media (max-width: 768px) {
+  .schedule th,
+  .schedule td {
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+}
+
+
+
+
+/*  ZÁPISNICA  */
+.notebook-style {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 17px;
+  line-height: 27px;
+  color: #222;
+}
+
+.notebook-style h2 {
+  font-family: 'Outfit', sans-serif;
+  margin-bottom: 25px;
+  font-size: 24px;
+  color: #111;
+}
+
+.notebook-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+  font-size: 17px;
+}
+
+.notebook-intro {
+  color: #555;
+  font-family: 'Outfit', sans-serif;
+  margin-bottom: 30px;
+}
+
+/*   PAPIER  */
+.notebook-page {
+  background: repeating-linear-gradient(
+      to bottom,
+      #fdfcf6,
+      #fdfcf9 26px,
+      #d8e8fa 27px
+    ),
+    linear-gradient(to right, transparent 0%, #cfd6e1 99%, transparent 100%);
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 100% auto;
+  padding: 42px 50px 50px 80px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+
+/*  TEXTOVA CAST  */
+.notebook-page ul {
+  margin: 0 0 25px 20px;
+  padding: 0;
+  list-style: none;
+}
+
+.notebook-page li {
+  margin-bottom: 0;
+  line-height: 27px;
+  font-size: 16px;
+  color: #2a2a2a;
+  position: relative;
+}
+
+.notebook-page li::before {
+  content: "•";
+  position: absolute;
+  left: -25px;
+  color: #0471C2;
+  font-weight: bold;
+}
+
+.notebook-date {
+  font-weight: 700;
+  color: #0471C2;
+  margin-top: 45px;
+  margin-bottom: 10px;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+}
+
+.visual-preview {
+  width: 50%;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* SPIRALA NA VRCHU  */
+.spiral-binding {
+  position: absolute;
+  top: -2%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/*  CASOVA OS V ZAPISNICI (vnutri zapisnika)  */
+.notebook-page {
+  position: relative;
+}
+
+/* zvisla ciara */
+.notebook-page::before {
+  content: "";
+  position: absolute;
+  top: 60px;
+  left: 48px;
+  width: 2px;
+  height: calc(100% - 80px);
+  background: linear-gradient(to bottom, #a8c9f8 0%, #0471C2 100%);
+  border-radius: 2px;
+  opacity: 0.35;
+  z-index: 0;
+}
+
+/* kruzky  */
+.notebook-date {
+  position: relative;
+  padding-left: 25px;
+}
+
+.notebook-date::before {
+  content: "";
+  position: absolute;
+  left: -36px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(to bottom, #a8c9f8 0%, #0471C2 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(4, 113, 194, 0.3);
+}
