@@ -1,15 +1,23 @@
 <?php
-
 header('Content-Type: application/json');
 
 require_once 'db_connect.php';
 
 $data = json_decode(file_get_contents("php://input"), true);
 $email = trim($data['email'] ?? '');
-$password = trim($data['password'] ?? '');
+$password = $data['password'] ?? '';
 
 if (empty($email) || empty($password)) {
     echo json_encode(['success' => false, 'message' => "Vyplňte všetky polia!"]);
+    exit;
+}
+
+// validacia hesla
+if (strlen($password) < 8 || strlen($password) > 30) {
+    echo json_encode(['success' => false, 'message' => "Heslo musí obsahovať 8 - 30 znakov!"]);
+    exit;
+} elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/', $password)) {
+    echo json_encode(['success' => false, 'message' => "Heslo musí obsahovať veľké, malé písmeno a číslicu!"]);
     exit;
 }
 
@@ -23,7 +31,7 @@ try {
 
     $user = $checkMail->fetch(PDO::FETCH_ASSOC);
     if (!$user) {
-        echo json_encode(['success' => false, 'message' => "Používateľ s týmto emailom neexistuje."]);
+        echo json_encode(['success' => false, 'message' => "Používateľ s týmto emailom neexistuje!"]);
         exit;
     }
 
@@ -38,11 +46,10 @@ try {
         $deleteOld->execute();
 
         echo json_encode(['success' => true, 'message' => "Heslo bolo úspešne zmenené!"]);
-    } else {
-        echo json_encode(['success' => false, 'message' => "Chyba pri ukladaní hesla!"]);
-    }
+    } 
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'message' => "Chyba databázy: " . $e->getMessage()]);
+    error_log("Password reset error: " . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => "Chyba pri zmene hesla!"]);
 }
 
 ?>

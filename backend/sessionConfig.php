@@ -1,4 +1,5 @@
 <?php
+ini_set('session.use_strict_mode', 1); // validacia session ID (nemoze byt vytvorene nahodne)
 // Funguje len na HTTPS (Render)
 session_set_cookie_params([
     'path' => '/',

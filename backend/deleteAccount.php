@@ -1,7 +1,5 @@
 <?php
 require_once __DIR__ . '/sessionConfig.php';
-error_log("🧩 DELETE SESSION: " . print_r($_SESSION, true));
-error_log("🧩 DELETE COOKIE: " . print_r($_COOKIE, true));
 header("Content-Type: application/json; charset=UTF-8");
 
 // 1. Overenie loginu
@@ -30,11 +28,8 @@ try {
     $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    error_log("🧩 DEBUG DELETE - Email zo session: " . $email);
-    error_log("🧩 DEBUG DELETE - Heslo z formulára: " . $oldPassword);
-    error_log("🧩 DEBUG DELETE - Hash z DB: " . ($user['password'] ?? 'N/A'));
 
-     if ($user) {
+    if ($user) {
         // kontrola hesla
         if (!password_verify($oldPassword, $user['password'])) {
             echo json_encode(["success" => false, "message" => "Zadané heslo je nesprávne!"]);
@@ -55,7 +50,6 @@ try {
         echo json_encode(["success" => false, "message" => "Používateľ neexistuje."]);
     }
 } catch (PDOException $e) {
-    echo json_encode(["success" => false, "message" => "Chyba databázy: " . $e->getMessage()]);
+    error_log("Delete account error: " . $e->getMessage());
+    echo json_encode(["success" => false, "message" => "Chyba pri mazaní účtu!"]);
 }
-
-?>

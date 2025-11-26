@@ -14,10 +14,16 @@ if (empty($email)) { // kontrola ci prisiel prazdny email
     exit;
 }
 
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    echo json_encode(['success' => false, 'message' => "Neplatný email!"]);
+    exit;
+}
+
 // Musime overit ci email existuje v nasej databaze
 // Musime sa napojit na databazu
 require_once 'db_connect.php'; // pripojenie cez PDO 
 
+try {
 // Overime, ci dany email sa nachadza v databaze
 $stmt = $conn->prepare("SELECT user_id FROM users WHERE email = :email"); // priprava SQL dotazu kde :email = placeholder / ochrana
 $stmt->bindParam(':email', $email, PDO::PARAM_STR); // ochrana pred SQL injection
@@ -46,8 +52,11 @@ if ($insert->rowCount() > 0) {
         'message' => 'Reset kód bol vygenerovaný.',
         'code' => $reset_code // ukazka
     ]);
-} else {
-    echo json_encode(['success' => false, 'message' => 'Nepodarilo sa uložiť reset kód.']);
+
+}
+} catch (PDOException $e) {
+    error_log("Reset code error: " . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Chyba pri generovaní kódu']);
 }
 
 ?>
