@@ -1,13 +1,12 @@
 <?php
-
 header('Content-Type: application/json');
 
 require_once 'db_connect.php'; 
 
-//  nacitanie dat
-$name = trim($_POST['name'] ?? '');
-$email = trim($_POST['email'] ?? '');
-$message = trim($_POST['message'] ?? '');
+$data = json_decode(file_get_contents('php://input'), true);
+$name = trim($data['name'] ?? '');
+$email = trim($data['email'] ?? '');
+$message = trim($data['message'] ?? '');
 
 // 2. overenie
 if (!$name || !$email || !$message) {
