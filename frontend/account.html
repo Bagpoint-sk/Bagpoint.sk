@@ -94,103 +94,256 @@
     </div>
   </div>
 
-  <!-- 🔧 Skript -->
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      // Načítanie používateľa
-      fetch("/backend/getUser.php", {
-        method: "GET",
-        credentials: "include",
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.loggedIn) {
-            document.getElementById("user-email").textContent = data.user.email;
-          } else {
-            window.location.href = "login.html";
-          }
-        });
+document.addEventListener("DOMContentLoaded", () => {
+  const EMAIL_EL = document.getElementById("user-email");
 
-      // Odhlásenie
-      document.querySelector(".logout-link").addEventListener("click", async (e) => {
-        e.preventDefault();
-        const res = await fetch("/backend/logout.php", {
-          method: "POST",
-          credentials: "include",
-        });
-        const data = await res.json();
-        if (data.success) window.location.href = "index.html";
-      });
+  // 1) Overenie používateľa
+  fetch("/backend/getUser.php", { credentials: "include" })
+    .then(r => r.json())
+    .then(data => {
+      if (!data || !data.loggedIn) {
+        window.location.href = "login.html";
+        return;
+      }
+      if (EMAIL_EL && data.user && data.user.email) EMAIL_EL.textContent = data.user.email;
+      boot();
+    })
+    .catch(() => window.location.href = "login.html");
 
-      // Prepínanie tabov
-      document.querySelectorAll(".tab-link").forEach(link => {
-        link.addEventListener("click", () => {
-          document.querySelectorAll(".tab-link").forEach(l => l.classList.remove("active"));
-          document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-          link.classList.add("active");
-          document.getElementById(link.dataset.target).classList.add("active");
-        });
-      });
+  // 2) Konštanty
+  const activeListSel = "#active-list";
+  const upcomingListSel = "#upcoming-list";
+  const RATE_MAP = { "Malý (S)": 1.0, "Stredný (M)": 1.5, "Veľký (L)": 2.0 };
 
-      // --- MODALY ---
-      const changeModal = document.getElementById("change-modal");
-      const deleteModal = document.getElementById("delete-modal");
+  const fmtHM = (mins) => {
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return `${h}h ${String(m).padStart(2, "0")}m`;
+  };
+  const hourlyRateForSizes = (sizes=[]) => sizes.reduce((s,x)=> s + (RATE_MAP[x] || 0), 0);
+  const priceNowForSession = (sess) => {
+    const start = new Date(sess.startedAt).getTime();
+    const minutes = Math.max(0, Math.floor((Date.now() - start) / 60000));
+    const blocks = Math.max(1, Math.ceil(minutes / 30)); // min. 1 blok
+    const per30 = hourlyRateForSizes(sess.sizes) / 2;
+    return { minutes, blocks, price: +(blocks * per30).toFixed(2) };
+  };
 
-      const showChange = document.getElementById("show-change-password");
-      const showDelete = document.getElementById("show-delete-account");
+  // 3) API
+  async function apiGet(url) {
+    const r = await fetch(url, { credentials: "include" });
+    if (!r.ok) throw new Error("Network error");
+    return r.json();
+  }
+  async function apiPost(url, payload) {
+    const r = await fetch(url, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload || {})
+    });
+    if (!r.ok) throw new Error("Network error");
+    return r.json();
+  }
 
-      const cancelChange = document.getElementById("cancel-change");
-      const cancelDelete = document.getElementById("cancel-delete");
+  const EP = {
+    activeSessions: "/backend/sessions_active.php",
+    upcomingReservations: "/backend/reservations_upcoming.php",
+    endSession: "/backend/sessions_end.php",
+    cancelReservation: "/backend/reservations_cancel.php",
+    openReservation: "/backend/reservations_open.php",
+  };
 
-      const changeForm = document.getElementById("change-password-form");
-      const deleteForm = document.getElementById("delete-account-form");
+  // 4) Štart
+  let _cache = { sessions: [], reservations: [] };
 
-      // Otvorenie modálov
-      showChange.addEventListener("click", () => (changeModal.style.display = "flex"));
-      showDelete.addEventListener("click", () => (deleteModal.style.display = "flex"));
+  async function boot() {
+    await refreshAll();
+    wireTabs();
+    startLiveTicker();
+    wireLogout();
+  }
 
-      // Zavretie modálov
-      cancelChange.addEventListener("click", () => (changeModal.style.display = "none"));
-      cancelDelete.addEventListener("click", () => (deleteModal.style.display = "none"));
+  async function refreshAll() {
+    const [sessionsResp, resvResp] = await Promise.all([
+      apiGet(EP.activeSessions).catch(() => ({ success:false, sessions: [] })),
+      apiGet(EP.upcomingReservations).catch(() => ({ success:false, reservations: [] })),
+    ]);
 
-      // Zmena hesla
-      changeForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const oldPassword = document.getElementById("old-password").value.trim();
-        const newPassword = document.getElementById("new-password").value.trim();
-        const res = await fetch("/backend/changePassword.php", {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ oldPassword, newPassword }),
-        });
-        const data = await res.json();
-        alert(data.message);
-        if (data.success) {
-          changeModal.style.display = "none";
-          setTimeout(() => window.location.href = "login.html", 1000);
+    _cache.sessions = (sessionsResp && sessionsResp.success ? sessionsResp.sessions : []) || [];
+    _cache.reservations = (resvResp && resvResp.success ? resvResp.reservations : []) || [];
+
+    render();
+    bindActions();
+  }
+
+  function render() {
+    // Aktívne úschovy
+    const activeList = document.querySelector(activeListSel);
+    if (activeList) {
+      if (!_cache.sessions.length) {
+        activeList.innerHTML = `<div class="empty">Žiadne aktívne úschovy.</div>`;
+      } else {
+        activeList.innerHTML = _cache.sessions.map(s => {
+          const pr = priceNowForSession(s);
+          return `
+            <div class="acc-card">
+              <div class="acc-card__header">
+                <div>
+                  <div class="pill pill--active">AKTÍVNE</div>
+                  <h4>${escapeHtml(s.locationName || "")}</h4>
+                  <div class="meta">Box č. ${s.boxId ?? "—"} · ${escapeHtml((s.sizes||[]).join(", "))}</div>
+                </div>
+                <div class="price-now">
+                  <div class="price-amt"><span data-sid="${s.id}" class="live-price">${pr.price.toFixed(2)}</span> €</div>
+                  <div class="price-sub">účtovanie po 30 min</div>
+                </div>
+              </div>
+              <div class="acc-card__body">
+                <div class="stat">
+                  <div class="stat-label">Trvanie</div>
+                  <div class="stat-value"><span data-sid="${s.id}" class="live-time">${fmtHM(pr.minutes)}</span></div>
+                </div>
+                <div class="stat">
+                  <div class="stat-label">Začiatok</div>
+                  <div class="stat-value">${new Date(s.startedAt).toLocaleString()}</div>
+                </div>
+              </div>
+              <div class="acc-card__footer">
+                <button class="account-btn ghost" data-end="${s.id}">Ukončiť a zaplatiť</button>
+              </div>
+            </div>`;
+        }).join("");
+      }
+    }
+
+    // Nadchádzajúce rezervácie
+    const upcomingList = document.querySelector(upcomingListSel);
+    if (upcomingList) {
+      if (!_cache.reservations.length) {
+        upcomingList.innerHTML = `<div class="empty">Nemáš žiadne nadchádzajúce rezervácie.</div>`;
+      } else {
+        const todayStr = new Date().toISOString().split("T")[0];
+        upcomingList.innerHTML = _cache.reservations.map(r => {
+          const isToday = (r.dateFrom === todayStr);
+          return `
+            <div class="acc-card">
+              <div class="acc-card__header">
+                <div>
+                  <div class="pill pill--hold">${isToday ? "DNES" : "REZERVÁCIA"}</div>
+                  <h4>${escapeHtml(r.locationName || "")}</h4>
+                  <div class="meta">${escapeHtml((r.sizes||[]).join(", "))}</div>
+                </div>
+                <div class="date-badge">${escapeHtml(r.dateFrom || "")}</div>
+              </div>
+              <div class="acc-card__body">
+                <div class="info-line">Stav: <strong>${escapeHtml(r.status || "RESERVED")}</strong></div>
+                <div class="info-note">V deň rezervácie sa po zaplatení pri termináli box otvorí.</div>
+              </div>
+              <div class="acc-card__footer">
+                ${isToday ? `<button class="account-btn" data-open="${r.id}">Otvoriť box</button>` : ""}
+                <button class="account-btn delete" data-cancel="${r.id}">Zrušiť</button>
+              </div>
+              ${isToday ? `<div class="pay-hint">Prosím zaplaťte pri termináli vedľa boxu. Po spracovaní platby sa box automaticky otvorí.</div>` : ""}
+            </div>`;
+        }).join("");
+      }
+    }
+  }
+
+  function bindActions() {
+    // Ukončiť a zaplatiť
+    document.querySelectorAll("[data-end]").forEach(btn => {
+      btn.onclick = async () => {
+        const id = btn.getAttribute("data-end");
+        try {
+          const resp = await apiPost(EP.endSession, { sessionId: id });
+          if (!resp.success) throw new Error(resp.message || "Nepodarilo sa ukončiť.");
+          alert(resp.message || "Úschova ukončená. Ďakujeme!");
+          await refreshAll();
+        } catch (e) {
+          alert(e.message || "Chyba pri ukončení úschovy.");
         }
-      });
+      };
+    });
 
-      // Zmazanie účtu
-      deleteForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const userPassword = document.getElementById("delete-password").value.trim();
-        const res = await fetch("/backend/deleteAccount.php", {
-          method: "POST",
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userPassword }),
-        });
-        const data = await res.json();
-        alert(data.message);
-        if (data.success) {
-          deleteModal.style.display = "none";
-          setTimeout(() => window.location.href = "index.html", 1000);
+    // Zrušiť rezerváciu
+    document.querySelectorAll("[data-cancel]").forEach(btn => {
+      btn.onclick = async () => {
+        const id = btn.getAttribute("data-cancel");
+        if (!confirm("Naozaj chceš zrušiť túto rezerváciu?")) return;
+        try {
+          const resp = await apiPost(EP.cancelReservation, { reservationId: id });
+          if (!resp.success) throw new Error(resp.message || "Nepodarilo sa zrušiť.");
+          alert(resp.message || "Rezervácia zrušená.");
+          await refreshAll();
+        } catch (e) {
+          alert(e.message || "Chyba pri rušení rezervácie.");
         }
+      };
+    });
+
+    // Otvoriť box (DNES → ACTIVE)
+    document.querySelectorAll("[data-open]").forEach(btn => {
+      btn.onclick = async () => {
+        const id = btn.getAttribute("data-open");
+        alert("Prosím zaplaťte pri termináli vedľa boxu. Po zaplatení sa box otvorí.");
+        try {
+          const resp = await apiPost(EP.openReservation, { reservationId: id });
+          if (!resp.success) throw new Error(resp.message || "Nepodarilo sa otvoriť box.");
+          await refreshAll();
+        } catch (e) {
+          alert(e.message || "Chyba pri otváraní boxu.");
+        }
+      };
+    });
+  }
+
+  // Živý prepočet každých 10 s
+  function startLiveTicker() {
+    setInterval(() => {
+      (_cache.sessions || []).forEach(s => {
+        const pr = priceNowForSession(s);
+        document.querySelectorAll(`.live-time[data-sid="${s.id}"]`).forEach(el => el.textContent = fmtHM(pr.minutes));
+        document.querySelectorAll(`.live-price[data-sid="${s.id}"]`).forEach(el => el.textContent = pr.price.toFixed(2));
+      });
+    }, 10000);
+  }
+
+  function wireTabs() {
+    document.querySelectorAll(".tab-link").forEach(link => {
+      link.addEventListener("click", () => {
+        document.querySelectorAll(".tab-link").forEach(l => l.classList.remove("active"));
+        document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+        link.classList.add("active");
+        document.getElementById(link.dataset.target).classList.add("active");
       });
     });
-  </script>
+  }
+
+  function wireLogout() {
+    const logoutLink = document.querySelector(".logout-link[href='#']");
+    if (logoutLink) {
+      logoutLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        fetch("/backend/logout.php", { method: "POST", credentials: "include" })
+          .finally(() => window.location.href = "index.html");
+      });
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+});
+</script>
+
 </body>
 
 </html>

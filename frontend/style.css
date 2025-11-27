@@ -1170,7 +1170,69 @@ body.login-page.success-bg {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ===================================
+  new account part
+=================================== */
+.reservations-wrapper { display: grid; gap: 28px; }
+.resv-card{
+  background:#F4F8FB; border:1px solid #E0E6ED; border-radius:14px; padding:18px 20px;
+  display:flex; flex-direction:column; gap:12px;
+}
+.resv-row{ display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; }
+.badge{
+  display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:600;
+  background:rgba(4,113,194,.1); color:#0471C2;
+}
+.badge.green{ background:rgba(16,185,129,.12); color:#10B981; }
+.badge.orange{ background:rgba(245,158,11,.14); color:#D97706; }
+.badge.gray{ background:#E9EEF4; color:#4B5563; }
+.kv{ font-size:14px; color:#1E2A38; }
+.kv strong{ color:#0f172a; }
+.resv-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+.btn-ghost{
+  padding:10px 16px; border-radius:10px; border:1px solid #E0E6ED; background:#fff; cursor:pointer; font-weight:600;
+}
+.btn-ghost:hover{ background:#F8FAFD; }
+.timer-pill{
+  font-variant-numeric: tabular-nums; padding:6px 10px; border-radius:8px; background:#fff; border:1px solid #E0E6ED;
+}
+.info-banner{
+  background:#FFF7E6; border:1px solid #FCD34D; color:#92400E; padding:10px 12px; border-radius:10px; font-size:14px;
+}
+.resv-list > .resv-card + .resv-card{ margin-top:12px; }
+.placeholder p{ color:#5C6B7A; }
 
+.cards-wrap { display: grid; gap: 28px; }
+.card-group h3 { font-size: 18px; color:#0471C2; margin-bottom: 12px; }
+.card-list { display: grid; gap: 16px; }
+.empty, .muted { background:#F4F8FB; border-radius:12px; padding:20px; color:#5C6B7A; }
+
+.acc-card { background:#fff; border:1px solid #E6EDF5; border-radius:14px; padding:18px; box-shadow:0 6px 18px rgba(0,0,0,0.04); }
+.acc-card__header { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+.acc-card__body { display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:16px; margin-top:14px; }
+.acc-card__footer { display:flex; gap:12px; margin-top:14px; }
+
+.pill { display:inline-block; padding:4px 8px; border-radius:999px; font-size:12px; font-weight:700; letter-spacing:.4px; }
+.pill--active { background:rgba(4,113,194,.12); color:#0471C2; }
+.pill--hold { background:rgba(8,157,250,.12); color:#089DFA; }
+
+.meta { color:#5C6B7A; font-size:14px; margin-top:4px; }
+.date-badge { background:#F4F8FB; color:#1E2A38; padding:6px 10px; border-radius:10px; font-weight:600; }
+.price-now { text-align:right; }
+.price-amt { font-size:22px; font-weight:800; color:#1E2A38; }
+.price-sub { font-size:12px; color:#5C6B7A; }
+
+.stat { background:#F8FBFF; border:1px solid #E4EFFA; border-radius:12px; padding:12px; }
+.stat-label { font-size:12px; color:#5C6B7A; }
+.stat-value { font-size:16px; font-weight:700; color:#1E2A38; }
+
+.account-btn.ghost { background:transparent; color:#0471C2; border:1px solid #0471C2; }
+.pay-hint { margin-top:10px; font-size:14px; color:#1E2A38; background:#FFF7E6; border:1px solid #FFE1A6; border-radius:10px; padding:10px 12px; }
+
+@media (max-width: 900px){
+  .acc-card__body { grid-template-columns: 1fr; }
+  .price-now { text-align:left; }
+}
 
 /*O projekte som odpojila css pre kiku neskor napojit*/
 
