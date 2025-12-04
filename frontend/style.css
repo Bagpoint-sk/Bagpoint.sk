@@ -2189,3 +2189,91 @@ body.login-page.success-bg {
   padding-left: 18px;
   font-size: 13px;
 }
+
+
+
+/* ===================================
+   PROJECT LINKS 
+   =================================== */
+
+.project-links {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 110;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+
+  color: #0f172a;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.10);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  opacity: 0.78;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.project-link:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.32);
+  border-color: rgba(255, 255, 255, 0.95);
+  transform: translateY(-1px);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.16);
+}
+
+.project-link::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 16px;
+  border-radius: 999px;
+  margin-right: 8px;
+  opacity: 0.7;
+}
+
+
+.project-link--github::before {
+  background: linear-gradient(180deg, #111827, #4b5563);
+}
+
+
+.project-link--live::before {
+  background: linear-gradient(180deg, #089dfa, #0471c2);
+}
+
+
+@media (max-width: 600px) {
+  .project-links {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .project-link {
+    padding: 6px 12px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.10);
+  }
+}
