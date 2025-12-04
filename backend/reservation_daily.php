@@ -87,7 +87,7 @@ try {
 
         $stmt = $conn->prepare("
             SELECT * FROM boxes 
-            WHERE UPPER(size) = UPPER(:size) AND location = :location
+            WHERE UPPER(size) = UPPER(:size) AND location = :location  AND type_reservation = 'daily'
             ORDER BY box_id
         ");
         $stmt->execute([
@@ -114,6 +114,7 @@ try {
                 FROM reservation_boxes rb
                 JOIN reservations r ON rb.reservation_id = r.reservation_id
                 WHERE rb.box_id = :box_id
+                 AND r.status = 'pending'
             ");
             $stmt->execute([':box_id' => $box_id]);
             $existingReservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
