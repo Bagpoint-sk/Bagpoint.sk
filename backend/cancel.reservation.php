@@ -22,6 +22,12 @@ try {
         exit;
     }
 
+    // --- Skontrolovať, či už rezervácia nie je ukončená ---
+    if ($reservation['status'] === 'completed') {
+        echo json_encode(["success" => false, "message" => "Rezervácia už je ukončená"]);
+        exit;
+    }
+
     // --- Načítať všetky boxy rezervácie ---
     $stmt = $conn->prepare("
         SELECT b.box_id, b.price_per_hour, b.type_reservation
