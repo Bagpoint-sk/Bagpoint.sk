@@ -61,14 +61,14 @@ try {
     $user_id = $user["user_id"];
 
     // --- Vytvorenie rezervácie ---
-    $stmt = $conn->prepare("
-        INSERT INTO reservations (
-            users_user_id, total_price, reservation_date, status, date_from, date_to
-        )
-        VALUES (?, 0, NOW(), 'pending', ?, ?)
-        RETURNING reservation_id
-    ");
-    $stmt->execute([$user_id, $date_from, $date_to]);
+   $stmt = $conn->prepare("
+    INSERT INTO reservations (
+        users_user_id, total_price, reservation_date, status, date_from, date_to, type_reservation
+    )
+    VALUES (?, 0, NOW(), 'pending', ?, ?, 'daily')
+    RETURNING reservation_id
+");
+$stmt->execute([$user_id, $date_from, $date_to]);
     $reservation = $stmt->fetch(PDO::FETCH_ASSOC);
     $reservation_id = $reservation['reservation_id'];
 
