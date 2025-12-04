@@ -76,9 +76,9 @@ $conn->beginTransaction();
 $dateFrom = date("Y-m-d H:i:s");
 $dateTo = null;
 
-$stmt = $conn->prepare("
-    INSERT INTO reservations (users_user_id, total_price, reservation_date, status, date_from, date_to)
-    VALUES (?,0,NOW(),'pending',?,?) RETURNING reservation_id
+ $stmt = $conn->prepare("
+    INSERT INTO reservations (users_user_id, total_price, reservation_date, status, date_from, date_to, type_reservation)
+    VALUES (?,0,NOW(),'pending',?,?,'walkin') RETURNING reservation_id
 ");
 $stmt->execute([$user_id, $dateFrom, $dateTo]);
 $reservation_id = $stmt->fetchColumn();
