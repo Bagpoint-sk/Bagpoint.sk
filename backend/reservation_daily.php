@@ -61,14 +61,14 @@ try {
     $user_id = $user["user_id"];
 
     // --- Vytvorenie rezervácie ---
-    $stmt = $conn->prepare("
-        INSERT INTO reservations (
-            users_user_id, total_price, reservation_date, status, date_from, date_to
-        )
-        VALUES (?, 0, NOW(), 'pending', ?, ?)
-        RETURNING reservation_id
-    ");
-    $stmt->execute([$user_id, $date_from, $date_to]);
+   $stmt = $conn->prepare("
+    INSERT INTO reservations (
+        users_user_id, total_price, reservation_date, status, date_from, date_to, type_reservation
+    )
+    VALUES (?, 0, NOW(), 'pending', ?, ?, 'daily')
+    RETURNING reservation_id
+");
+$stmt->execute([$user_id, $date_from, $date_to]);
     $reservation = $stmt->fetch(PDO::FETCH_ASSOC);
     $reservation_id = $reservation['reservation_id'];
 
@@ -87,7 +87,7 @@ try {
 
         $stmt = $conn->prepare("
             SELECT * FROM boxes 
-            WHERE UPPER(size) = UPPER(:size) AND location = :location
+            WHERE UPPER(size) = UPPER(:size) AND location = :location  AND type_reservation = 'daily'
             ORDER BY box_id
         ");
         $stmt->execute([
@@ -114,6 +114,7 @@ try {
                 FROM reservation_boxes rb
                 JOIN reservations r ON rb.reservation_id = r.reservation_id
                 WHERE rb.box_id = :box_id
+                 AND r.status = 'pending'
             ");
             $stmt->execute([':box_id' => $box_id]);
             $existingReservations = $stmt->fetchAll(PDO::FETCH_ASSOC);
