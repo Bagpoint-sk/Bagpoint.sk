@@ -1,21 +1,21 @@
 <?php
 // --- Nastavenie PHP pre logovanie ---
-ini_set('display_errors', 1); // zobrazovanie chýb
+ini_set('display_errors', 1); // zobrazovanie chyb
 ini_set('display_startup_errors', 1);
-ini_set('log_errors', 0); // vypnuté zapisovanie do súborov
+ini_set('log_errors', 0); // vypnute zapisovanie do suborov
 error_reporting(E_ALL);
 
-// --- Funkcia na bezpečný JSON výstup ---
+// --- Funkcia na bezpecny JSON vystup ---
 function respond($data) {
     echo json_encode($data, JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// --- Zachytávanie neodchytených chýb a výnimiek ---
+// --- Zachytavanie neodchytenych chyb a vynimiek ---
 set_exception_handler(function($e){
     respond([
         "success" => false,
-        "message" => "Výnimka PHP",
+        "message" => "Vynimka PHP",
         "error" => $e->getMessage()
     ]);
 });
@@ -30,59 +30,59 @@ set_error_handler(function($errno, $errstr, $errfile, $errline){
 // --- Pripojenie k DB ---
 require_once 'db_connect.php';
 if (!isset($conn) || !$conn) {
-    respond(["success" => false, "message" => "Databázové pripojenie nie je inicializované"]);
+    respond(["success" => false, "message" => "Databazove pripojenie nie je inicializovane"]);
 }
 
-// --- Načítanie JSON vstupu ---
+// --- Nacitanie JSON vstupu ---
 $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 if ($data === null) {
-    respond(["success" => false, "message" => "Chyba dekódovania JSON: " . json_last_error_msg()]);
+    respond(["success" => false, "message" => "Chyba dekodovania JSON: " . json_last_error_msg()]);
 }
 
-// --- Validácia vstupov ---
+// --- Validacia vstupov ---
 $type = $data["type"] ?? null;
 $userEmail = $data["userEmail"] ?? null;
 $locationId = $data["locationId"] ?? null;
 $sizes = $data["sizes"] ?? [];
 
 if (!$type || !$userEmail || !$locationId || empty($sizes)) {
-    respond(["success" => false, "message" => "Chýbajú údaje"]);
+    respond(["success" => false, "message" => "Chybaju udaje"]);
 }
 
-// --- Nájdi používateľa ---
+// --- Najdi pouzivatela ---
 $stmt = $conn->prepare("SELECT user_id FROM users WHERE email=?");
 $stmt->execute([$userEmail]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
-    respond(["success" => false, "message" => "Používateľ neexistuje"]);
+    respond(["success" => false, "message" => "Pouzivatel neexistuje"]);
 }
 $user_id = $user["user_id"];
 
-// --- Mapovanie veľkostí ---
+// --- Mapovanie velkosti ---
 $sizeMap = ['Malý (S)' => 'S', 'Stredný (M)' => 'M', 'Veľký (L)' => 'L'];
 foreach ($sizes as $key => $size) {
     if (isset($sizeMap[$size])) {
         $sizes[$key] = $sizeMap[$size];
     } else {
-        respond(["success" => false, "message" => "Neznáma veľkosť: $size"]);
+        respond(["success" => false, "message" => "Neznama velkost: $size"]);
     }
 }
 
-// --- Transakcia a rezervácia ---
+// --- Transakcia a rezervacia ---
 $conn->beginTransaction();
 
 $dateFrom = date("Y-m-d H:i:s");
 $dateTo = null;
 
- $stmt = $conn->prepare("
+$stmt = $conn->prepare("
     INSERT INTO reservations (users_user_id, total_price, reservation_date, status, date_from, date_to, type_reservation)
     VALUES (?,0,NOW(),'pending',?,?,'walkin') RETURNING reservation_id
 ");
 $stmt->execute([$user_id, $dateFrom, $dateTo]);
 $reservation_id = $stmt->fetchColumn();
-if ($reservation_id === false) throw new Exception("Nepodarilo sa získať reservation_id.");
+if ($reservation_id === false) throw new Exception("Nepodarilo sa ziskat reservation_id.");
 
 $assignedBoxes = [];
 foreach ($sizes as $size) {
@@ -96,7 +96,7 @@ foreach ($sizes as $size) {
 
     if (!$box) {
         $conn->rollBack();
-        respond(["success" => false, "message" => "Žiadny voľný box veľkosti $size v lokalite $locationId."]);
+        respond(["success" => false, "message" => "Ziadny volny box velkosti $size v lokalite $locationId."]);
     }
 
     $box_id = $box['box_id'];
@@ -111,13 +111,12 @@ foreach ($sizes as $size) {
 
 $conn->commit();
 
-// --- Odpoveď úspechu ---
+// --- Odpoved uspechu ---
 respond([
     "success" => true,
-    "message" => "Rezervácia vytvorená",
+    "message" => "Rezervacia vytvorena",
     "reservationId" => $reservation_id,
     "boxes" => $assignedBoxes,
     "totalPrice" => null
 ]);
 ?>
-

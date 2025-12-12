@@ -98,7 +98,7 @@
  <!-- ODKAZY NA PROJEKT (GitHub + Render) -->
     <div class="project-links">
          <a
-        href="https://github.com/Bagpoint-sk/Bagpoint.sk/tree/render-deploy"
+        href="https://github.com/Bagpoint-sk/Bagpoint.sk"
         class="project-link project-link--live"
         target="_blank"
         rel="noopener"
@@ -110,52 +110,70 @@
     <script src="auth.js"></script> 
 
     <script>
-     
-      document.addEventListener("DOMContentLoaded", () => {
-        const contactForm = document.querySelector(".contact-form");
-        const successMsg = document.getElementById("success-message");
+  // pockam kym sa nacita cely html (aby som vedela ze vsetky elementy uz existuju)
+  document.addEventListener("DOMContentLoaded", () => {
+    // najdem formular na kontakte (podla triedy)
+    const contactForm = document.querySelector(".contact-form");
 
-        if (contactForm) {
-          contactForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
+    // najdem element kde zobrazujem uspechu hlasku po odoslani
+    const successMsg = document.getElementById("success-message");
 
-            const name = document.getElementById("name").value.trim();
-            const email = document.getElementById("email").value.trim();
-            const message = document.getElementById("message").value.trim();
+    // ak formular existuje na tejto stranke, pripojim mu submit event
+    if (contactForm) {
+      contactForm.addEventListener("submit", async (e) => {
+        // zastavim default spravanie formulara (aby sa nerefreshla stranka)
+        e.preventDefault();
 
-            if (!name || !email || !message) {
-              alert("Vyplň všetky polia.");
-              return;
-            }
+        // vyberiem hodnoty z inputov a orezeniem medzery na zaciatku/konci
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const message = document.getElementById("message").value.trim();
 
-            try {
-              const res = await fetch("../backend/contactForm.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, message })
-              });
+        // jednoducha validacia - ak je nieco prazdne, nepokracujem
+        if (!name || !email || !message) {
+          alert("Vyplň všetky polia.");
+          return;
+        }
 
-              const data = await res.json();
-              if (data.success) {
-                contactForm.reset();
-                successMsg.classList.remove("hidden");
-                successMsg.classList.add("show");
-
-                setTimeout(() => {
-                  successMsg.classList.remove("show");
-                  successMsg.classList.add("hidden");
-                }, 5000);
-              } else {
-                alert(data.message || "Nepodarilo sa odoslať správu.");
-              }
-            } catch (err) {
-              console.error("Chyba pri odoslaní:", err);
-              alert("Chyba pri spojení so serverom.");
-            }
+        try {
+          // poslem data na backend cez fetch (post + json)
+          const res = await fetch("../backend/contactForm.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, message })
           });
+
+          // backend ma vratit json odpoved (success true/false + message)
+          const data = await res.json();
+
+          if (data.success) {
+            // ak to preslo, vycistim formular
+            contactForm.reset();
+
+            // zobrazim uspechu hlasku (odoberiem hidden a pridam show)
+            successMsg.classList.remove("hidden");
+            successMsg.classList.add("show");
+
+            // po 5 sekundach hlasku zase skryjem
+            setTimeout(() => {
+              successMsg.classList.remove("show");
+              successMsg.classList.add("hidden");
+            }, 5000);
+          } else {
+            // ak backend vrati success=false, ukazem jeho message alebo fallback text
+            alert(data.message || "Nepodarilo sa odoslať správu.");
+          }
+        } catch (err) {
+          // ak sa nepodarilo spojenie alebo parsovanie, vypisem chybu do konzoly
+          console.error("Chyba pri odoslaní:", err);
+
+          // a ukazem userovi kratku hlasku
+          alert("Chyba pri spojení so serverom.");
         }
       });
-    </script>
+    }
+  });
+</script>
 
   </body>
 </html>

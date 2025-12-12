@@ -13,7 +13,7 @@ if (!$user_id || !$reservation_id) {
 }
 
 try {
-    // --- Načítať rezerváciu ---
+
     $stmt = $conn->prepare("SELECT * FROM reservations WHERE reservation_id = :rid AND users_user_id = :uid");
     $stmt->execute([':rid' => $reservation_id, ':uid' => $user_id]);
     $reservation = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -23,14 +23,14 @@ try {
         exit;
     }
 
-    // --- Skontrolovať, či už rezervácia nie je ukončená ---
+    // --- Skontrolovat, ci uz rezervacia nie je ukoncena ---
     $st = strtolower((string)($reservation['status'] ?? ''));
     if ($st === 'completed' || $st === 'canceled' || $st === 'cancelled') {
         echo json_encode(["success" => false, "message" => "Rezervácia už je ukončená"]);
         exit;
     }
 
-    // --- Načítať všetky boxy rezervácie ---
+    // --- Nacitat vsetky boxy rezervacie ---
     $stmt = $conn->prepare("
         SELECT b.box_id, b.price_per_hour, b.type_reservation
         FROM boxes b
@@ -41,7 +41,7 @@ try {
     $boxes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $m = strtolower(trim((string)$mode));
-  $status = ($m === 'cancel') ? 'cancelled' : 'completed';
+    $status = ($m === 'cancel') ? 'cancelled' : 'completed';
     $total_price = $reservation['total_price'];
     $date_to = $reservation['date_to'];
 
@@ -49,7 +49,7 @@ try {
         $total_price = 0;
     }
 
-    // --- Ak walkin, dopočítať cenu a nastaviť date_to ---
+    // --- Ak walkin, dopocitat cenu a nastavit date_to ---
     if ($status === 'completed' && !empty($boxes) && $boxes[0]['type_reservation'] === 'walkin') {
         $date_to = date('Y-m-d H:i:s');
         $start = new DateTime($reservation['date_from']);
@@ -67,7 +67,7 @@ try {
         $total_price = $halfHours * ($rateSum / 2.0);
     }
 
-    // --- Aktualizácia rezervácie ---
+    // --- Aktualizacia rezervacie ---
     $stmt = $conn->prepare("
         UPDATE reservations 
         SET status = :status, total_price = :total_price, date_to = :date_to
@@ -80,7 +80,7 @@ try {
         ':rid' => $reservation_id
     ]);
 
-    // --- Nastavenie všetkých boxov na free ---
+    // --- Nastavenie vsetkych boxov na free ---
     $stmt = $conn->prepare("
         UPDATE boxes 
         SET status = 'free' 

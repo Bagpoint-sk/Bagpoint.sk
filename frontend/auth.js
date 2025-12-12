@@ -1,16 +1,16 @@
-// auth.js – správa prihlásenia, navigácie a odhlásenia
+// auth.js – sprava prihlasenia, navigacie a odhlasenia
 
 window.addEventListener("DOMContentLoaded", () => {
   const loginBtn = document.querySelector(".login-btn");
   const accountLink = document.querySelector(".account-link");
   const logoutLink = document.querySelector(".logout-link");
 
-  // 🔹 Získať uloženého používateľa
+  // ziskat ulozeneho pouzivatela
   const userData = localStorage.getItem("user");
   const user = userData ? JSON.parse(userData) : null;
 
   if (user) {
-    // ✅ Používateľ je prihlásený
+    // pouzivatel je prihlaseny
     if (loginBtn) loginBtn.style.display = "none";
     if (accountLink) {
       accountLink.style.display = "inline-block";
@@ -18,13 +18,13 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     if (logoutLink) logoutLink.style.display = "inline-block";
   } else {
-    // ❌ Nie je prihlásený
+    // nie je prihlsen
     if (loginBtn) loginBtn.style.display = "inline-block";
     if (accountLink) accountLink.style.display = "none";
     if (logoutLink) logoutLink.style.display = "none";
   }
 
-  // 🔹 Odhlásenie
+  // odhlasenie
   if (logoutLink) {
     logoutLink.addEventListener("click", async (e) => {
       e.preventDefault();
@@ -49,7 +49,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 🔹 Efekt pri scrollovaní (z tvojho pôvodného auth.js)
+  // efekt pri scrollovani (z tvojho povodneho auth.js)
   window.addEventListener("scroll", () => {
     const header = document.querySelector("header");
     header?.classList.toggle("scrolled", window.scrollY > 30);
