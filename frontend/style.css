@@ -501,7 +501,7 @@ text-transform: uppercase;
 }
 
 .active-city::after {
-  content: "ZobraziÅ¥ na mape";
+  content: "Zobrazit na mape";
   position: absolute;
   bottom: 16px;
   right: 16px;
@@ -866,8 +866,7 @@ input:focus {
   background: white;
   border-radius: 20px;
   padding: 60px 40px;
-  box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.1),
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 
 }
 
@@ -1150,10 +1149,8 @@ body.login-page.success-bg {
   }
 }
 
-.tab-content {
-  display: none;
-  animation: fadeIn 0.3s ease;
-}
+.tab-content { animation: tabFadeIn 0.3s ease; }
+
 
 .tab-content.active {
   display: block;
@@ -1165,7 +1162,7 @@ body.login-page.success-bg {
   font-weight: 600;
 }
 
-@keyframes fadeIn {
+@keyframes tabFadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
@@ -1313,19 +1310,18 @@ body.login-page.success-bg {
   box-shadow: 0 4px 12px rgba(4,113,194,0.3);
 }
 
-
 .modal {
   display: none;
   position: fixed;
-  top: 0; left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(30, 42, 56, 0.45);
   backdrop-filter: blur(8px);
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  overflow-y: auto;
 }
+
 
 .modal-content {
   position: relative;
@@ -1402,18 +1398,6 @@ body.login-page.success-bg {
 }
 
 
-/*  MODAL FOR RESERVATION */
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(30, 42, 56, 0.45);
-  backdrop-filter: blur(8px);
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  overflow-y: auto;
-}
 
 .modal-card {
   background: #fff;
@@ -1439,20 +1423,7 @@ body.login-page.success-bg {
   border-radius: 10px;
 }
 
-.close-btn {
-  position: absolute;
-  right: 20px;
-  top: 18px;
-  border: none;
-  background: none;
-  font-size: 22px;
-  color: #444;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-.close-btn:hover {
-  color: #0471C2;
-}
+
 
 .mode-buttons {
   display: flex;
@@ -1674,7 +1645,7 @@ body.login-page.success-bg {
   outline: none;
 }
 
-/*  TABS (RezervovaÅ¥ teraz / RezervÃ¡cia vopred)  */
+/*  TABS (Rezervovaat teraz / Rezervacia vopred)  */
 .mode-tabs {
   display: flex;
   justify-content: center;
@@ -1810,12 +1781,176 @@ body.login-page.success-bg {
 
 
 
+
+/* ===================================
+   ///////
+=================================== */  
+/* =========================
+   ACCOUNT MODALS (.acc-modal)
+   ========================= */
+
+.acc-modal{
+  position: fixed;
+  inset: 0;
+  padding: 18px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+.acc-modal.is-open{ display:flex; }
+
+.acc-modal__card{
+  width: min(480px, 100%);
+  background: #fff;
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 18px;
+  box-shadow: 0 30px 80px rgba(15,23,42,0.25);
+  padding: 22px 22px 18px;
+  position: relative;
+  text-align: left;
+  animation: accModalPop .18s ease;
+}
+
+@keyframes accModalPop{
+  from { transform: translateY(10px) scale(.98); opacity:.6; }
+  to   { transform: translateY(0) scale(1); opacity:1; }
+}
+
+.acc-modal__close{
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid #E0E6ED;
+  background: #F8FAFD;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  color: #1E2A38;
+}
+.acc-modal__close:hover{ background:#fff; }
+
+.acc-modal__title{
+  margin: 0 0 6px 0;
+  font-family: "Outfit", sans-serif;
+  font-size: 20px;
+  color: #1E2A38;
+}
+
+.acc-modal__subtitle{
+  margin: 0 0 14px 0;
+  color: #5C6B7A;
+  font-size: 14px;
+}
+.acc-modal__subtitle.danger{ color:#991B1B; }
+
+.acc-modal__label{
+  display:block;
+  margin: 10px 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1E2A38;
+}
+
+.acc-modal__input{
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #E0E6ED;
+  background: #F8FAFD;
+  border-radius: 12px;
+  font-size: 15px;
+  outline: none;
+  transition: box-shadow .18s ease, border-color .18s ease, background .18s ease;
+}
+.acc-modal__input:focus{
+  background:#fff;
+  border-color: rgba(8,157,250,0.65);
+  box-shadow: 0 0 0 4px rgba(8,157,250,0.15);
+}
+
+.acc-modal__actions{
+  display:flex;
+  gap:12px;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.acc-modal__alert{
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  margin: 10px 0 12px;
+}
+.acc-modal__alert.ok{
+  background: rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.25);
+  color: #047857;
+}
+.acc-modal__alert.err{
+  background: rgba(231,76,60,0.12);
+  border: 1px solid rgba(231,76,60,0.25);
+  color: #991B1B;
+}
+
+@media (max-width: 480px){
+  .acc-modal__actions{ flex-direction:column; align-items:stretch; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ===================================
    KIKA - SEKCIA
    ===================================
 */
 
-/*  ZÃPISNICA  */
+/*  ZAPISNICA  */
 .notebook-style {
   font-family: 'Patrick Hand', cursive;
   font-size: 17px;
@@ -1877,7 +2012,7 @@ body.login-page.success-bg {
 }
 
 .notebook-page li::before {
-  content: "â€¢";
+  content: "\2022";
   position: absolute;
   left: -25px;
   color: #0471C2;
@@ -1949,7 +2084,7 @@ body.login-page.success-bg {
   box-shadow: 0 0 4px rgba(4, 113, 194, 0.3);
 }
  /* ===================================
-   TÃMOVÃ FOTKA 
+   TEAMOVA FOTKA 
 =================================== */
 
 .team-photo {
@@ -1958,7 +2093,7 @@ body.login-page.success-bg {
   padding: 30px 30px;
   border-radius: 20px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.05);
-  cursor: zoom-in; /* naznaÄÃ­, Å¾e sa dÃ¡ otvoriÅ¥ */
+  cursor: zoom-in; 
   background: #ffffff;
 }
 
@@ -1971,7 +2106,7 @@ body.login-page.success-bg {
 }
 
 /* ===================================
-   TÃMOVÃ FOTKA MODAL
+   TEAMOVA FOTKA MODAL
 =================================== */
 
 .team-photo-modal {
@@ -2056,90 +2191,6 @@ body.login-page.success-bg {
    ===================================
 */
 
-
-
-/* ===================================
-   IGOR - SEKCIA
-   ===================================
- */
-    .modal {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    .modal-content {
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      width: 350px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-      text-align: center;
-      animation: fadeIn 0.3s ease;
-    }
-    .modal-content h3 {
-      margin-bottom: 15px;
-      font-family: 'Outfit', sans-serif;
-    }
-    .modal-content input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    .modal-content button {
-      width: 100%;
-      padding: 10px;
-      background: linear-gradient(90deg, #089DFA, #0471C2);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 600;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-bottom: 10px;
-      transition: all 0.3s ease;
-    }
-    .modal-content button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(4, 113, 194, 0.3);
-    }
-    .close-btn {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 22px;
-      color: #333;
-      cursor: pointer;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0; transform: scale(0.95);}
-      to {opacity: 1; transform: scale(1);}
-    }
-    .forgot-link {
-      text-align: right;
-      margin-top: 10px;
-    }
-    .forgot-link a {
-      color: #007bff;
-      text-decoration: none;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .forgot-link a:hover {
-      text-decoration: underline;
-    }
-
-
-
-/* ===================================
-   IGOR - SEKCIA KONIEC
-   ===================================
-*/
 
 /* PODMIENKY */
 .terms-container {
@@ -2277,3 +2328,6 @@ body.login-page.success-bg {
     box-shadow: 0 8px 20px rgba(15, 23, 42, 0.10);
   }
 }
+
+
+
