@@ -349,7 +349,7 @@ if (deleteModal) deleteModal.hidden = true;
 
     const current = all.filter(r => {
       const st = String(r.status || "").toLowerCase();
-      return st !== "completed" && st !== "canceled" && st !== "cancelled";
+     return st !== "completed" && st !== "cancelled";
     });
 
     const active = current.filter(r => String(r.type_reservation || "").toLowerCase() === "walkin");
