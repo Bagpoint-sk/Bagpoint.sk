@@ -10,7 +10,7 @@
 
 <body>
   <div class="page-container">
-    <!-- header -->
+    <!-- HEADER -->
     <header>
       <nav class="navbar">
         <div class="nav-left">
@@ -27,7 +27,7 @@
       </nav>
     </header>
 
-    <!-- obsah -->
+    <!-- OBSAH -->
     <main class="account-page">
       <div class="account-container fade-in">
         <aside class="account-sidebar">
@@ -47,7 +47,7 @@
             <img src="images/profile.png" alt="Profilový obrázok" class="profile-pic" />
           </div>
 
-          <!-- tab: rezervacie (iba aktualne) -->
+          <!-- TAB: REZERVÁCIE (iba aktuálne) -->
           <div id="account-section" class="tab-content active">
             <h2>Moje rezervácie</h2>
 
@@ -68,12 +68,13 @@
             </div>
           </div>
 
-          <!-- tab: nastavenia -->
+          <!-- TAB: NASTAVENIA -->
           <div id="settings-section" class="tab-content">
             <h2>Nastavenia účtu</h2>
             <div class="settings-actions">
               <button type="button" id="show-change-password" class="account-btn">Zmeniť heslo</button>
-              <button type="button" id="show-delete-account" class="account-btn delete">Zmazať účet</button>
+<button type="button" id="show-delete-account" class="account-btn delete">Zmazať účet</button>
+
             </div>
           </div>
         </section>
@@ -81,8 +82,9 @@
     </main>
   </div>
 
-  <!-- modal: zmena hesla -->
-  <div id="acc-change-modal" class="acc-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="acc-change-title">
+  <!-- MODAL: ZMENA HESLA -->
+<div id="acc-change-modal" class="acc-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="acc-change-title">
+
     <div class="acc-modal__card" role="document">
       <button type="button" class="acc-modal__close" data-close aria-label="Zavrieť">×</button>
       <h3 id="acc-change-title" class="acc-modal__title">Zmena hesla</h3>
@@ -105,8 +107,9 @@
     </div>
   </div>
 
-  <!-- modal: zmazanie uctu -->
+  <!-- MODAL: ZMAZANIE ÚČTU -->
   <div id="acc-delete-modal" class="acc-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="acc-delete-title">
+
     <div class="acc-modal__card" role="document">
       <button type="button" class="acc-modal__close" data-close aria-label="Zavrieť">×</button>
       <h3 id="acc-delete-title" class="acc-modal__title">Zmazať účet</h3>
@@ -125,16 +128,16 @@
       </form>
     </div>
   </div>
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  // tento kod sa spusti az ked je cela stranka nacitana (aby uz existovali elementy v dom)
+  // start skriptu az po nacitani stranky
+
   const EMAIL_EL = document.getElementById("user-email");
 
-  // skusim automaticky najst spravnu cestu k backendu (lebo raz mam account.html v inom priecinku)
+  // Skusi automaticky najst spravnu cestu k backendu:
+  // zoznam moznych zakladnych ciest k backendu (podla toho odkial je otvorena stranka)
   const BASES = ["backend/", "../backend/", "/backend/"];
-
-  // tu mam nazvy php suborov (endpointov), aby som ich potom skladala do url
+  // mapovanie nazvov endpointov na konkretne php subory
   const ENDPOINTS = {
     getUser: "getUser.php",
     logout: "logout.php",
@@ -144,11 +147,11 @@ document.addEventListener("DOMContentLoaded", () => {
     deleteAccount: "deleteAccount.php",
   };
 
-  // male pomocne funkcie na vyber elementov z dom
+  // kratke pomocne selektory na hladanie prvkov v dom
   const qs  = (sel, root=document) => root.querySelector(sel);
   const qsa = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 
-  // toto mi osetri text, aby sa nemohol vlozit html (ochrana proti xss v innerhtml)
+  // escapovanie textu do html, aby sa nedali vlozit html znaky do ui
   function escapeHtml(s) {
     return String(s ?? "")
       .replaceAll("&","&amp;")
@@ -158,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .replaceAll("'","&#039;");
   }
 
-  // niekedy boxy pridu ako json string, tak si to skusim prekonvertovat na pole
+  // prevod boxov z json stringu na pole (ak uz je pole, vrati sa rovno)
   function parseBoxes(val) {
     if (Array.isArray(val)) return val;
     if (!val) return [];
@@ -170,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // datum mi vie prist ako "yyyy-mm-dd hh:mm:ss", tak si to prevediem na date objekt
+  // bezpecny prevod hodnoty na datum objekt (podporuje aj format s medzerou)
   function toDate(val) {
     if (!val) return null;
     const s = String(val).trim();
@@ -178,41 +181,32 @@ document.addEventListener("DOMContentLoaded", () => {
     return isNaN(d.getTime()) ? null : d;
   }
 
-  // univerzalny fetch, ktory:
-  // 1) posiela cookies (credentials include), aby fungovala session
-  // 2) precita text aj pri chybe, aby som vedela zobrazit realnu hlasku
-  // 3) skusi to parsovat ako json
+  // univerzalny fetch ktory vracia json a pri chybe vypise zrozumitelnu spravu
   async function fetchJson(url, options = {}) {
-    const r = await fetch(url, { credentials: "include", ...options });
+  const r = await fetch(url, { credentials: "include", ...options });
 
-    const text = await r.text();   // precitam aj ked je chyba
-    let data = null;
-    try { data = JSON.parse(text); } catch {}
+  const text = await r.text();   // precitaj aj ked je chyba
+  let data = null;
+  try { data = JSON.parse(text); } catch {}
 
-    // ak server vrati napr 500, tak tu vyhodim error s detailom
-    if (!r.ok) {
-      const msg =
-        (data && (data.message || data.error)) ||
-        `HTTP ${r.status} ${r.statusText} – ${text.slice(0, 200)}`;
-      throw new Error(msg);
-    }
-
-    // ak server vratil nieco co nie je json, tak to tiez povazujem za chybu
-    if (!data) throw new Error(`neplatny json: ${text.slice(0, 200)}`);
-    return data;
+  if (!r.ok) {
+    const msg =
+      (data && (data.message || data.error)) ||
+      `HTTP ${r.status} ${r.statusText} – ${text.slice(0, 200)}`;
+    throw new Error(msg);
   }
 
-  // kratke wrappery na get a post (aby sa mi lahsie pouzivali)
-  const apiGet = (url) => fetchJson(url);
+  if (!data) throw new Error(`Neplatny JSON: ${text.slice(0, 200)}`);
+  return data;
+}
 
-  // post s json telom (pouzivam na zmenu hesla a zmazanie uctu)
+  // jednoduche obaly pre get a post (json a form)
+  const apiGet = (url) => fetchJson(url);
   const apiPostJson = (url, payload) => fetchJson(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload || {})
   });
-
-  // post ako form data (application/x-www-form-urlencoded), pouzivam na cancel rezervacie
   const apiPostForm = (url, formObj) => {
     const body = new URLSearchParams();
     Object.entries(formObj || {}).forEach(([k,v]) => body.append(k, v));
@@ -223,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // z jednej base adresy si poskladam cele endpoint url
+  // zlozenie kompletnej sady url endpointov pre konkretny base
   function makeEP(base) {
     return {
       getUser: base + ENDPOINTS.getUser,
@@ -235,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // prechadzam mozne base cesty a testujem getUser, aby som zistila kde realne backend je
+  // automaticky vyber spravneho base tym ze sa skusi zavolat getuser
   async function detectBackendBase() {
     for (const base of BASES) {
       const EP_try = makeEP(base);
@@ -248,50 +242,51 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // modaly (zmena hesla + zmazanie uctu)
+  // MODALS
   // =========================
-
-  // vytiahnem si modal elementy a alerty (tam vypisujem ok/err spravy)
+  // referencia na modal okna a alerty v nich
   const changeModal = qs("#acc-change-modal");
   const deleteModal = qs("#acc-delete-modal");
   const changeAlert = qs("#acc-change-alert");
   const deleteAlert = qs("#acc-delete-alert");
 
-  // na zaciatku schovam modaly (pre istotu)
   if (changeModal) changeModal.hidden = true;
   if (deleteModal) deleteModal.hidden = true;
 
-  // otvorenie modalu: zrusim hidden, nastavim triedu a fokusnem prvy input
-  function openModal(modal) {
-    if (!modal) return;
-    modal.hidden = false;                 // toto musi byt false, inak modal nevidno
-    modal.classList.add("is-open");
-    modal.setAttribute("aria-hidden", "false");
-    document.body.classList.add("acc-modal-open");
 
-    const firstInput = qs("input", modal);
-    if (firstInput) setTimeout(() => firstInput.focus(), 0);
-  }
+function openModal(modal) {
+  // otvorenie modalu + nastavenie focusu na prvy input
+  if (!modal) return;
+  modal.hidden = false;                 // DÔLEŽITÉ
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("acc-modal-open");
 
-  // zatvorenie modalu: vratim hidden, vycistim alert, resetnem form
-  function closeModal(modal) {
-    if (!modal) return;
-    modal.classList.remove("is-open");
-    modal.setAttribute("aria-hidden", "true");
-    modal.hidden = true;                  // toto vrati modal do hidden stavu
+  const firstInput = qs("input", modal);
+  if (firstInput) setTimeout(() => firstInput.focus(), 0);
+}
 
-    const alertEl = qs(".acc-modal__alert", modal);
-    if (alertEl) { alertEl.hidden = true; alertEl.textContent = ""; alertEl.classList.remove("ok","err"); }
+function closeModal(modal) {
+  // zatvorenie modalu + reset formulara a alertov
+  if (!modal) return;
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+  modal.hidden = true;                  // DÔLEŽITÉ
 
-    const form = qs("form", modal);
-    if (form) form.reset();
+  const alertEl = qs(".acc-modal__alert", modal);
+  if (alertEl) { alertEl.hidden = true; alertEl.textContent = ""; alertEl.classList.remove("ok","err"); }
 
-    // ak nie je otvoreny ziadny modal, tak odomknem scroll na body
-    const anyOpen = changeModal?.classList.contains("is-open") || deleteModal?.classList.contains("is-open");
-    if (!anyOpen) document.body.classList.remove("acc-modal-open");
-  }
+  const form = qs("form", modal);
+  if (form) form.reset();
 
-  // pomocna funkcia na vypis spravy v modale (ok/err)
+  const anyOpen = changeModal?.classList.contains("is-open") || deleteModal?.classList.contains("is-open");
+  if (!anyOpen) document.body.classList.remove("acc-modal-open");
+}
+if (changeModal) changeModal.hidden = true;
+if (deleteModal) deleteModal.hidden = true;
+
+
+  // zobrazenie spravy v modale (ok alebo error styl)
   function setModalAlert(alertEl, msg, ok) {
     if (!alertEl) return;
     alertEl.textContent = msg || "";
@@ -300,20 +295,20 @@ document.addEventListener("DOMContentLoaded", () => {
     alertEl.classList.toggle("err", !ok);
   }
 
-  // tlacidla ktore otvaraju modaly
+  // tlacidla ktore otvaraju jednotlive modaly
   const showChange = qs("#show-change-password");
   const showDelete = qs("#show-delete-account");
   if (showChange) showChange.addEventListener("click", () => openModal(changeModal));
   if (showDelete) showDelete.addEventListener("click", () => openModal(deleteModal));
 
-  // klik mimo karty modalu zatvori modal, a aj tlacidla s data-close zavru modal
+  // klik mimo karty alebo na [data-close] zatvori modal
   [changeModal, deleteModal].forEach(modal => {
     if (!modal) return;
     modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(modal); });
     qsa("[data-close]", modal).forEach(btn => btn.addEventListener("click", () => closeModal(modal)));
   });
 
-  // esc klavesa zatvori otvoreny modal
+  // escape zatvori otvoreny modal
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
     if (changeModal?.classList.contains("is-open")) closeModal(changeModal);
@@ -321,10 +316,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================
-  // tabs (moj ucet / nastavenia)
+  // TABS
   // =========================
-
-  // prepina aktivnu zalozku + zobrazi prislusny obsah
+  // prepnutie medzi moj ucet a nastavenia
   function wireTabs() {
     qsa(".tab-link").forEach(link => {
       link.addEventListener("click", () => {
@@ -341,20 +335,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // rezervacie + live cena pre walkin
+  // RESERVATIONS + LIVE WALKIN PRICE
   // =========================
-
-  // elementy kde sa vykreslia karty rezervacii
+  // elementy kde sa vykreslia aktivne a buduce rezervacie
   const activeList = qs("#active-list");
   const upcomingList = qs("#upcoming-list");
-
-  // tu si drzim cache, aby som mala data aj pre render
+  // cache na rezervacie z backendu (aby sa s nimi dalo filtrovat a renderovat)
   let _cache = { reservations: [] };
-
-  // sem si ulozim deteknute endpointy (base + nazvy suborov)
+  // sem sa ulozi zisteny set endpointov (spravny base)
   let EP = null;
 
-  // formatovanie datumu na pekny text
+  // formatovanie datumov do lokalneho formatu
   function fmtDateTime(val) {
     if (!val) return "—";
     const d = toDate(val);
@@ -362,11 +353,12 @@ document.addEventListener("DOMContentLoaded", () => {
     return d.toLocaleString("sk-SK");
   }
 
-  // kazdych 10 min aktualizujem walkin cenu (cena rastie s casom)
+  // interval pre prepocty ceny pri walkin (periodicky refresh)
   const PRICE_REFRESH_MS = 10 * 60 * 1000; // 10 min
+  // uctovaci krok pre walkin (30 minut)
   const BILL_STEP_SEC = 1800;              // 30 min
 
-  // vypocitam walkin cenu: minimalne 1 polhodina, potom za kazdu polhodinu polku hourly_rate sumy
+  // vypocet odhadovanej ceny walkin podla startu a sumy hodinovych sadzieb
   function calcWalkinPrice(startVal, rateSum) {
     const start = toDate(startVal);
     if (!start) return null;
@@ -377,7 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return Number.isFinite(price) ? price : null;
   }
 
-  // prejdem vsetky elementy s triedou js-walkin-price a doplnim aktualnu cenu
+  // aktualizacia vsetkych prvkov s cenou walkin v ui
   function updateWalkinPrices() {
     qsa(".js-walkin-price").forEach(el => {
       const start = el.dataset.start;
@@ -387,28 +379,25 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // spustim interval iba raz (aby som nemala viac timerov naraz)
+  // spustenie periodickeho refresha cien (len raz)
   let _priceTimer = null;
   function startWalkinTicker() {
     if (_priceTimer) return;
     _priceTimer = setInterval(updateWalkinPrices, PRICE_REFRESH_MS);
   }
 
-  // vykreslim rezervacie do html (aktualne walkin do active, ostatne do upcoming)
+  // vykreslenie rezervacii do dvoch skupin: aktivne (walkin) a nadchadzajuce (daily)
   function renderReservations() {
     const all = (_cache.reservations || []);
 
-    // vyfiltrujem iba tie, ktore nie su completed/canceled/cancelled
     const current = all.filter(r => {
       const st = String(r.status || "").toLowerCase();
       return st !== "completed" && st !== "canceled" && st !== "cancelled";
     });
 
-    // active = walkin, upcoming = daily (alebo ine ako walkin)
     const active = current.filter(r => String(r.type_reservation || "").toLowerCase() === "walkin");
     const upcoming = current.filter(r => String(r.type_reservation || "").toLowerCase() !== "walkin");
 
-    // sekcia aktivnych uschov (walkin)
     if (activeList) {
       if (!active.length) {
         activeList.innerHTML = `<div class="empty">Žiadne aktívne úschovy.</div>`;
@@ -456,7 +445,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // sekcia nadchadzajucich rezervacii (napr daily)
     if (upcomingList) {
       if (!upcoming.length) {
         upcomingList.innerHTML = `<div class="empty">Nemáš žiadne nadchádzajúce rezervácie.</div>`;
@@ -505,14 +493,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // po vykresleni kariet musim nabindovat kliky na tlacidla (lebo tie tlacidla vznikli cez innerhtml)
+  // pripojenie click handlerov na tlacidla ukoncit/zrusit rezervaciu
   function bindReservationActions() {
     qsa("[data-cancel]").forEach(btn => {
       btn.onclick = async () => {
         const id = btn.getAttribute("data-cancel");
         const mode = btn.getAttribute("data-mode") || "cancel";
 
-        // tu iba vyberam text potvrdzovacieho okna podla toho, ci ide o end alebo cancel
         const msg = (mode === "end")
           ? "Naozaj chceš ukončiť úschovu? Cena sa vypočíta podľa času."
           : "Naozaj chceš zrušiť rezerváciu?";
@@ -520,11 +507,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!confirm(msg)) return;
 
         try {
-          // poslem na backend id rezervacie + mode (backend podla toho nastavi status)
           const resp = await apiPostForm(EP.cancelReservation, { id, mode });
           alert(resp.message || (resp.success ? "Hotovo." : "Nepodarilo sa."));
-
-          // po zmene si nacitam zo servera aktualny zoznam a znova vykreslim
           await refreshReservations();
         } catch (e) {
           alert(e.message || "Chyba pri spracovaní.");
@@ -533,7 +517,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // nacitam rezervacie zo servera, ulozim do cache, vykreslim a nabindujem akcie
+  // nacitanie rezervacii z backendu + render + bind tlacidiel
   async function refreshReservations() {
     if (activeList) activeList.innerHTML = `<div class="muted">Načítavam…</div>`;
     if (upcomingList) upcomingList.innerHTML = `<div class="muted">Načítavam…</div>`;
@@ -549,10 +533,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // logout
+  // LOGOUT
   // =========================
-
-  // odhlasenie: zavolam backend logout a potom presmerujem na index
+  // odhlasenie cez backend a presmerovanie na index
   function wireLogout() {
     const logoutLink = qs(".logout-link");
     if (!logoutLink) return;
@@ -564,10 +547,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // change password
+  // CHANGE PASSWORD
   // =========================
-
-  // spracujem submit formulara na zmenu hesla
+  // submit formulara na zmenu hesla (posle json na backend)
   const changeForm = qs("#change-password-form");
   if (changeForm) {
     changeForm.addEventListener("submit", async (e) => {
@@ -575,18 +557,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const oldPassword = qs("#old-password")?.value?.trim() || "";
       const newPassword = qs("#new-password")?.value?.trim() || "";
 
-      // jednoducha validacia (min 6 znakov)
       if (newPassword.length < 6) {
         setModalAlert(changeAlert, "Nové heslo musí mať aspoň 6 znakov.", false);
         return;
       }
 
       try {
-        // poslem json na backend
         const data = await apiPostJson(EP.changePassword, { oldPassword, newPassword });
         setModalAlert(changeAlert, data.message || (data.success ? "Heslo zmenené." : "Nepodarilo sa."), !!data.success);
 
-        // ak to vyslo, odhlasim a poslem na login
         if (data.success) {
           setTimeout(() => {
             fetch(EP.logout, { method: "POST", credentials: "include" })
@@ -600,31 +579,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // delete account
+  // DELETE ACCOUNT
   // =========================
-
-  // spracujem submit formulara na zmazanie uctu
+  // submit formulara na zmazanie uctu (posle heslo na backend)
   const deleteForm = qs("#delete-account-form");
   if (deleteForm) {
     deleteForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const userPassword = qs("#delete-password")?.value?.trim() || "";
 
-      // ak heslo nie je vyplnene, tak hned vratim hlasku
       if (!userPassword) {
         setModalAlert(deleteAlert, "Zadaj heslo.", false);
         return;
       }
 
-      // posledne potvrdenie (aby som omylom nezmazala ucet)
       if (!confirm("Posledná kontrola: naozaj chceš zmazať účet?")) return;
 
       try {
-        // poslem json na backend
         const data = await apiPostJson(EP.deleteAccount, { userPassword });
         setModalAlert(deleteAlert, data.message || (data.success ? "Účet bol zmazaný." : "Nepodarilo sa."), !!data.success);
 
-        // ak to vyslo, presmerujem na index
         if (data.success) setTimeout(() => window.location.href = "index.html", 900);
       } catch {
         setModalAlert(deleteAlert, "Chyba siete. Skús znova.", false);
@@ -633,30 +607,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // init (start celeho skriptu)
+  // INIT
   // =========================
-
+  // inicializacia: najde backend base, overi login, nacita rezervacie a zapne ui
   (async () => {
-    // najprv zistim spravnu base cestu k backendu
     EP = await detectBackendBase();
     if (!EP) {
       alert("Nepodarilo sa nájsť backend (skontroluj priečinok backend/).");
       return;
     }
 
-    // overim ci som prihlasena cez getUser
     apiGet(EP.getUser)
       .then(data => {
-        // ak nie som prihlasena, poslem na login
         if (!data || !data.loggedIn) {
           window.location.href = "login.html";
           return;
         }
-
-        // vypisem email hore na stranke
         if (EMAIL_EL && data.user?.email) EMAIL_EL.textContent = data.user.email;
 
-        // zapnem ui funkcie a nacitam rezervacie
         wireTabs();
         wireLogout();
         refreshReservations();
@@ -665,6 +633,7 @@ document.addEventListener("DOMContentLoaded", () => {
   })();
 });
 </script>
+
 
 </body>
 </html>
