@@ -41,7 +41,7 @@ try {
     $boxes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $m = strtolower(trim((string)$mode));
-    $status = ($m === 'cancel') ? 'canceled' : 'completed';
+  $status = ($m === 'cancel') ? 'cancelled' : 'completed';
     $total_price = $reservation['total_price'];
     $date_to = $reservation['date_to'];
 
