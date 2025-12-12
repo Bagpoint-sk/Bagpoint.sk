@@ -501,7 +501,7 @@ text-transform: uppercase;
 }
 
 .active-city::after {
-  content: "Zobrazit na mape";
+  content: "Zobraziť na mape";
   position: absolute;
   bottom: 16px;
   right: 16px;
@@ -1323,6 +1323,28 @@ body.login-page.success-bg {
 }
 
 
+/* Shared primary action button (map reservation) */
+.reserve-btn {
+  background: linear-gradient(90deg, #089DFA, #0471C2);
+  color: white;
+  border: none;
+  padding: 12px 0;
+  width: 100%;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 17px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reserve-btn:hover {
+  background: linear-gradient(90deg, #0BA5FF, #0471C2);
+  transform: translateY(-2px);
+}
+
+/* spacing only for the “card” modal variant */
+.modal-card .reserve-btn { margin-top: 18px; }
+
 .modal-content {
   position: relative;
   background: white;
@@ -1361,25 +1383,6 @@ body.login-page.success-bg {
   margin-bottom: 20px;
   font-family: 'Outfit', sans-serif;
   font-size: 16px;
-}
-
-
-.reserve-btn {
-  background: linear-gradient(90deg, #089DFA, #0471C2);
-  color: white;
-  border: none;
-  padding: 12px 0;
-  width: 100%;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 17px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.reserve-btn:hover {
-  background: linear-gradient(90deg, #0BA5FF, #0471C2);
-  transform: translateY(-2px);
 }
 
 
@@ -1512,26 +1515,6 @@ body.login-page.success-bg {
   line-height: 1.5;
   text-align: center;
 }
-
-
-.reserve-btn {
-  background: linear-gradient(90deg, #089DFA, #0471C2);
-  color: white;
-  border: none;
-  width: 100%;
-  padding: 12px 0;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 17px;
-  cursor: pointer;
-  transition: 0.3s;
-  margin-top: 18px;
-}
-.reserve-btn:hover {
-  background: linear-gradient(90deg, #0BA5FF, #0471C2);
-  transform: translateY(-2px);
-}
-
 .radio-toggle {
   display: flex;
   justify-content: center;
@@ -2330,4 +2313,18 @@ body.login-page.success-bg {
 }
 
 
+
+
+/* Account settings layout */
+#settings-section .settings-actions{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 14px;
+}
+
+#settings-section .account-btn{
+  margin-right: 0;
+}
 

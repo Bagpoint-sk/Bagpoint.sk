@@ -14,7 +14,6 @@
     <header>
       <nav class="navbar">
         <div class="nav-left">
-          <!-- zmenil som /images/... na images/... aby to fungovalo aj mimo rootu -->
           <a href="index.html"><img class="logo" src="images/logo2.png" alt="logo" /></a>
         </div>
         <ul class="nav-center">
@@ -55,6 +54,7 @@
             <div class="cards-wrap">
               <div class="card-group">
                 <h3>Aktívne úschovy</h3>
+                <div class="muted">Cena pre <strong>walk-in</strong> je odhad a aktualizuje sa každých ~10 minút.</div>
                 <div id="active-list" class="card-list">
                   <div class="muted">Načítavam…</div>
                 </div>
@@ -72,8 +72,10 @@
           <!-- TAB: NASTAVENIA -->
           <div id="settings-section" class="tab-content">
             <h2>Nastavenia účtu</h2>
-            <button id="show-change-password" class="account-btn">Zmeniť heslo</button>
-            <button id="show-delete-account" class="account-btn delete">Zmazať účet</button>
+            <div class="settings-actions">
+              <button id="show-change-password" class="account-btn">Zmeniť heslo</button>
+              <button id="show-delete-account" class="account-btn delete">Zmazať účet</button>
+            </div>
           </div>
         </section>
       </div>
@@ -143,6 +145,10 @@
       deleteAccount: "deleteAccount.php",
     };
 
+    // Cennik (€/hod) pre walk-in:
+    // S = 1.00, M = 1.50, L = 2.00
+    const RATE_PER_HOUR = { S: 1.0, M: 1.5, L: 2.0 };
+
     const qs = (sel, root=document) => root.querySelector(sel);
     const qsa = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 
@@ -164,6 +170,32 @@
       } catch (e) {
         return [];
       }
+    }
+
+    function boxToSizeKey(boxLabel) {
+      const s = String(boxLabel || "").trim().toUpperCase();
+      // pokryje hodnoty typu: "S", "M", "L", "Malý (S)", "Stredný (M)", "Veľký (L)", atd.
+      if (/(\(S\)|\bS\b)/.test(s) || s.includes("MAL")) return "S";
+      if (/(\(M\)|\bM\b)/.test(s) || s.includes("STRED")) return "M";
+      if (/(\(L\)|\bL\b)/.test(s) || s.includes("VEL")) return "L";
+      return null;
+    }
+
+    function sumRateFromBoxes(boxes) {
+      let sum = 0;
+      for (const b of (boxes || [])) {
+        const k = boxToSizeKey(b);
+        if (k && RATE_PER_HOUR[k] != null) sum += Number(RATE_PER_HOUR[k]);
+      }
+      return sum;
+    }
+
+    function calcWalkinEstimate(startVal, hourlyRateSum) {
+      const start = new Date(startVal);
+      if (isNaN(start.getTime())) return null;
+      const mins = Math.max(0, Math.floor((Date.now() - start.getTime()) / 60000));
+      const cost = (mins / 60) * (Number(hourlyRateSum) || 0);
+      return { mins, cost };
     }
 
     async function fetchJson(url, options = {}) {
@@ -280,6 +312,7 @@
           link.classList.add("active");
           const target = document.getElementById(link.dataset.target);
           if (target) target.classList.add("active");
+          window.scrollTo({ top: 0, behavior: "smooth" });
         });
       });
     }
@@ -315,6 +348,12 @@
           activeList.innerHTML = active.map(r => {
             const boxes = parseBoxes(r.boxes);
             const boxText = boxes && boxes.length ? boxes.join(", ") : "—";
+
+            const rateSum = sumRateFromBoxes(boxes);
+            const est = (rateSum > 0 && r.date_from) ? calcWalkinEstimate(r.date_from, rateSum) : null;
+            const estPrice = est ? `${est.cost.toFixed(2)} €` : "—";
+            const estMins  = est ? `${est.mins} min` : "";
+
             return `
               <div class="acc-card">
                 <div class="acc-card__header">
@@ -331,9 +370,13 @@
                     <div class="stat-label">Začiatok</div>
                     <div class="stat-value">${fmtDateTime(r.date_from)}</div>
                   </div>
-                  <div class="stat">
-                    <div class="stat-label">Cena</div>
-                    <div class="stat-value">vypočíta sa pri ukončení</div>
+
+                  <div class="stat" ${est ? `data-live-start="${escapeHtml(r.date_from)}" data-live-rate="${escapeHtml(rateSum)}"` : ""}>
+                    <div class="stat-label">Cena (odhad)</div>
+                    <div class="stat-value">
+                      <span class="js-live-price">${escapeHtml(estPrice)}</span>
+                      ${est ? `<span class="timer-pill js-live-mins">${escapeHtml(estMins)}</span>` : ""}
+                    </div>
                   </div>
                 </div>
 
@@ -379,7 +422,7 @@
                   </div>
                 </div>
 
-                <div class="pay-hint">Cena: <strong>${escapeHtml(priceText)}</strong>. Zrušením sa boxy uvoľnia.</div>
+                <div class="pay-hint">Cena: <strong>${escapeHtml(priceText)}</strong>.</div>
 
                 <div class="acc-card__footer">
                   <button class="account-btn delete" data-cancel="${escapeHtml(r.reservation_id)}" data-mode="cancel">Zrušiť</button>
@@ -389,6 +432,27 @@
           }).join("");
         }
       }
+    }
+
+    function updateLivePrices() {
+      qsa("[data-live-start][data-live-rate]").forEach(statEl => {
+        const startVal = statEl.getAttribute("data-live-start");
+        const rateSum = Number(statEl.getAttribute("data-live-rate"));
+        const est = (startVal && rateSum > 0) ? calcWalkinEstimate(startVal, rateSum) : null;
+        if (!est) return;
+
+        const priceEl = qs(".js-live-price", statEl);
+        const minsEl = qs(".js-live-mins", statEl);
+
+        if (priceEl) priceEl.textContent = est.cost.toFixed(2) + " €";
+        if (minsEl) minsEl.textContent = est.mins + " min";
+      });
+    }
+
+    let _liveTimer = null;
+    function startLiveTicker() {
+      if (_liveTimer) return;
+      _liveTimer = setInterval(updateLivePrices, 10 * 60 * 1000); // 10 min
     }
 
     function bindReservationActions() {
@@ -421,6 +485,8 @@
       _cache.reservations = (resp && resp.success ? resp.reservations : []) || [];
       renderReservations();
       bindReservationActions();
+      updateLivePrices();
+      startLiveTicker();
     }
 
     // --- Logout ---
@@ -487,7 +553,7 @@
       });
     }
 
-    // --- INIT ---
+ 
     (async () => {
       EP = await detectBackendBase();
       if (!EP) {
