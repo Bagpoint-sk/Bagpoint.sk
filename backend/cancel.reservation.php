@@ -23,7 +23,8 @@ try {
     }
 
     // --- Skontrolovať, či už rezervácia nie je ukončená ---
-    if ($reservation['status'] === 'completed') {
+    $st = strtolower((string)($reservation['status'] ?? ''));
+    if ($st === 'completed' || $st === 'canceled' || $st === 'cancelled') {
         echo json_encode(["success" => false, "message" => "Rezervácia už je ukončená"]);
         exit;
     }
@@ -38,17 +39,32 @@ try {
     $stmt->execute([':rid' => $reservation_id]);
     $boxes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $status = 'completed';
+    $is_walkin = false;
+    if (($reservation['type_reservation'] ?? null) === 'walkin') $is_walkin = true;
+    if (!$is_walkin && !empty($boxes) && ($boxes[0]['type_reservation'] ?? null) === 'walkin') $is_walkin = true;
+
+    $status = $is_walkin ? 'completed' : 'canceled';
     $total_price = $reservation['total_price'];
     $date_to = $reservation['date_to'];
 
     // --- Ak walkin, dopočítať cenu a nastaviť date_to ---
-    if (!empty($boxes) && $boxes[0]['type_reservation'] === 'walkin') {
+    if ($is_walkin) {
         $date_to = date('Y-m-d H:i:s');
-        $start = new DateTime($reservation['date_from']);
+
+        $rate_sum = 0;
+        foreach ($boxes as $b) {
+            $rate_sum += (float)($b['price_per_hour'] ?? 0);
+        }
+
+        $startVal = $reservation['date_from'] ?? null;
+        $start = $startVal ? new DateTime($startVal) : new DateTime($date_to);
         $end = new DateTime($date_to);
-        $hours = ceil(($end->getTimestamp() - $start->getTimestamp()) / 3600);
-        $total_price = $hours * $boxes[0]['price_per_hour'];
+
+        $elapsed = $end->getTimestamp() - $start->getTimestamp();
+        if ($elapsed < 0) $elapsed = 0;
+
+        $halfHours = (int)ceil($elapsed / 1800);
+        $total_price = $halfHours * ($rate_sum / 2);
     }
 
     // --- Aktualizácia rezervácie ---
@@ -72,7 +88,7 @@ try {
     ");
     $stmt->execute([':rid' => $reservation_id]);
 
-    echo json_encode(["success" => true, "message" => "Rezervácia bola ukončená a boxy sú voľné"]);
+    echo json_encode(["success" => true, "message" => ($is_walkin ? "Rezervácia bola ukončená a boxy sú voľné" : "Rezervácia bola zrušená a boxy sú voľné")]);
 
 } catch (PDOException $e) {
     echo json_encode(["success" => false, "message" => "Chyba: " . $e->getMessage()]);

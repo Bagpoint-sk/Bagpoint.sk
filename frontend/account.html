@@ -258,23 +258,31 @@
     const changeAlert = qs("#acc-change-alert");
     const deleteAlert = qs("#acc-delete-alert");
 
-    function openModal(modal) {
-      if (!modal) return;
-      modal.classList.add("is-open");
-      modal.setAttribute("aria-hidden", "false");
-      const firstInput = qs("input", modal);
-      if (firstInput) setTimeout(() => firstInput.focus(), 0);
-    }
+   function openModal(modal) {
+  if (!modal) return;
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("acc-modal-open"); // NEW
 
-    function closeModal(modal) {
-      if (!modal) return;
-      modal.classList.remove("is-open");
-      modal.setAttribute("aria-hidden", "true");
-      const alertEl = qs(".acc-modal__alert", modal);
-      if (alertEl) { alertEl.hidden = true; alertEl.textContent = ""; alertEl.classList.remove("ok","err"); }
-      const form = qs("form", modal);
-      if (form) form.reset();
-    }
+  const firstInput = qs("input", modal);
+  if (firstInput) setTimeout(() => firstInput.focus(), 0);
+}
+
+function closeModal(modal) {
+  if (!modal) return;
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+
+  const alertEl = qs(".acc-modal__alert", modal);
+  if (alertEl) { alertEl.hidden = true; alertEl.textContent = ""; alertEl.classList.remove("ok","err"); }
+
+  const form = qs("form", modal);
+  if (form) form.reset();
+
+  const anyOpen = changeModal?.classList.contains("is-open") || deleteModal?.classList.contains("is-open");
+  if (!anyOpen) document.body.classList.remove("acc-modal-open");
+}
+
 
     function setModalAlert(alertEl, msg, ok) {
       if (!alertEl) return;
