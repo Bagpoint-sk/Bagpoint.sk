@@ -83,7 +83,8 @@
   </div>
 
   <!-- MODAL: ZMENA HESLA -->
-  <div id="acc-change-modal" class="acc-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="acc-change-title">
+<div id="acc-change-modal" class="acc-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="acc-change-title">
+
     <div class="acc-modal__card" role="document">
       <button type="button" class="acc-modal__close" data-close aria-label="Zavrieť">×</button>
       <h3 id="acc-change-title" class="acc-modal__title">Zmena hesla</h3>
@@ -107,7 +108,8 @@
   </div>
 
   <!-- MODAL: ZMAZANIE ÚČTU -->
-  <div id="acc-delete-modal" class="acc-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="acc-delete-title">
+  <div id="acc-delete-modal" class="acc-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="acc-delete-title">
+
     <div class="acc-modal__card" role="document">
       <button type="button" class="acc-modal__close" data-close aria-label="Zavrieť">×</button>
       <h3 id="acc-delete-title" class="acc-modal__title">Zmazať účet</h3>
@@ -126,143 +128,112 @@
       </form>
     </div>
   </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const EMAIL_EL = document.getElementById("user-email");
 
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const EMAIL_EL = document.getElementById("user-email");
+  // Skusi automaticky najst spravnu cestu k backendu:
+  const BASES = ["backend/", "../backend/", "/backend/"];
+  const ENDPOINTS = {
+    getUser: "getUser.php",
+    logout: "logout.php",
+    listReservations: "get_reservations.php",
+    cancelReservation: "cancel.reservation.php",
+    changePassword: "changePassword.php",
+    deleteAccount: "deleteAccount.php",
+  };
 
-    // Skusi automaticky najst spravnu cestu k backendu:
-    // 1) backend/...
-    // 2) ../backend/...
-    // 3) /backend/...
-    const BASES = ["backend/", "../backend/", "/backend/"];
-    const ENDPOINTS = {
-      getUser: "getUser.php",
-      logout: "logout.php",
-      listReservations: "get_reservations.php",
-      cancelReservation: "cancel.reservation.php",
-      changePassword: "changePassword.php",
-      deleteAccount: "deleteAccount.php",
+  const qs  = (sel, root=document) => root.querySelector(sel);
+  const qsa = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+  function escapeHtml(s) {
+    return String(s ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function parseBoxes(val) {
+    if (Array.isArray(val)) return val;
+    if (!val) return [];
+    try {
+      const parsed = JSON.parse(val);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function toDate(val) {
+    if (!val) return null;
+    const s = String(val).trim();
+    const d = new Date(s.includes("T") ? s : s.replace(" ", "T"));
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  async function fetchJson(url, options = {}) {
+    const r = await fetch(url, { credentials: "include", ...options });
+    if (!r.ok) throw new Error("Network error");
+    return r.json();
+  }
+  const apiGet = (url) => fetchJson(url);
+  const apiPostJson = (url, payload) => fetchJson(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload || {})
+  });
+  const apiPostForm = (url, formObj) => {
+    const body = new URLSearchParams();
+    Object.entries(formObj || {}).forEach(([k,v]) => body.append(k, v));
+    return fetchJson(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body
+    });
+  };
+
+  function makeEP(base) {
+    return {
+      getUser: base + ENDPOINTS.getUser,
+      logout: base + ENDPOINTS.logout,
+      listReservations: base + ENDPOINTS.listReservations,
+      cancelReservation: base + ENDPOINTS.cancelReservation,
+      changePassword: base + ENDPOINTS.changePassword,
+      deleteAccount: base + ENDPOINTS.deleteAccount,
     };
+  }
 
-    // Cennik (€/hod) pre walk-in:
-    // S = 1.00, M = 1.50, L = 2.00
-    const RATE_PER_HOUR = { S: 1.0, M: 1.5, L: 2.0 };
-
-    const qs = (sel, root=document) => root.querySelector(sel);
-    const qsa = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-
-    function escapeHtml(s) {
-      return String(s ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-
-    function parseBoxes(val) {
-      if (Array.isArray(val)) return val;
-      if (!val) return [];
+  async function detectBackendBase() {
+    for (const base of BASES) {
+      const EP_try = makeEP(base);
       try {
-        const parsed = JSON.parse(val);
-        return Array.isArray(parsed) ? parsed : [];
-      } catch (e) {
-        return [];
-      }
+        const data = await apiGet(EP_try.getUser);
+        if (data && typeof data === "object") return EP_try;
+      } catch {}
     }
+    return null;
+  }
 
-    function boxToSizeKey(boxLabel) {
-      const s = String(boxLabel || "").trim().toUpperCase();
-      // pokryje hodnoty typu: "S", "M", "L", "Malý (S)", "Stredný (M)", "Veľký (L)", atd.
-      if (/(\(S\)|\bS\b)/.test(s) || s.includes("MAL")) return "S";
-      if (/(\(M\)|\bM\b)/.test(s) || s.includes("STRED")) return "M";
-      if (/(\(L\)|\bL\b)/.test(s) || s.includes("VEL")) return "L";
-      return null;
-    }
+  // =========================
+  // MODALS
+  // =========================
+  const changeModal = qs("#acc-change-modal");
+  const deleteModal = qs("#acc-delete-modal");
+  const changeAlert = qs("#acc-change-alert");
+  const deleteAlert = qs("#acc-delete-alert");
 
-    function sumRateFromBoxes(boxes) {
-      let sum = 0;
-      for (const b of (boxes || [])) {
-        const k = boxToSizeKey(b);
-        if (k && RATE_PER_HOUR[k] != null) sum += Number(RATE_PER_HOUR[k]);
-      }
-      return sum;
-    }
+  if (changeModal) changeModal.hidden = true;
+  if (deleteModal) deleteModal.hidden = true;
 
-    function calcWalkinEstimate(startVal, hourlyRateSum) {
-      const start = new Date(startVal);
-      if (isNaN(start.getTime())) return null;
-      const mins = Math.max(0, Math.floor((Date.now() - start.getTime()) / 60000));
-      const cost = (mins / 60) * (Number(hourlyRateSum) || 0);
-      return { mins, cost };
-    }
 
-    async function fetchJson(url, options = {}) {
-      const r = await fetch(url, { credentials: "include", ...options });
-      if (!r.ok) throw new Error("Network error");
-      return r.json();
-    }
-
-    async function apiGet(url) {
-      return fetchJson(url);
-    }
-
-    async function apiPostJson(url, payload) {
-      return fetchJson(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload || {})
-      });
-    }
-
-    // cancel.reservation.php ocakava POST form-data: id=...
-    async function apiPostForm(url, formObj) {
-      const body = new URLSearchParams();
-      Object.entries(formObj || {}).forEach(([k,v]) => body.append(k, v));
-      return fetchJson(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-        body
-      });
-    }
-
-    function makeEP(base) {
-      return {
-        getUser: base + ENDPOINTS.getUser,
-        logout: base + ENDPOINTS.logout,
-        listReservations: base + ENDPOINTS.listReservations,
-        cancelReservation: base + ENDPOINTS.cancelReservation,
-        changePassword: base + ENDPOINTS.changePassword,
-        deleteAccount: base + ENDPOINTS.deleteAccount,
-      };
-    }
-
-    async function detectBackendBase() {
-      for (const base of BASES) {
-        const EP_try = makeEP(base);
-        try {
-          const data = await apiGet(EP_try.getUser);
-          // ak vratilo JSON, base je spravna
-          if (data && typeof data === "object") return EP_try;
-        } catch (e) {
-          // skus dalsiu
-        }
-      }
-      return null;
-    }
-
-    // --- Modaly ---
-    const changeModal = qs("#acc-change-modal");
-    const deleteModal = qs("#acc-delete-modal");
-    const changeAlert = qs("#acc-change-alert");
-    const deleteAlert = qs("#acc-delete-alert");
-
-   function openModal(modal) {
+function openModal(modal) {
   if (!modal) return;
+  modal.hidden = false;                 // DÔLEŽITÉ
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
-  document.body.classList.add("acc-modal-open"); // NEW
+  document.body.classList.add("acc-modal-open");
 
   const firstInput = qs("input", modal);
   if (firstInput) setTimeout(() => firstInput.focus(), 0);
@@ -272,6 +243,7 @@ function closeModal(modal) {
   if (!modal) return;
   modal.classList.remove("is-open");
   modal.setAttribute("aria-hidden", "true");
+  modal.hidden = true;                  // DÔLEŽITÉ
 
   const alertEl = qs(".acc-modal__alert", modal);
   if (alertEl) { alertEl.hidden = true; alertEl.textContent = ""; alertEl.classList.remove("ok","err"); }
@@ -282,309 +254,337 @@ function closeModal(modal) {
   const anyOpen = changeModal?.classList.contains("is-open") || deleteModal?.classList.contains("is-open");
   if (!anyOpen) document.body.classList.remove("acc-modal-open");
 }
+if (changeModal) changeModal.hidden = true;
+if (deleteModal) deleteModal.hidden = true;
 
 
-    function setModalAlert(alertEl, msg, ok) {
-      if (!alertEl) return;
-      alertEl.textContent = msg || "";
-      alertEl.hidden = !msg;
-      alertEl.classList.toggle("ok", !!ok);
-      alertEl.classList.toggle("err", !ok);
-    }
+  function setModalAlert(alertEl, msg, ok) {
+    if (!alertEl) return;
+    alertEl.textContent = msg || "";
+    alertEl.hidden = !msg;
+    alertEl.classList.toggle("ok", !!ok);
+    alertEl.classList.toggle("err", !ok);
+  }
 
-    // open buttons
-    const showChange = qs("#show-change-password");
-    const showDelete = qs("#show-delete-account");
-    if (showChange) showChange.addEventListener("click", () => openModal(changeModal));
-    if (showDelete) showDelete.addEventListener("click", () => openModal(deleteModal));
+  const showChange = qs("#show-change-password");
+  const showDelete = qs("#show-delete-account");
+  if (showChange) showChange.addEventListener("click", () => openModal(changeModal));
+  if (showDelete) showDelete.addEventListener("click", () => openModal(deleteModal));
 
-    // close actions
-    [changeModal, deleteModal].forEach(modal => {
-      if (!modal) return;
-      modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(modal); });
-      qsa("[data-close]", modal).forEach(btn => btn.addEventListener("click", () => closeModal(modal)));
+  [changeModal, deleteModal].forEach(modal => {
+    if (!modal) return;
+    modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(modal); });
+    qsa("[data-close]", modal).forEach(btn => btn.addEventListener("click", () => closeModal(modal)));
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (changeModal?.classList.contains("is-open")) closeModal(changeModal);
+    if (deleteModal?.classList.contains("is-open")) closeModal(deleteModal);
+  });
+
+  // =========================
+  // TABS
+  // =========================
+  function wireTabs() {
+    qsa(".tab-link").forEach(link => {
+      link.addEventListener("click", () => {
+        qsa(".tab-link").forEach(l => l.classList.remove("active"));
+        qsa(".tab-content").forEach(c => c.classList.remove("active"));
+
+        link.classList.add("active");
+        const target = document.getElementById(link.dataset.target);
+        if (target) target.classList.add("active");
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+  }
+
+  // =========================
+  // RESERVATIONS + LIVE WALKIN PRICE
+  // =========================
+  const activeList = qs("#active-list");
+  const upcomingList = qs("#upcoming-list");
+  let _cache = { reservations: [] };
+  let EP = null;
+
+  function fmtDateTime(val) {
+    if (!val) return "—";
+    const d = toDate(val);
+    if (!d) return escapeHtml(val);
+    return d.toLocaleString("sk-SK");
+  }
+
+  const PRICE_REFRESH_MS = 10 * 60 * 1000; // 10 min
+  const BILL_STEP_SEC = 1800;              // 30 min
+
+  function calcWalkinPrice(startVal, rateSum) {
+    const start = toDate(startVal);
+    if (!start) return null;
+
+    const elapsedSec = Math.max(0, (Date.now() - start.getTime()) / 1000);
+    const halfHours = Math.max(1, Math.ceil(elapsedSec / BILL_STEP_SEC));
+    const price = halfHours * (Number(rateSum || 0) / 2);
+    return Number.isFinite(price) ? price : null;
+  }
+
+  function updateWalkinPrices() {
+    qsa(".js-walkin-price").forEach(el => {
+      const start = el.dataset.start;
+      const rate  = Number(el.dataset.rate || 0);
+      const price = calcWalkinPrice(start, rate);
+      el.textContent = (price === null) ? "—" : `${price.toFixed(2)} €`;
+    });
+  }
+
+  let _priceTimer = null;
+  function startWalkinTicker() {
+    if (_priceTimer) return;
+    _priceTimer = setInterval(updateWalkinPrices, PRICE_REFRESH_MS);
+  }
+
+  function renderReservations() {
+    const all = (_cache.reservations || []);
+
+    const current = all.filter(r => {
+      const st = String(r.status || "").toLowerCase();
+      return st !== "completed" && st !== "canceled" && st !== "cancelled";
     });
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key !== "Escape") return;
-      if (changeModal?.classList.contains("is-open")) closeModal(changeModal);
-      if (deleteModal?.classList.contains("is-open")) closeModal(deleteModal);
-    });
+    const active = current.filter(r => String(r.type_reservation || "").toLowerCase() === "walkin");
+    const upcoming = current.filter(r => String(r.type_reservation || "").toLowerCase() !== "walkin");
 
-    // --- Tabs ---
-    function wireTabs() {
-      qsa(".tab-link").forEach(link => {
-        link.addEventListener("click", () => {
-          qsa(".tab-link").forEach(l => l.classList.remove("active"));
-          qsa(".tab-content").forEach(c => c.classList.remove("active"));
-          link.classList.add("active");
-          const target = document.getElementById(link.dataset.target);
-          if (target) target.classList.add("active");
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-      });
-    }
+    if (activeList) {
+      if (!active.length) {
+        activeList.innerHTML = `<div class="empty">Žiadne aktívne úschovy.</div>`;
+      } else {
+        activeList.innerHTML = active.map(r => {
+          const boxes = parseBoxes(r.boxes);
+          const boxText = boxes && boxes.length ? boxes.join(", ") : "—";
+          const rateSum = Number(r.hourly_rate || 0);
 
-    // --- Reservations ---
-    const activeList = qs("#active-list");
-    const upcomingList = qs("#upcoming-list");
-    let _cache = { reservations: [] };
-    let EP = null;
+          return `
+            <div class="acc-card">
+              <div class="acc-card__header">
+                <div>
+                  <div class="pill pill--active">AKTÍVNE</div>
+                  <h4>Rezervácia #${escapeHtml(r.reservation_id)}</h4>
+                  <div class="meta">Boxy: ${escapeHtml(boxText)}</div>
+                </div>
+                <div class="date-badge">${fmtDateTime(r.date_from)}</div>
+              </div>
 
-    function fmtDateTime(val) {
-      if (!val) return "—";
-      const d = new Date(val);
-      if (isNaN(d.getTime())) return escapeHtml(val);
-      return d.toLocaleString("sk-SK");
-    }
-
-    function renderReservations() {
-      const all = (_cache.reservations || []);
-
-      const current = all.filter(r => {
-        const st = String(r.status || "").toLowerCase();
-        return st !== "completed" && st !== "canceled" && st !== "cancelled";
-      });
-
-      const active = current.filter(r => String(r.type_reservation || "").toLowerCase() === "walkin");
-      const upcoming = current.filter(r => String(r.type_reservation || "").toLowerCase() !== "walkin");
-
-      if (activeList) {
-        if (!active.length) {
-          activeList.innerHTML = `<div class="empty">Žiadne aktívne úschovy.</div>`;
-        } else {
-          activeList.innerHTML = active.map(r => {
-            const boxes = parseBoxes(r.boxes);
-            const boxText = boxes && boxes.length ? boxes.join(", ") : "—";
-
-            const rateSum = sumRateFromBoxes(boxes);
-            const est = (rateSum > 0 && r.date_from) ? calcWalkinEstimate(r.date_from, rateSum) : null;
-            const estPrice = est ? `${est.cost.toFixed(2)} €` : "—";
-            const estMins  = est ? `${est.mins} min` : "";
-
-            return `
-              <div class="acc-card">
-                <div class="acc-card__header">
-                  <div>
-                    <div class="pill pill--active">AKTÍVNE</div>
-                    <h4>Rezervácia #${escapeHtml(r.reservation_id)}</h4>
-                    <div class="meta">Boxy: ${escapeHtml(boxText)}</div>
-                  </div>
-                  <div class="date-badge">${fmtDateTime(r.date_from)}</div>
+              <div class="acc-card__body">
+                <div class="stat">
+                  <div class="stat-label">Začiatok</div>
+                  <div class="stat-value">${fmtDateTime(r.date_from)}</div>
                 </div>
 
-                <div class="acc-card__body">
-                  <div class="stat">
-                    <div class="stat-label">Začiatok</div>
-                    <div class="stat-value">${fmtDateTime(r.date_from)}</div>
+                <div class="stat">
+                  <div class="stat-label">Cena (odhad)</div>
+                  <div class="stat-value">
+                    <span class="js-walkin-price"
+                      data-start="${escapeHtml(r.date_from)}"
+                      data-rate="${escapeHtml(rateSum)}">—</span>
                   </div>
-
-                  <div class="stat" ${est ? `data-live-start="${escapeHtml(r.date_from)}" data-live-rate="${escapeHtml(rateSum)}"` : ""}>
-                    <div class="stat-label">Cena (odhad)</div>
-                    <div class="stat-value">
-                      <span class="js-live-price">${escapeHtml(estPrice)}</span>
-                      ${est ? `<span class="timer-pill js-live-mins">${escapeHtml(estMins)}</span>` : ""}
-                    </div>
-                  </div>
-                </div>
-
-                <div class="acc-card__footer">
-                  <button class="account-btn ghost" data-cancel="${escapeHtml(r.reservation_id)}" data-mode="end">Ukončiť a zaplatiť</button>
                 </div>
               </div>
-            `;
-          }).join("");
-        }
-      }
 
-      if (upcomingList) {
-        if (!upcoming.length) {
-          upcomingList.innerHTML = `<div class="empty">Nemáš žiadne nadchádzajúce rezervácie.</div>`;
-        } else {
-          upcomingList.innerHTML = upcoming.map(r => {
-            const boxes = parseBoxes(r.boxes);
-            const boxText = boxes && boxes.length ? boxes.join(", ") : "—";
-
-            const price = (r.total_price !== null && r.total_price !== undefined && r.total_price !== "") ? Number(r.total_price) : null;
-            const priceText = (price !== null && !Number.isNaN(price)) ? `${price.toFixed(2)} €` : "—";
-
-            return `
-              <div class="acc-card">
-                <div class="acc-card__header">
-                  <div>
-                    <div class="pill pill--hold">REZERVÁCIA</div>
-                    <h4>Rezervácia #${escapeHtml(r.reservation_id)}</h4>
-                    <div class="meta">Boxy: ${escapeHtml(boxText)}</div>
-                  </div>
-                  <div class="date-badge">${escapeHtml(String(r.date_from || "").split(" ")[0] || "—")}</div>
-                </div>
-
-                <div class="acc-card__body">
-                  <div class="stat">
-                    <div class="stat-label">Od</div>
-                    <div class="stat-value">${fmtDateTime(r.date_from)}</div>
-                  </div>
-                  <div class="stat">
-                    <div class="stat-label">Do</div>
-                    <div class="stat-value">${fmtDateTime(r.date_to)}</div>
-                  </div>
-                </div>
-
-                <div class="pay-hint">Cena: <strong>${escapeHtml(priceText)}</strong>.</div>
-
-                <div class="acc-card__footer">
-                  <button class="account-btn delete" data-cancel="${escapeHtml(r.reservation_id)}" data-mode="cancel">Zrušiť</button>
-                </div>
+              <div class="acc-card__footer">
+                <button class="account-btn ghost"
+                  data-cancel="${escapeHtml(r.reservation_id)}"
+                  data-mode="end">Ukončiť a zaplatiť</button>
               </div>
-            `;
-          }).join("");
-        }
+            </div>
+          `;
+        }).join("");
       }
     }
 
-    function updateLivePrices() {
-      qsa("[data-live-start][data-live-rate]").forEach(statEl => {
-        const startVal = statEl.getAttribute("data-live-start");
-        const rateSum = Number(statEl.getAttribute("data-live-rate"));
-        const est = (startVal && rateSum > 0) ? calcWalkinEstimate(startVal, rateSum) : null;
-        if (!est) return;
+    if (upcomingList) {
+      if (!upcoming.length) {
+        upcomingList.innerHTML = `<div class="empty">Nemáš žiadne nadchádzajúce rezervácie.</div>`;
+      } else {
+        upcomingList.innerHTML = upcoming.map(r => {
+          const boxes = parseBoxes(r.boxes);
+          const boxText = boxes && boxes.length ? boxes.join(", ") : "—";
 
-        const priceEl = qs(".js-live-price", statEl);
-        const minsEl = qs(".js-live-mins", statEl);
+          const price = (r.total_price !== null && r.total_price !== undefined && r.total_price !== "")
+            ? Number(r.total_price) : null;
+          const priceText = (price !== null && !Number.isNaN(price)) ? `${price.toFixed(2)} €` : "—";
 
-        if (priceEl) priceEl.textContent = est.cost.toFixed(2) + " €";
-        if (minsEl) minsEl.textContent = est.mins + " min";
-      });
+          return `
+            <div class="acc-card">
+              <div class="acc-card__header">
+                <div>
+                  <div class="pill pill--hold">REZERVÁCIA</div>
+                  <h4>Rezervácia #${escapeHtml(r.reservation_id)}</h4>
+                  <div class="meta">Boxy: ${escapeHtml(boxText)}</div>
+                </div>
+                <div class="date-badge">${escapeHtml(String(r.date_from || "").split(" ")[0] || "—")}</div>
+              </div>
+
+              <div class="acc-card__body">
+                <div class="stat">
+                  <div class="stat-label">Od</div>
+                  <div class="stat-value">${fmtDateTime(r.date_from)}</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-label">Do</div>
+                  <div class="stat-value">${fmtDateTime(r.date_to)}</div>
+                </div>
+              </div>
+
+              <div class="pay-hint">Cena: <strong>${escapeHtml(priceText)}</strong>.</div>
+
+              <div class="acc-card__footer">
+                <button class="account-btn delete"
+                  data-cancel="${escapeHtml(r.reservation_id)}"
+                  data-mode="cancel">Zrušiť</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
     }
+  }
 
-    let _liveTimer = null;
-    function startLiveTicker() {
-      if (_liveTimer) return;
-      _liveTimer = setInterval(updateLivePrices, 10 * 60 * 1000); // 10 min
-    }
+  function bindReservationActions() {
+    qsa("[data-cancel]").forEach(btn => {
+      btn.onclick = async () => {
+        const id = btn.getAttribute("data-cancel");
+        const mode = btn.getAttribute("data-mode") || "cancel";
 
-    function bindReservationActions() {
-      qsa("[data-cancel]").forEach(btn => {
-        btn.onclick = async () => {
-          const id = btn.getAttribute("data-cancel");
-          const mode = btn.getAttribute("data-mode");
-          const msg = (mode === "end")
-            ? "Naozaj chceš ukončiť úschovu? Cena sa vypočíta podľa času."
-            : "Naozaj chceš zrušiť rezerváciu?";
+        const msg = (mode === "end")
+          ? "Naozaj chceš ukončiť úschovu? Cena sa vypočíta podľa času."
+          : "Naozaj chceš zrušiť rezerváciu?";
 
-          if (!confirm(msg)) return;
-
-          try {
-            const resp = await apiPostForm(EP.cancelReservation, { id });
-            alert(resp.message || (resp.success ? "Hotovo." : "Nepodarilo sa."));
-            await refreshReservations();
-          } catch (e) {
-            alert(e.message || "Chyba pri spracovaní.");
-          }
-        };
-      });
-    }
-
-    async function refreshReservations() {
-      if (activeList) activeList.innerHTML = `<div class="muted">Načítavam…</div>`;
-      if (upcomingList) upcomingList.innerHTML = `<div class="muted">Načítavam…</div>`;
-
-      const resp = await apiGet(EP.listReservations).catch(() => ({ success:false, reservations: [] }));
-      _cache.reservations = (resp && resp.success ? resp.reservations : []) || [];
-      renderReservations();
-      bindReservationActions();
-      updateLivePrices();
-      startLiveTicker();
-    }
-
-    // --- Logout ---
-    function wireLogout() {
-      const logoutLink = qs(".logout-link");
-      if (!logoutLink) return;
-      logoutLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        fetch(EP.logout, { method: "POST", credentials: "include" })
-          .finally(() => window.location.href = "index.html");
-      });
-    }
-
-    // --- Change password ---
-    const changeForm = qs("#change-password-form");
-    if (changeForm) {
-      changeForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const oldPassword = qs("#old-password")?.value?.trim() || "";
-        const newPassword = qs("#new-password")?.value?.trim() || "";
-
-        if (newPassword.length < 6) {
-          setModalAlert(changeAlert, "Nové heslo musí mať aspoň 6 znakov.", false);
-          return;
-        }
+        if (!confirm(msg)) return;
 
         try {
-          const data = await apiPostJson(EP.changePassword, { oldPassword, newPassword });
-          setModalAlert(changeAlert, data.message || (data.success ? "Heslo zmenené." : "Nepodarilo sa."), !!data.success);
-
-          if (data.success) {
-            setTimeout(() => {
-              fetch(EP.logout, { method: "POST", credentials: "include" })
-                .finally(() => window.location.href = "login.html");
-            }, 900);
-          }
-        } catch (err) {
-          setModalAlert(changeAlert, "Chyba siete. Skús znova.", false);
+          const resp = await apiPostForm(EP.cancelReservation, { id, mode });
+          alert(resp.message || (resp.success ? "Hotovo." : "Nepodarilo sa."));
+          await refreshReservations();
+        } catch (e) {
+          alert(e.message || "Chyba pri spracovaní.");
         }
-      });
-    }
+      };
+    });
+  }
 
-    // --- Delete account ---
-    const deleteForm = qs("#delete-account-form");
-    if (deleteForm) {
-      deleteForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const userPassword = qs("#delete-password")?.value?.trim() || "";
-        if (!userPassword) {
-          setModalAlert(deleteAlert, "Zadaj heslo.", false);
-          return;
-        }
+  async function refreshReservations() {
+    if (activeList) activeList.innerHTML = `<div class="muted">Načítavam…</div>`;
+    if (upcomingList) upcomingList.innerHTML = `<div class="muted">Načítavam…</div>`;
 
-        if (!confirm("Posledná kontrola: naozaj chceš zmazať účet?")) return;
+    const resp = await apiGet(EP.listReservations).catch(() => ({ success:false, reservations: [] }));
+    _cache.reservations = (resp && resp.success ? resp.reservations : []) || [];
 
-        try {
-          const data = await apiPostJson(EP.deleteAccount, { userPassword });
-          setModalAlert(deleteAlert, data.message || (data.success ? "Účet bol zmazaný." : "Nepodarilo sa."), !!data.success);
+    renderReservations();
+    bindReservationActions();
 
-          if (data.success) setTimeout(() => window.location.href = "index.html", 900);
-        } catch (err) {
-          setModalAlert(deleteAlert, "Chyba siete. Skús znova.", false);
-        }
-      });
-    }
+    updateWalkinPrices();
+    startWalkinTicker();
+  }
 
- 
-    (async () => {
-      EP = await detectBackendBase();
-      if (!EP) {
-        alert("Nepodarilo sa nájsť backend (skontroluj priečinok backend/).");
+  // =========================
+  // LOGOUT
+  // =========================
+  function wireLogout() {
+    const logoutLink = qs(".logout-link");
+    if (!logoutLink) return;
+    logoutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      fetch(EP.logout, { method: "POST", credentials: "include" })
+        .finally(() => window.location.href = "index.html");
+    });
+  }
+
+  // =========================
+  // CHANGE PASSWORD
+  // =========================
+  const changeForm = qs("#change-password-form");
+  if (changeForm) {
+    changeForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const oldPassword = qs("#old-password")?.value?.trim() || "";
+      const newPassword = qs("#new-password")?.value?.trim() || "";
+
+      if (newPassword.length < 6) {
+        setModalAlert(changeAlert, "Nové heslo musí mať aspoň 6 znakov.", false);
         return;
       }
 
-      // overenie usera
-      apiGet(EP.getUser)
-        .then(data => {
-          if (!data || !data.loggedIn) {
-            window.location.href = "login.html";
-            return;
-          }
-          if (EMAIL_EL && data.user?.email) EMAIL_EL.textContent = data.user.email;
+      try {
+        const data = await apiPostJson(EP.changePassword, { oldPassword, newPassword });
+        setModalAlert(changeAlert, data.message || (data.success ? "Heslo zmenené." : "Nepodarilo sa."), !!data.success);
 
-          wireTabs();
-          wireLogout();
-          refreshReservations();
-        })
-        .catch(() => window.location.href = "login.html");
-    })();
-  });
-  </script>
+        if (data.success) {
+          setTimeout(() => {
+            fetch(EP.logout, { method: "POST", credentials: "include" })
+              .finally(() => window.location.href = "login.html");
+          }, 900);
+        }
+      } catch {
+        setModalAlert(changeAlert, "Chyba siete. Skús znova.", false);
+      }
+    });
+  }
+
+  // =========================
+  // DELETE ACCOUNT
+  // =========================
+  const deleteForm = qs("#delete-account-form");
+  if (deleteForm) {
+    deleteForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const userPassword = qs("#delete-password")?.value?.trim() || "";
+
+      if (!userPassword) {
+        setModalAlert(deleteAlert, "Zadaj heslo.", false);
+        return;
+      }
+
+      if (!confirm("Posledná kontrola: naozaj chceš zmazať účet?")) return;
+
+      try {
+        const data = await apiPostJson(EP.deleteAccount, { userPassword });
+        setModalAlert(deleteAlert, data.message || (data.success ? "Účet bol zmazaný." : "Nepodarilo sa."), !!data.success);
+
+        if (data.success) setTimeout(() => window.location.href = "index.html", 900);
+      } catch {
+        setModalAlert(deleteAlert, "Chyba siete. Skús znova.", false);
+      }
+    });
+  }
+
+  // =========================
+  // INIT
+  // =========================
+  (async () => {
+    EP = await detectBackendBase();
+    if (!EP) {
+      alert("Nepodarilo sa nájsť backend (skontroluj priečinok backend/).");
+      return;
+    }
+
+    apiGet(EP.getUser)
+      .then(data => {
+        if (!data || !data.loggedIn) {
+          window.location.href = "login.html";
+          return;
+        }
+        if (EMAIL_EL && data.user?.email) EMAIL_EL.textContent = data.user.email;
+
+        wireTabs();
+        wireLogout();
+        refreshReservations();
+      })
+      .catch(() => window.location.href = "login.html");
+  })();
+});
+</script>
+
+
 </body>
 </html>

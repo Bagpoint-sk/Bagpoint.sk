@@ -983,6 +983,138 @@ body.login-page.success-bg {
   height: 22px;
 }
 
+/* ===================================
+   ACCOUNT MODALS (acc-modal)
+=================================== */
+
+.acc-modal{
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 14px;
+
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  z-index: 3000;
+}
+
+.acc-modal.is-open{
+  display: flex;
+}
+
+.acc-modal[hidden]{
+  display: none !important;
+}
+
+/* glass card */
+.acc-modal__card{
+  width: min(460px, 100%);
+  border-radius: 22px;
+  padding: 18px 18px 16px;
+
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  box-shadow: 0 30px 90px rgba(15, 23, 42, 0.30);
+
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+
+  position: relative;
+  animation: accModalPop .18s ease;
+}
+
+@keyframes accModalPop{
+  from{ transform: translateY(8px) scale(0.98); opacity: 0; }
+  to  { transform: translateY(0)   scale(1);    opacity: 1; }
+}
+
+.acc-modal__title{
+  margin: 0 38px 6px 0;
+  font-size: 22px;
+  color: #1E2A38;
+}
+
+.acc-modal__subtitle{
+  margin: 0 0 14px 0;
+  color: #5C6B7A;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.acc-modal__subtitle.danger{ color: #a33; }
+
+/* inputs */
+.acc-modal__label{
+  display: block;
+  font-size: 13px;
+  color: #1E2A38;
+  margin: 12px 0 6px;
+  font-weight: 600;
+}
+.acc-modal__input{
+  width: 100%;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid #E1E8F0;
+  background: rgba(255,255,255,0.85);
+  padding: 10px 12px;
+  outline: none;
+}
+.acc-modal__input:focus{
+  border-color: rgba(4,113,194,0.45);
+  box-shadow: 0 0 0 4px rgba(8,157,250,0.12);
+}
+
+/* alert */
+.acc-modal__alert{
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 13px;
+  margin: 10px 0 6px;
+}
+.acc-modal__alert.ok{ background: rgba(16,185,129,0.12); color:#065f46; border: 1px solid rgba(16,185,129,0.25); }
+.acc-modal__alert.err{ background: rgba(239,68,68,0.12);  color:#7f1d1d; border: 1px solid rgba(239,68,68,0.25); }
+
+/* actions */
+.acc-modal__actions{
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.acc-modal__actions .account-btn{
+  border-radius: 999px;
+}
+
+/* close X */
+.acc-modal__close{
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.95);
+  background: rgba(255,255,255,0.35);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.18);
+  transition: transform .18s ease, background .18s ease;
+}
+.acc-modal__close:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.55);
+}
+
+body.acc-modal-open{ overflow: hidden; }
 
 /* ===================================
    ACCOUNT PAGE 
@@ -1046,7 +1178,6 @@ body.login-page.success-bg {
   font-weight: 600;
 }
 
-
 .account-content {
   flex: 1;
   padding: 60px;
@@ -1079,27 +1210,33 @@ body.login-page.success-bg {
   font-size: 16px;
 }
 
-.account-section {
-  margin-bottom: 40px;
-}
-
-.account-section h2 {
+.account-content h2 {
   font-size: 20px;
   color: #0471C2;
   margin-bottom: 20px;
 }
 
-
-.reservations-box {
-  background: #F4F8FB;
-  border-radius: 14px;
-  padding: 30px;
-  text-align: center;
-  color: #5C6B7A;
-  font-size: 16px;
+/* tabs */
+.tab-content{
+  display: none;
+  animation: tabFadeIn 0.3s ease;
+}
+.tab-content.active{
+  display: block;
 }
 
+.tab-link.active{
+  background: linear-gradient(90deg, #089DFA, #0471C2);
+  color: #fff;
+  font-weight: 600;
+}
 
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* buttons base */
 .account-btn {
   display: inline-block;
   padding: 12px 26px;
@@ -1113,92 +1250,32 @@ body.login-page.success-bg {
   transition: all 0.3s ease;
   margin-right: 12px;
 }
-
 .account-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 14px rgba(4, 113, 194, 0.3);
 }
-
 .account-btn.delete {
   background: #E74C3C;
 }
-
 .account-btn.delete:hover {
   background: #d53d2e;
 }
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-  .account-container {
-    flex-direction: column;
-  }
-  
-  .account-sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #E0E6ED;
-  }
-
-  .account-content {
-    padding: 40px 25px;
-  }
-
-  .profile-pic {
-    width: 60px;
-    height: 60px;
-  }
+/* ghost */
+.account-btn.ghost{
+  background: rgba(255,255,255,0.22);
+  border: 1px solid rgba(4,113,194,0.25);
+  color: #0471C2;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.account-btn.ghost:hover{
+  background: rgba(255,255,255,0.32);
+  transform: translateY(-1px);
+  box-shadow: none;
 }
 
-.tab-content { animation: tabFadeIn 0.3s ease; }
-
-
-.tab-content.active {
-  display: block;
-}
-
-.tab-link.active {
-  background: linear-gradient(90deg, #089DFA, #0471C2);
-  color: #fff;
-  font-weight: 600;
-}
-
-@keyframes tabFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ===================================
-  new account part
-=================================== */
-.reservations-wrapper { display: grid; gap: 28px; }
-.resv-card{
-  background:#F4F8FB; border:1px solid #E0E6ED; border-radius:14px; padding:18px 20px;
-  display:flex; flex-direction:column; gap:12px;
-}
-.resv-row{ display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; }
-.badge{
-  display:inline-block; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:600;
-  background:rgba(4,113,194,.1); color:#0471C2;
-}
-.badge.green{ background:rgba(16,185,129,.12); color:#10B981; }
-.badge.orange{ background:rgba(245,158,11,.14); color:#D97706; }
-.badge.gray{ background:#E9EEF4; color:#4B5563; }
-.kv{ font-size:14px; color:#1E2A38; }
-.kv strong{ color:#0f172a; }
-.resv-actions{ display:flex; gap:10px; flex-wrap:wrap; }
-.btn-ghost{
-  padding:10px 16px; border-radius:10px; border:1px solid #E0E6ED; background:#fff; cursor:pointer; font-weight:600;
-}
-.btn-ghost:hover{ background:#F8FAFD; }
-.timer-pill{
-  font-variant-numeric: tabular-nums; padding:6px 10px; border-radius:8px; background:#fff; border:1px solid #E0E6ED;
-}
-.info-banner{
-  background:#FFF7E6; border:1px solid #FCD34D; color:#92400E; padding:10px 12px; border-radius:10px; font-size:14px;
-}
-.resv-list > .resv-card + .resv-card{ margin-top:12px; }
-.placeholder p{ color:#5C6B7A; }
-
+/* reservations */
 .cards-wrap { display: grid; gap: 28px; }
 .card-group h3 { font-size: 18px; color:#0471C2; margin-bottom: 12px; }
 .card-list { display: grid; gap: 16px; }
@@ -1215,21 +1292,92 @@ body.login-page.success-bg {
 
 .meta { color:#5C6B7A; font-size:14px; margin-top:4px; }
 .date-badge { background:#F4F8FB; color:#1E2A38; padding:6px 10px; border-radius:10px; font-weight:600; }
-.price-now { text-align:right; }
-.price-amt { font-size:22px; font-weight:800; color:#1E2A38; }
-.price-sub { font-size:12px; color:#5C6B7A; }
 
 .stat { background:#F8FBFF; border:1px solid #E4EFFA; border-radius:12px; padding:12px; }
 .stat-label { font-size:12px; color:#5C6B7A; }
 .stat-value { font-size:16px; font-weight:700; color:#1E2A38; }
 
-.account-btn.ghost { background:transparent; color:#0471C2; border:1px solid #0471C2; }
 .pay-hint { margin-top:10px; font-size:14px; color:#1E2A38; background:#FFF7E6; border:1px solid #FFE1A6; border-radius:10px; padding:10px 12px; }
 
 @media (max-width: 900px){
+  .account-container { flex-direction: column; }
+  .account-sidebar { width: 100%; border-right: none; border-bottom: 1px solid #E0E6ED; }
+  .account-content { padding: 40px 25px; }
+  .profile-pic { width: 60px; height: 60px; }
   .acc-card__body { grid-template-columns: 1fr; }
-  .price-now { text-align:left; }
 }
+
+/* Account settings layout + glass buttons in settings */
+#settings-section .settings-actions{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 14px;
+}
+
+#settings-section .account-btn{
+  margin-right: 0;
+  border-radius: 999px;
+  padding: 12px 26px;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+#settings-section .account-btn:not(.delete){
+  background: rgba(8,157,250,0.14);
+  color: #0471C2;
+  border: 1px solid rgba(4,113,194,0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+#settings-section .account-btn:not(.delete):hover{
+  background: rgba(8,157,250,0.20);
+  transform: translateY(-2px);
+}
+
+#settings-section .account-btn.delete{
+  background: rgba(231,76,60,0.16);
+  color: #8b1c12;
+  border: 1px solid rgba(231,76,60,0.28);
+}
+#settings-section .account-btn.delete:hover{
+  background: rgba(231,76,60,0.22);
+  transform: translateY(-2px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*O projekte som odpojila css pre kiku neskor napojit*/
 
@@ -1765,134 +1913,6 @@ body.login-page.success-bg {
 
 
 
-/* ===================================
-   ///////
-=================================== */  
-/* =========================
-   ACCOUNT MODALS (.acc-modal)
-   ========================= */
-
-.acc-modal{
-  position: fixed;
-  inset: 0;
-  padding: 18px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-
-  background: rgba(15, 23, 42, 0.55);
-  backdrop-filter: blur(6px);
-}
-
-.acc-modal.is-open{ display:flex; }
-
-.acc-modal__card{
-  width: min(480px, 100%);
-  background: #fff;
-  border: 1px solid rgba(15,23,42,0.08);
-  border-radius: 18px;
-  box-shadow: 0 30px 80px rgba(15,23,42,0.25);
-  padding: 22px 22px 18px;
-  position: relative;
-  text-align: left;
-  animation: accModalPop .18s ease;
-}
-
-@keyframes accModalPop{
-  from { transform: translateY(10px) scale(.98); opacity:.6; }
-  to   { transform: translateY(0) scale(1); opacity:1; }
-}
-
-.acc-modal__close{
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  width: 38px;
-  height: 38px;
-  border-radius: 12px;
-  border: 1px solid #E0E6ED;
-  background: #F8FAFD;
-  cursor: pointer;
-  font-size: 22px;
-  line-height: 1;
-  color: #1E2A38;
-}
-.acc-modal__close:hover{ background:#fff; }
-
-.acc-modal__title{
-  margin: 0 0 6px 0;
-  font-family: "Outfit", sans-serif;
-  font-size: 20px;
-  color: #1E2A38;
-}
-
-.acc-modal__subtitle{
-  margin: 0 0 14px 0;
-  color: #5C6B7A;
-  font-size: 14px;
-}
-.acc-modal__subtitle.danger{ color:#991B1B; }
-
-.acc-modal__label{
-  display:block;
-  margin: 10px 0 6px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #1E2A38;
-}
-
-.acc-modal__input{
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #E0E6ED;
-  background: #F8FAFD;
-  border-radius: 12px;
-  font-size: 15px;
-  outline: none;
-  transition: box-shadow .18s ease, border-color .18s ease, background .18s ease;
-}
-.acc-modal__input:focus{
-  background:#fff;
-  border-color: rgba(8,157,250,0.65);
-  box-shadow: 0 0 0 4px rgba(8,157,250,0.15);
-}
-
-.acc-modal__actions{
-  display:flex;
-  gap:12px;
-  justify-content:flex-end;
-  flex-wrap:wrap;
-  margin-top:12px;
-}
-
-.acc-modal__alert{
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  margin: 10px 0 12px;
-}
-.acc-modal__alert.ok{
-  background: rgba(16,185,129,0.12);
-  border: 1px solid rgba(16,185,129,0.25);
-  color: #047857;
-}
-.acc-modal__alert.err{
-  background: rgba(231,76,60,0.12);
-  border: 1px solid rgba(231,76,60,0.25);
-  color: #991B1B;
-}
-
-@media (max-width: 480px){
-  .acc-modal__actions{ flex-direction:column; align-items:stretch; }
-}
-
-
-
-
-
-
-
 
 
 
@@ -2314,170 +2334,3 @@ body.login-page.success-bg {
 
 
 
-
-/* Account settings layout */
-#settings-section .settings-actions{
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: flex-start;
-  margin-top: 14px;
-}
-
-#settings-section .account-btn{
-  margin-right: 0;
-}
-
-/* ===================================
-   ACCOUNT MODALS (acc-modal)
-=================================== */
-
-/* overlay */
-.acc-modal{
-  position: fixed;
-  inset: 0;
-  display: none;              /* DÔLEŽITÉ: aby sa neukazovali na stránke */
-  align-items: center;
-  justify-content: center;
-  padding: 22px 14px;
-  background: rgba(15, 23, 42, 0.45);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  z-index: 3000;
-}
-
-.acc-modal.is-open{
-  display: flex;              /* otvorenie */
-}
-
-/* glass card */
-.acc-modal__card{
-  width: min(460px, 100%);
-  border-radius: 22px;
-  padding: 18px 18px 16px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.92);
-  box-shadow: 0 30px 90px rgba(15, 23, 42, 0.30);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
-  position: relative;
-  animation: accModalPop .18s ease;
-}
-
-@keyframes accModalPop{
-  from{ transform: translateY(8px) scale(0.98); opacity: 0; }
-  to  { transform: translateY(0)   scale(1);    opacity: 1; }
-}
-
-.acc-modal__title{
-  margin: 0 38px 6px 0;
-  font-size: 22px;
-  color: #1E2A38;
-}
-
-.acc-modal__subtitle{
-  margin: 0 0 14px 0;
-  color: #5C6B7A;
-  font-size: 14px;
-  line-height: 1.5;
-}
-.acc-modal__subtitle.danger{ color: #a33; }
-
-/* inputs */
-.acc-modal__label{
-  display: block;
-  font-size: 13px;
-  color: #1E2A38;
-  margin: 12px 0 6px;
-  font-weight: 600;
-}
-.acc-modal__input{
-  width: 100%;
-  height: 44px;
-  border-radius: 14px;
-  border: 1px solid #E1E8F0;
-  background: rgba(255,255,255,0.85);
-  padding: 10px 12px;
-  outline: none;
-}
-.acc-modal__input:focus{
-  border-color: rgba(4,113,194,0.45);
-  box-shadow: 0 0 0 4px rgba(8,157,250,0.12);
-}
-
-/* alert */
-.acc-modal__alert{
-  border-radius: 14px;
-  padding: 10px 12px;
-  font-size: 13px;
-  margin: 10px 0 6px;
-}
-.acc-modal__alert.ok{ background: rgba(16,185,129,0.12); color:#065f46; border: 1px solid rgba(16,185,129,0.25); }
-.acc-modal__alert.err{ background: rgba(239,68,68,0.12);  color:#7f1d1d; border: 1px solid rgba(239,68,68,0.25); }
-
-/* actions */
-.acc-modal__actions{
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 14px;
-}
-
-/* close X */
-.acc-modal__close{
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.95);
-  background: rgba(255,255,255,0.35);
-  cursor: pointer;
-  font-size: 18px;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.18);
-  transition: transform .18s ease, background .18s ease;
-}
-.acc-modal__close:hover{
-  transform: translateY(-1px);
-  background: rgba(255,255,255,0.55);
-}
-
-/* aby sa background neposúval keď je modal otvorený */
-body.acc-modal-open{ overflow: hidden; }
-
-/* ===================================
-   Krajsie tlacidla LEN v Nastaveniach
-=================================== */
-#settings-section .account-btn{
-  border-radius: 999px;
-  padding: 12px 26px;
-  font-weight: 700;
-  box-shadow: none;
-}
-
-#settings-section .account-btn:not(.delete){
-  background: rgba(8,157,250,0.14);
-  color: #0471C2;
-  border: 1px solid rgba(4,113,194,0.28);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-#settings-section .account-btn:not(.delete):hover{
-  background: rgba(8,157,250,0.20);
-  transform: translateY(-2px);
-}
-
-#settings-section .account-btn.delete{
-  background: rgba(231,76,60,0.16);
-  color: #8b1c12;
-  border: 1px solid rgba(231,76,60,0.28);
-}
-#settings-section .account-btn.delete:hover{
-  background: rgba(231,76,60,0.22);
-  transform: translateY(-2px);
-}

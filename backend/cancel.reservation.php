@@ -5,6 +5,7 @@ header("Content-Type: application/json");
 
 $user_id = $_SESSION['user_id'] ?? null;
 $reservation_id = $_POST['id'] ?? null;
+$mode = $_POST['mode'] ?? null;
 
 if (!$user_id || !$reservation_id) {
     echo json_encode(["success" => false, "message" => "Neplatné údaje"]);
@@ -39,32 +40,31 @@ try {
     $stmt->execute([':rid' => $reservation_id]);
     $boxes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $is_walkin = false;
-    if (($reservation['type_reservation'] ?? null) === 'walkin') $is_walkin = true;
-    if (!$is_walkin && !empty($boxes) && ($boxes[0]['type_reservation'] ?? null) === 'walkin') $is_walkin = true;
-
-    $status = $is_walkin ? 'completed' : 'canceled';
+    $m = strtolower(trim((string)$mode));
+    $status = ($m === 'cancel') ? 'canceled' : 'completed';
     $total_price = $reservation['total_price'];
     $date_to = $reservation['date_to'];
 
+    if ($status === 'canceled') {
+        $total_price = 0;
+    }
+
     // --- Ak walkin, dopočítať cenu a nastaviť date_to ---
-    if ($is_walkin) {
+    if ($status === 'completed' && !empty($boxes) && $boxes[0]['type_reservation'] === 'walkin') {
         $date_to = date('Y-m-d H:i:s');
-
-        $rate_sum = 0;
-        foreach ($boxes as $b) {
-            $rate_sum += (float)($b['price_per_hour'] ?? 0);
-        }
-
-        $startVal = $reservation['date_from'] ?? null;
-        $start = $startVal ? new DateTime($startVal) : new DateTime($date_to);
+        $start = new DateTime($reservation['date_from']);
         $end = new DateTime($date_to);
 
-        $elapsed = $end->getTimestamp() - $start->getTimestamp();
-        if ($elapsed < 0) $elapsed = 0;
+        $sec = max(0, $end->getTimestamp() - $start->getTimestamp());
+        $halfHours = (int)ceil($sec / 1800);
+        if ($halfHours < 1) $halfHours = 1;
 
-        $halfHours = (int)ceil($elapsed / 1800);
-        $total_price = $halfHours * ($rate_sum / 2);
+        $rateSum = 0.0;
+        foreach ($boxes as $b) {
+            $rateSum += (float)($b['price_per_hour'] ?? 0);
+        }
+
+        $total_price = $halfHours * ($rateSum / 2.0);
     }
 
     // --- Aktualizácia rezervácie ---
@@ -88,7 +88,11 @@ try {
     ");
     $stmt->execute([':rid' => $reservation_id]);
 
-    echo json_encode(["success" => true, "message" => ($is_walkin ? "Rezervácia bola ukončená a boxy sú voľné" : "Rezervácia bola zrušená a boxy sú voľné")]);
+    if ($status === 'canceled') {
+        echo json_encode(["success" => true, "message" => "Rezervácia bola zrušená a boxy sú voľné"]);
+    } else {
+        echo json_encode(["success" => true, "message" => "Rezervácia bola ukončená a boxy sú voľné"]);
+    }
 
 } catch (PDOException $e) {
     echo json_encode(["success" => false, "message" => "Chyba: " . $e->getMessage()]);
